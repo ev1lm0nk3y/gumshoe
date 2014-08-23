@@ -1,0 +1,102 @@
+<html>
+	<head>
+		<title>Gumshoe Setup</title>
+		<script src="js/gumshoe.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="css/gumshoe.css" type="text/css"></link>
+	</head>
+  <body>
+		<div class="settings_open" id="general">
+			<div class="option_heading">
+				<font class="option_title">General Options</font>
+      </div>
+      <div class="options">
+        <div class="option_heading">Directory Setup</div>
+        <div class="basic_option">
+          <div class="file_question" id="b_dir_title">Base Directory</div>
+          <div class="file_answer">
+            <input type="file" size="50" id="base_dir" value="{{ .base_dir }}" name="base_dir" webkitdirectory directory>
+          </div>
+        </div>
+        <div class="basic_option">
+          <div class="file_question" id="t_dir_title">Torrent Directory</div>
+          <div class="file_answer">
+            <input type="file" size="50" id="torrent_dir" value="{{ .torrent_dir }}" name="torrent_dir" webkitdirectory directory>
+          </div>
+        </div>
+        <div class="enable_option">
+          <div class="enable_me" id="enable_logging_div">
+            <input type="checkbox" id="enable_logging_cb" name="enable_logging">Enable Logging
+          </div>
+          <div class="multiple_options" id="logging_options">
+            <div class="file_question" id="l_dir_title">Logging Location</div>
+            <div class="file_answer">
+              <input type="file" id="log_dir" value="{{ .log_dir }}" webkitdirectory directory>
+            </div>
+            <div class="select_one">{{ .log_levels }}</div>
+            <div class="num_select">
+              Retain Logs for <input type="number" name="log_duration" value="{{ .log_duration }}" id="log_duration"> days
+            </div>
+          </div>
+        </div>
+        <div class="enable_option">
+          <div class="enable_me" id="enable_web_div">
+            <input type="checkbox" id="enable_web_cb" name="enable_web">Enable Web Portal
+          </div>
+          <div class="multiple_options" id="web_options">
+            <div class="num_select">
+              Port to run webserver on: <input type="number" name="http_port" id="http_port" value="{{ .http_port }}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="settings_closed" id="tracker">
+      <div class="options">
+        <div class="option_heading">Tracker Details</div>
+        <div class="basic_option">
+          <div class="url_question">Tracker Website</div>
+          <div class="url_answer"
+            <input type="text" name="tracker" value="{{ .tracker }}" id="tracker">
+          </div>
+          <div class="verify_tracker_account">
+            <div class="basic_question">Username</div>
+            <div class="basic_answer">
+              <input type="text" name="tracker_user" id="tracker_user" value="{{ .tracker_user }}">
+            </div>
+            <div class="basic_question">Password</div>
+            <div class="basic_answer">
+              <input type="password" name="tracker_passwd" id="tracker_passwd" value="{{ .tracker_passwd }}">
+            </div>
+            <div class="simple_button">
+              <input type="button" onClick="checkTrackerAccount();" value="Verify Account">
+              <div class="hidden_return"></div>
+            </div>
+          </div>
+          <div class="multiple_options">
+            <div class="num_select" id="dl_rate_title">
+              Number of seconds to wait to download new episode:&nbsp;
+              <input type="number" id="min_dl_rate" name="min_dl_rate" value="{{ .min_download_rate }}" max="55" min="10"> seconds to <input type="number" id="max_dl_rate" name="max_dl_rate" value="{{ .max_download_rate }}" max="60" min="15"><font class="hint">No less than 10s and no greater than 60s.</font>
+            </div>
+            <div class="num_select" id="retry_title">
+              Max number of download retries:&nbsp;
+              <input type="number" id="max_retries" name="max_retries" value="{{ .max_retries }}" min="1" max="5"><font class="hint">Between 1 and 5</font>
+            </div>
+            <div class="num_select" id="retry_title">
+              How many episodes to queue:&nbsp;
+              <input type="number" id="queue_size" name="queue_size" value="{{ .queue_size }}"><font class="hint">0 = unlimited</font>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="settings_closed" id="watcher">
+      <div class="options">
+        <div class="option_heading">Watcher Config</div>
+        <div class="enable_option">
+          <div class="enable_me" id="enable_irc">
+            <input type="radio" value="Watch an IRC Channel" id="irc_radio" name="watcher_radio">
+          </div>
+          <div class="multiple_options">
+
+
