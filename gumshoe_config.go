@@ -1,4 +1,4 @@
-package config_parser
+package gumshoe
 
 import (
 	"encoding/json"
@@ -54,31 +54,105 @@ type TrackerConfig struct {
 	LastModified int                    `json:"last_modified"`
 }
 
-// Functions (add more comments!!!)
 func NewTrackerConfig() *TrackerConfig {
 	return &TrackerConfig{}
 }
 
-func (tc *TrackerConfig) LoadGumshoeConfig(cfg_file string) error {
-	if err := tc.ProcessBaseConfigJSON(cfg_file); err == nil {
-		return err
-	}
-	log.Println("Error with config file %s: %s", cfg_file)
-	log.Println("Using basic template.")
-	return tc.ProcessBaseConfigJSON("/home/ryan/Development/bitme-get/configs/bitme-get.cfg")
-}
-
-func (tc *TrackerConfig) ProcessBaseConfigJSON(config_json string) error {
-	if cfg_buf, err := ioutil.ReadFile(config_json); err != nil {
-		return err
-	} else {
-		if err := json.Unmarshal(cfg_buf, &tc); err != nil {
-			return err
-		}
+func (tc *TrackerConfig) LoadGumshoeConfig(cfgFile string) error {
+	if err := tc.ProcessGumshoeJSON(cfgFile); err != nil {
+		log.Println("Error with config file ", cfgFile, ": ", err)
+		log.Println("Using basic template.")
+		return tc.ProcessGumshoeJSON("cfg/gumshoe_config.json")
 	}
 	return nil
 }
 
-func (tc *TrackerConfig) LoadPatterns() []string {
-				return []string
+func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {
+	if cfgBuf, err := ioutil.ReadFile(cfgJson); err != nil {
+		return err
+	} else {
+		if err := json.Unmarshal(cfgBuf, &tc); err != nil {
+			return err
+		}
+	}
+	config <- true
+	return nil
+}
+
+func (tc *TrackerConfig) WriteGumshoeConfig(update []byte) error {
+	if err := json.Unmarshall(update, &tc); err == nil {
+		var gCfg []byte
+		if gCfg, err := json.MarshallIndent(&tc, nil, "  "); err == nil {
+			if err := ioutil.WriteFile(tc.Files["base_dir"]+"gumshoe_config.json",
+				gCfg, 0655); err == nil {
+				// TODO(ryan): log successful config update
+				return nil
+			}
+			return err
+		}
+	}
+	return err
+}
+
+// TV shows that should be downloaded.
+type Show struct {
+	Title    string   `json:"title"`
+	Quality  []string `json:"quality"`
+	Episodal bool     `json:"episodes"`
+}
+
+type Shows struct {
+	TVShows []Show `json:"tv shows"`
+}
+
+func NewShowsConfig() *Shows {
+	return &Shows{}
+}
+
+func (S *Shows) AddShow(s *Show) {
+	append(S.TVShows, s)
+}
+
+func (S *Shows) GetShow(title string) (int, *Show, error) {
+	for x := range S.TVShows {
+		if S.TVShows[x].Title == title {
+			return x, S.TVShows[x], nil
+		}
+	}
+	return -1, nil, error("Not found")
+}
+
+func (S *Shows) RemoveShow(title string) error {
+	var index int
+	if index, _, err := GetShow(title); err != nil {
+		return err
+	}
+	newSlice := S.TVShows[:index-1]
+	append(newSlice, S.TVShows[index+1:])
+	S.TVShows = newSlice
+	return nil
+}
+
+func (S *Shows) LoadShows() (int, error) {
+	var sCfg []byte
+	if sCfg, err := ioutil.ReadFile(tc.Files["shows"]); err != nil {
+		log.Println("No show file found. Will just use a blank one.")
+		sCfg = new([]byte)
+	}
+	if err := json.Unmarshal(sCfg, &S); err != nil {
+		// TODO(ryan): log error message
+		return -1, err
+	}
+	return len(s.TVShows), nil
+}
+
+func (S *Shows) WriteShows() (int, error) {
+	if sCfg, err := json.MarshallIndent(&S, nil, "  "); err == nil {
+		// TODO(ryan): log success writing things (woo!)
+		if err := ioutil.WriteFile(tc.Files["shows"], sCfg, 0666); err == nil {
+			// TODO(ryan): log more stuff here too.
+			return len(S.TVShows), nil
+		}
+	}
+	return err
 }

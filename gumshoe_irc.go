@@ -1,13 +1,10 @@
-package irc
+package gumshoe
 
 import (
 	"fmt"
 	"github.com/thoj/go-ircevent/irc"
-	"gumshoe/config_parser"
 	"log"
 	"time"
-	// "gumshoe/downloader"
-	// "gumshoe/metrics"
 )
 
 // Metrics

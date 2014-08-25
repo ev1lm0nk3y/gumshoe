@@ -28,12 +28,13 @@ var (
 	home   = os.Getenv("HOME")
 	user   = os.Getenv("USER")
 	gopath = os.Getenv("GOPATH")
+  gumshoeSrc = os.Getenv("GUMSHOESRC")
 	gcstat = debug.GCStats{}
 )
 
 func GumshoeHandlers() http.Handler {
 	gumshoe_handlers := http.NewServeMux()
-	gumshoe_handlers.Handle("/", http.FileServer(http.Dir(*base_dir)))
+	gumshoe_handlers.Handle("/", path.Join(gumshoeSrc, "html")))
 	return gumshoe_handlers
 }
 
@@ -41,12 +42,15 @@ type GumshoeSignals struct {
 	config_modified chan bool
 	shutdown        chan bool
 	logger          chan Logger
-	tc              chan TrackerConfig
-	patterns        chan Patterns
+	tcSignal        chan TrackerConfig
+	showSignal      chan Shows
 }
 
 func init() {
 	flag.Parse()
+  if gumshoeSrc == "" {
+    gumshoeSrc = "/home/ryan/gocode/src/gumshoe"
+  }
 	if err := tc.LoadGumshoeConfig(*config_file); err != nil {
 		log.Fatal(err)
 	}
@@ -59,11 +63,12 @@ func init() {
 }
 
 func main() {
-	go startHttpServer()
-	go irc.StartIRCClient(&tc)
+  go StartMetrics()
+	go StartHttpServer()
+	go StartIRCClient(&tc)
 }
 
-func startHttpServer() {
+func StartHttpServer() {
 	s := &http.Server{
 		Addr:           "127.0.0.1:" + *port,
 		Handler:        GumshoeHandlers(),
