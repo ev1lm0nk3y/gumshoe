@@ -3,23 +3,22 @@ package gumshoe
 import (
 	"github.com/thoj/go-ircevent"
 	"fmt"
-	// "log"
+	"log"
   "regexp"
+  "strings"
 	"time"
 )
 
-// Metrics
+var irc_client *irc.Connection
+var irc_enabled = make(chan bool)
+var announceLine, episodePattern *regexp.Regexp
+
 func init() {
   // Metrics
 
-	// irc_client is the global irc connection manager, initialize it as stopped
-	var irc_client *irc.Connection
+  // don't immediately launch the IRC client
+	irc_enabled <- false
 
-	// enabled lets us know if we should run the irc client
-	var enabled = make(chan bool)
-	enabled <- false
-
-  // How are the episodes announced
   // TODO(ryan): make this configurable
   announceLine := regexp.MustCompile("BitMeTV-IRC2RSS: (?P<title>.*?) : (?P<url>.*)")
   episodePattern := regexp.MustCompile("^([\\w\\d\\s.]+)[. ](?:s(\\d{1,2})e(\\d{1,2})|(\\d)x?(\\d{2})|Star.Wars)([. ])")
@@ -27,19 +26,19 @@ func init() {
 
 // should this be refactored so that it can reconnect on config changes instead of diconnect and
 // connect. TODO(ryan)
-func ConnectToTrackerIRC(irc_client *irc.Connection) {
+func ConnectToTrackerIRC() {
 	// Give the connection the configured defaults
 	irc_client.KeepAlive = time.Duration(tc.IRC.KeepAlive) * time.Minute
 	irc_client.Timeout = time.Duration(tc.IRC.Timeout) * time.Minute
 	irc_client.PingFreq = time.Duration(tc.IRC.PingFreq) * time.Minute
 	irc_client.Password = tc.IRC.Key
 	irc_client.AddCallback("invite", func(e *irc.Event) {
-		if string.Index(e.Raw, tc.IRC.WatchChannel) != -1 {
+		if strings.Index(e.Raw, tc.IRC.WatchChannel) != -1 {
 			irc_client.Join(tc.IRC.WatchChannel)
 		}
 	})
 	irc_client.AddCallback("public", MatchAnnounce)
-	var server = fmt.Sprintf("%s:%d", tc.IRC.Server, tc.IRC.IRCPort.(int32))
+	var server = fmt.Sprintf("%s:%d", tc.IRC.Server, int(tc.IRC.IRCPort))
 	irc_client.Connect(server)
 	time.Sleep(60)
 	irc_client.SendRawf(tc.IRC.InviteCmd, tc.IRC.Nick, tc.IRC.Key)
@@ -50,18 +49,22 @@ func MatchAnnounce(e *irc.Event) {
   if aMatch != nil {
     eMatch := episodePattern.FindStringSubmatch(aMatch[1])
     if eMatch != nil {
-      if watcher.IsNewEpisode(eMatch) {
-        go downloader.RetrieveEpisode(aMatch[2])
+      err := IsNewEpisode(eMatch)
+      if err == nil {
+        log.Println("This is where we would pick up the new episode.")
+        // go RetrieveEpisode(aMatch[2])
+        return
       }
+      log.Println(err)
     }
   }
 }
 
 func EnableIRC() {
 	for {
-		run := <-enabled
-		if run && !irc_client.stopped {
-			// some log lines here and stauts updates
+		run := <-irc_enabled
+		if run {
+      log.Println("starting up IRC client.")
 			ConnectToTrackerIRC()
 		}
 	}
@@ -69,24 +72,25 @@ func EnableIRC() {
 
 func DisableIRC() {
 	for {
-		run := <-enabled
-		if !run && irc_client.stopped {
-			// some log line and stauts updates
+		run := <-irc_enabled
+		if !run {
+      log.Println("stopping the IRC client.")
 			irc_client.Disconnect()
 		}
 	}
 }
 
 func StartIRC() {
+  irc_client = irc.IRC(tc.IRC.Nick, tc.IRC.Nick)
 	for {
 		go EnableIRC()
 		go DisableIRC()
 		// go WatchIRCConfig(signals)
 		// go UpdateLog()
 		if tc.Operations.WatchMethod == "irc" {
-			enabled <- true
+			irc_enabled <- true
 		} else {
-			enabled <- false
+			irc_enabled <- false
 		}
 	}
 }
