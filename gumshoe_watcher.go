@@ -13,7 +13,6 @@ import (
   "time"
 )
 
-var tc *TrackerConfig
 var db *EpisodeDB
 
 type Episode struct {
@@ -65,7 +64,7 @@ func (db *EpisodeDB) Init() {
   err = dbMap.CreateTablesIfNotExists()
   checkErr(err, "Unable to create episode tables in DB.")
 
-  db.conn := dbMap
+  db.conn = &dbMap
 }
 
 func (db *EpisodeDB) addEpisodeToDb(episode *Episode) error {
@@ -125,7 +124,7 @@ func unseenEpisode(show *Show, t,s,e string) (*Episode, error) {
 
 func unseenDaily(show *Show, t, eDetails string) (*Episode, error) {
   if !show.Episodal {
-    dRegexp, _ := regexp.Compile("^.*(\d{4}\.\d{2}\.\d{2}).+$")
+    dRegexp, _ := regexp.Compile("^.*(\\d{4}\\.\\d{2}\\.\\d{2}).+$")
     date := dRegexp.FindString(eDetails)
     if date != "" {
       eCheck := newDaily(t, date)

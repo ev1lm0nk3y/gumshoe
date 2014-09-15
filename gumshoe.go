@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+  "path"
 	"path/filepath"
 	"runtime/debug"
 	"time"
@@ -24,7 +25,7 @@ var config_file = flag.String("c",
 
 // Get this flag set working!
 var (
-	tc     = config_parser.TrackerConfig{}
+	tc     = TrackerConfig{}
 	home   = os.Getenv("HOME")
 	user   = os.Getenv("USER")
 	gopath = os.Getenv("GOPATH")
@@ -34,14 +35,14 @@ var (
 
 func GumshoeHandlers() http.Handler {
 	gumshoe_handlers := http.NewServeMux()
-	gumshoe_handlers.Handle("/", path.Join(gumshoeSrc, "html"))
+	gumshoe_handlers.Handle("/", http.FileServer(path.Join(gumshoeSrc, "html")))
 	return gumshoe_handlers
 }
 
 type GumshoeSignals struct {
 	config_modified chan bool
 	shutdown        chan bool
-	logger          chan Logger
+	// logger          chan Logger
 	tcSignal        chan TrackerConfig
 	showSignal      chan Shows
 }
@@ -59,14 +60,14 @@ func init() {
 			log.Println(err)
 		}
 	}
-	signals := make(GumshoeSignals)
-  
+	signals := new(GumshoeSignals)
+
 }
 
 func main() {
-  go StartMetrics()
+  // go StartMetrics()
 	go StartHttpServer()
-	go StartIRCClient(&tc)
+	go StartIRC()
 }
 
 func StartHttpServer() {

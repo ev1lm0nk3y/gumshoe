@@ -1,7 +1,8 @@
-package config
+package gumshoe
 
 import (
 	"encoding/json"
+  "errors"
 	"io/ioutil"
 	"log"
 )
@@ -75,21 +76,20 @@ func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {
 			return err
 		}
 	}
-	config <- true
+	// config <- true
 	return nil
 }
 
 func (tc *TrackerConfig) WriteGumshoeConfig(update []byte) error {
-	if err := json.Unmarshall(update, &tc); err == nil {
+	err := json.Unmarshal(update, &tc)
+  if err == nil {
 		var gCfg []byte
-		if gCfg, err := json.MarshallIndent(&tc, nil, "  "); err == nil {
-			if err := ioutil.WriteFile(tc.Files["base_dir"]+"gumshoe_config.json",
-				gCfg, 0655); err == nil {
-				// TODO(ryan): log successful config update
-				return nil
-			}
-			return err
+		gCfg, err := json.MarshalIndent(&tc, "", "  ")
+    if err == nil {
+			return ioutil.WriteFile(tc.Files["base_dir"]+"gumshoe_config.json",
+				gCfg, 0655)
 		}
+		return err
 	}
 	return err
 }
@@ -109,27 +109,29 @@ func NewShowsConfig() *Shows {
 	return &Shows{}
 }
 
-func (S *Shows) AddShow(s *Show) {
+func (S *Shows) AddShow(s Show) {
 	append(S.TVShows, s)
 }
 
 func (S *Shows) GetShow(title string) (int, *Show, error) {
 	for x := range S.TVShows {
 		if S.TVShows[x].Title == title {
-			return x, S.TVShows[x], nil
+			return x, &S.TVShows[x], nil
 		}
 	}
-	return -1, nil, error("Not found")
+	return -1, nil, errors.New("Not found")
 }
 
 func (S *Shows) RemoveShow(title string) error {
 	var index int
-	if index, _, err := GetShow(title); err != nil {
+	if index, _, err := S.GetShow(title); err != nil {
 		return err
 	}
-	newSlice := S.TVShows[:index-1]
-	append(newSlice, S.TVShows[index+1:])
-	S.TVShows = newSlice
+	firstSlice := S.TVShows[:index-1]
+  for x := range S.TVShows[index+1:] {
+    append(firstSlice, x)
+  }
+	S.TVShows = firstSlice
 	return nil
 }
 
@@ -137,22 +139,22 @@ func (S *Shows) LoadShows() (int, error) {
 	var sCfg []byte
 	if sCfg, err := ioutil.ReadFile(tc.Files["shows"]); err != nil {
 		log.Println("No show file found. Will just use a blank one.")
-		sCfg = new([]byte)
 	}
 	if err := json.Unmarshal(sCfg, &S); err != nil {
 		// TODO(ryan): log error message
 		return -1, err
 	}
-	return len(s.TVShows), nil
+	return len(S.TVShows), nil
 }
 
 func (S *Shows) WriteShows() (int, error) {
-	if sCfg, err := json.MarshallIndent(&S, nil, "  "); err == nil {
+	sCfg, err := json.MarshalIndent(&S, "", "  ")
+  if err == nil {
 		// TODO(ryan): log success writing things (woo!)
 		if err := ioutil.WriteFile(tc.Files["shows"], sCfg, 0666); err == nil {
 			// TODO(ryan): log more stuff here too.
 			return len(S.TVShows), nil
 		}
 	}
-	return err
+	return -1, err
 }
