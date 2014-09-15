@@ -62,6 +62,11 @@ func init() {
 	}
 	signals := new(GumshoeSignals)
 
+  allShows := NewShowsConfig()
+  if numShows, err := allShows.LoadShows(); err == nil {
+    log.Sprintf("You have %d shows that you are tracking.", numShows)
+  }
+
 }
 
 func main() {
