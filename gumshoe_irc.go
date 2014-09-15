@@ -2,7 +2,7 @@ package ircclient
 
 import (
 	"fmt"
-	"github.com/thoj/go-ircevent/irc"
+	"github.com/thoj/go-ircevent"
   "gumshoe/config"
 	"log"
   "regexp"
