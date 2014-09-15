@@ -20,8 +20,8 @@ func init() {
 	irc_enabled <- false
 
   // TODO(ryan): make this configurable
-  announceLine := regexp.MustCompile("BitMeTV-IRC2RSS: (?P<title>.*?) : (?P<url>.*)")
-  episodePattern := regexp.MustCompile("^([\\w\\d\\s.]+)[. ](?:s(\\d{1,2})e(\\d{1,2})|(\\d)x?(\\d{2})|Star.Wars)([. ])")
+  announceLine = regexp.MustCompile("BitMeTV-IRC2RSS: (?P<title>.*?) : (?P<url>.*)")
+  episodePattern = regexp.MustCompile("^([\\w\\d\\s.]+)[. ](?:s(\\d{1,2})e(\\d{1,2})|(\\d)x?(\\d{2})|Star.Wars)([. ])")
 }
 
 // should this be refactored so that it can reconnect on config changes instead of diconnect and

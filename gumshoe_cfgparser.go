@@ -95,6 +95,8 @@ func (tc *TrackerConfig) WriteGumshoeConfig(update []byte) error {
 }
 
 // TV shows that should be downloaded.
+var allShows *Shows
+
 type Show struct {
 	Title    string   `json:"title"`
 	Quality  []string `json:"quality"`
@@ -109,9 +111,9 @@ func NewShowsConfig() *Shows {
 	return &Shows{}
 }
 
-func (S *Shows) AddShow(s Show) {
-	append(S.TVShows, s)
-}
+//func (S *Shows) AddShow(s Show) {
+//	append(S.TVShows, s)
+//}
 
 func (S *Shows) GetShow(title string) (int, *Show, error) {
 	for x := range S.TVShows {
@@ -122,22 +124,22 @@ func (S *Shows) GetShow(title string) (int, *Show, error) {
 	return -1, nil, errors.New("Not found")
 }
 
-func (S *Shows) RemoveShow(title string) error {
-	var index int
-	if index, _, err := S.GetShow(title); err != nil {
-		return err
-	}
-	firstSlice := S.TVShows[:index-1]
-  for x := range S.TVShows[index+1:] {
-    append(firstSlice, x)
-  }
-	S.TVShows = firstSlice
-	return nil
-}
+//func (S *Shows) RemoveShow(title string) error {
+//	var index int
+//	if index, _, err := S.GetShow(title); err != nil {
+//		return err
+//	}
+//	firstSlice := S.TVShows[:index-1]
+//  for x := range S.TVShows[index+1:] {
+//    append(firstSlice, x)
+//  }
+//	S.TVShows = firstSlice
+//	return nil
+//}
 
 func (S *Shows) LoadShows() (int, error) {
-	var sCfg []byte
-	if sCfg, err := ioutil.ReadFile(tc.Files["shows"]); err != nil {
+	sCfg, err := ioutil.ReadFile(tc.Files["shows"])
+  if err != nil {
 		log.Println("No show file found. Will just use a blank one.")
 	}
 	if err := json.Unmarshal(sCfg, &S); err != nil {

@@ -44,7 +44,7 @@ type GumshoeSignals struct {
 	shutdown        chan bool
 	// logger          chan Logger
 	tcSignal        chan TrackerConfig
-	showSignal      chan Shows
+	showSignal      chan *Shows
 }
 
 func init() {
@@ -61,11 +61,13 @@ func init() {
 		}
 	}
 	signals := new(GumshoeSignals)
+  signals.tcSignal <- tc
 
   allShows := NewShowsConfig()
   if numShows, err := allShows.LoadShows(); err == nil {
     log.Printf("You have %d shows that you are tracking.", numShows)
   }
+  signals.showSignal <- allShows
 }
 
 func main() {
