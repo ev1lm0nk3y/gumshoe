@@ -1,15 +1,16 @@
-package gumshoe
+package ircclient
 
-import(
+import (
 	"fmt"
 	"github.com/thoj/go-ircevent/irc"
+  "gumshoe/config"
 	"log"
 	"time"
 )
 
 // Metrics
 func init() {
-	patterns := config_parser.LoadPatterns()
+	patterns := config.LoadPatterns()
 	// parse and start metrics
 
 	// irc_client is the global irc connection manager, initialize it as stopped
@@ -23,7 +24,7 @@ func init() {
 
 // should this be refactored so that it can reconnect on config changes instead of diconnect and
 // connect. TODO(ryan)
-func ConnectToTrackerIRC(tc *config_parser.TrackerConfig) {
+func ConnectToTrackerIRC(tc *config.TrackerConfig) {
 	irc_client := irc.IRC(tc.IRCChannel.Nick, tc.IRCChannel.Nick)
 	// Give the connection the configured defaults
 	irc_client.KeepAlive = tc.IRCChannel.KeepAlive * time.Minute
@@ -86,7 +87,7 @@ func DisableIRC() {
 	}
 }
 
-func startIRC(signals <-chan GumshoeSignals, config *config_parser.TrackerConfig) {
+func startIRC(signals <-chan GumshoeSignals, config *config.TrackerConfig) {
 	for {
 		go EnableIRC()
 		go DisableIRC()

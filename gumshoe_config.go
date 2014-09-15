@@ -1,4 +1,4 @@
-package gumshoe
+package config
 
 import (
 	"encoding/json"
