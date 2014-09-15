@@ -35,7 +35,7 @@ var (
 
 func GumshoeHandlers() http.Handler {
 	gumshoe_handlers := http.NewServeMux()
-	gumshoe_handlers.Handle("/", http.FileServer(path.Join(gumshoeSrc, "html")))
+	gumshoe_handlers.Handle("/", http.FileServer(http.Dir(path.Join(gumshoeSrc, "html"))))
 	return gumshoe_handlers
 }
 
@@ -64,9 +64,8 @@ func init() {
 
   allShows := NewShowsConfig()
   if numShows, err := allShows.LoadShows(); err == nil {
-    log.Sprintf("You have %d shows that you are tracking.", numShows)
+    log.Printf("You have %d shows that you are tracking.", numShows)
   }
-
 }
 
 func main() {
