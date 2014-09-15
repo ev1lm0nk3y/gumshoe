@@ -34,7 +34,7 @@ var (
 
 func GumshoeHandlers() http.Handler {
 	gumshoe_handlers := http.NewServeMux()
-	gumshoe_handlers.Handle("/", path.Join(gumshoeSrc, "html")))
+	gumshoe_handlers.Handle("/", path.Join(gumshoeSrc, "html"))
 	return gumshoe_handlers
 }
 

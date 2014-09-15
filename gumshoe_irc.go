@@ -1,8 +1,8 @@
 package gumshoe
 
-import (
+import(
 	"fmt"
-	"github.com/thoj/go-ircevent/irc"
+	"ithub.com/thoj/go-ircevent/irc"
 	"log"
 	"time"
 )
