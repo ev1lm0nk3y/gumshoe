@@ -52,17 +52,14 @@ func ConnectToTrackerIRC(tc *config.TrackerConfig) {
 
 func MatchAnnounce(e *Event) {
   aMatch := announceLine.FindStringSubmatch(e.Raw)
-  if aMatch == nil {
-    return
+  if aMatch != nil {
+    eMatch := episodePattern.FindStringSubmatch(aMatch[1])
+    if eMatch != nil {
+      if watcher.IsNewEpisode(eMatch) {
+        go downloader.RetrieveEpisode(aMatch[2])
+      }
+    }
   }
-  eMatch := episodePattern.FindStringSubmatch(aMatch[1])
-  if eMatch == nil {
-    return
-  }
-  if IsNewEpisode(eMatch) {
-    RetrieveEpisode(aMatch[2])
-  }
-
 }
 
 func EnableIRC() {
