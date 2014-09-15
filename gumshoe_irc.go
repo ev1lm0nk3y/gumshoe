@@ -10,13 +10,10 @@ import (
 
 // Metrics
 func init() {
-	patterns := config.LoadPatterns()
-	// parse and start metrics
   // Metrics
 
 	// irc_client is the global irc connection manager, initialize it as stopped
-	var irc_client = make(irc.Connection)
-	irc_client.stopped = true
+	var irc_client *irc.Connection
 
 	// enabled lets us know if we should run the irc client
 	var enabled = make(chan bool)
@@ -30,22 +27,22 @@ func init() {
 
 // should this be refactored so that it can reconnect on config changes instead of diconnect and
 // connect. TODO(ryan)
-func ConnectToTrackerIRC() {
+func ConnectToTrackerIRC(irc_client *irc.Connection) {
 	// Give the connection the configured defaults
-	irc_client.KeepAlive = tc.IRCChannel.KeepAlive * time.Minute
-	irc_client.Timeout = tc.IRCChannel.Timeout * time.Minute
-	irc_client.PingFreq = tc.IRCChannel.PingFrequency * time.Minute
-	irc_client.Password = tc.IRCChannel.Key
-	irc_client.AddCallback("invite", func(e *Event) {
-		if string.Index(e.Raw, tc.IRCChannel.WatchChannel) != -1 {
-			irc_client.Join(tc.IRCChannel.WatchChannel)
+	irc_client.KeepAlive = time.Duration(tc.IRC.KeepAlive) * time.Minute
+	irc_client.Timeout = time.Duration(tc.IRC.Timeout) * time.Minute
+	irc_client.PingFreq = time.Duration(tc.IRC.PingFreq) * time.Minute
+	irc_client.Password = tc.IRC.Key
+	irc_client.AddCallback("invite", func(e *irc.Event) {
+		if string.Index(e.Raw, tc.IRC.WatchChannel) != -1 {
+			irc_client.Join(tc.IRC.WatchChannel)
 		}
 	})
 	irc_client.AddCallback("public", MatchAnnounce)
-	var server = fmt.Sprintf("%s:%d", tc.IRCChannel.Server, tc.IRCChannel.IRCPort.(int32))
+	var server = fmt.Sprintf("%s:%d", tc.IRC.Server, tc.IRC.IRCPort.(int32))
 	irc_client.Connect(server)
 	time.Sleep(60)
-	irc_client.SendRawf(tc.IRCChannel.InviteCmd, tc.IRCChannel.Nick, tc.IRCChannel.Key)
+	irc_client.SendRawf(tc.IRC.InviteCmd, tc.IRC.Nick, tc.IRC.Key)
 }
 
 func MatchAnnounce(e *irc.Event) {
@@ -63,7 +60,7 @@ func MatchAnnounce(e *irc.Event) {
 func EnableIRC() {
 	for {
 		run := <-enabled
-		if run && irc_client.stopped {
+		if run && !irc_client.stopped {
 			// some log lines here and stauts updates
 			ConnectToTrackerIRC()
 		}
@@ -73,7 +70,7 @@ func EnableIRC() {
 func DisableIRC() {
 	for {
 		run := <-enabled
-		if !run && !irc_client.stopped {
+		if !run && irc_client.stopped {
 			// some log line and stauts updates
 			irc_client.Disconnect()
 		}
