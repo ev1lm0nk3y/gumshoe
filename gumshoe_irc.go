@@ -2,7 +2,7 @@ package gumshoe
 
 import(
 	"fmt"
-	"ithub.com/thoj/go-ircevent/irc"
+	"github.com/thoj/go-ircevent/irc"
 	"log"
 	"time"
 )
