@@ -140,3 +140,494 @@ irc.bitmetv.org2015/02/06 06:09:16 --> /MSG BitMeTV !invite evi1m0nk3y 684c54665
 irc.bitmetv.org2015/02/06 06:09:16 <-- :area51.lostirc.org 421 _evi1m0nk3y /MSG :Unknown command
 irc.bitmetv.org2015/02/06 06:11:18 <-- PING :area51.lostirc.org
 irc.bitmetv.org2015/02/06 06:11:18 --> PONG :area51.lostirc.org
+#bitmetv.announce2015/02/06 07:50:50 Connected to irc.bitmetv.org:6667 (208.99.89.222:6667)
+#bitmetv.announce2015/02/06 07:50:50 --> PASS 684c54665f1d
+#bitmetv.announce2015/02/06 07:50:50 --> NICK evi1m0nk3y
+#bitmetv.announce2015/02/06 07:50:50 --> USER evi1m0nk3y 0.0.0.0 0.0.0.0 :evi1m0nk3y
+#bitmetv.announce2015/02/06 07:50:50 --> NICK evi1m0nk3y
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org NOTICE AUTH :*** Looking up your hostname...
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org NOTICE AUTH :*** Found your hostname
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 433 * evi1m0nk3y :Nickname is already in use.
+#bitmetv.announce2015/02/06 07:50:50 --> NICK _evi1m0nk3y
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 433 * evi1m0nk3y :Nickname is already in use.
+#bitmetv.announce2015/02/06 07:50:50 --> NICK __evi1m0nk3y
+#bitmetv.announce2015/02/06 07:50:50 <-- PING :1205FB0D
+#bitmetv.announce2015/02/06 07:50:50 --> PONG :1205FB0D
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 001 __evi1m0nk3y :Welcome to the LostIRC IRC Network __evi1m0nk3y!evi1m0nk3y@50-197-171-77-static.hfc.comcastbusiness.net
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 002 __evi1m0nk3y :Your host is freedom.lostirc.org, running version Unreal3.2.10
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 003 __evi1m0nk3y :This server was created Mon Jan 21 2013 at 23:08:17 CST
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 004 __evi1m0nk3y freedom.lostirc.org Unreal3.2.10 iowghraAsORTVSxNCWqBzvdHtGpI lvhopsmntikrRcaqOALQbSeIKVfMCuzNTGjZ
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 005 __evi1m0nk3y CMDS=KNOCK,MAP,DCCALLOW,USERIP,STARTTLS UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=50 CHANLIMIT=#:50 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 005 __evi1m0nk3y MAXTARGETS=20 WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=LostIRC CASEMAPPING=ascii EXTBAN=~,qjncrRa ELIST=MNUCT :are supported by this server
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 005 __evi1m0nk3y STATUSMSG=~&@%+ EXCEPTS INVEX :are supported by this server
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 251 __evi1m0nk3y :There are 32 users and 356 invisible on 4 servers
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 252 __evi1m0nk3y 17 :operator(s) online
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 254 __evi1m0nk3y 66 :channels formed
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 255 __evi1m0nk3y :I have 218 clients and 1 servers
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 265 __evi1m0nk3y 218 413 :Current local users 218, max 413
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 266 __evi1m0nk3y 388 1676 :Current global users 388, max 1676
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 375 __evi1m0nk3y :- freedom.lostirc.org Message of the Day -
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- 4/3/2007 17:50
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :-
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        b                         .$              ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        4r                       .$$              ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        4$r                     z$$$              ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        $$$c                   d. $$              ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        $$d$$c.eeeeePeee..   z"4-'P$              ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                       J$$$$$dP3"""*$*$$ee$$$$$ " $$F             ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                      z$*.P*$ "- .="         '\  $$$$             ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                    .P    'F" *e"               \/$$$             ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                    "      4  ^                  ^ $$b            ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                           4$%                    ^$$$r           ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                            F                      4$$$           ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                           4                        $$$b          ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                .    4$b   P           .ec          $$$$b         ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                     $"               4$P""         $$$$$$c       ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û               ^    4$$$r 4"          4$eec        4$$$$P"*$e     ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û     \         .     $$$   4          ^$$$F        $$$$$E.zd$$$"  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û      ^\       F            r                     d$$P"  *$$$P .^ ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û         -.    .        %   ^.                   J$P      $$F.    ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û              "$\    .z.      -                 $P" ^    .P      .±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                  ""3$$$$$$e    ".           .d"     ^   $F  -"   ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                ^   $$$$$$$$L       ^""=="""""      /   ^         ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                 -  3$ee= "$"                      /  ."          ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                  ^. ^****"                      z"  ^            ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                               z"  /              ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                      -.                   .e$"  =                ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        ^ ec..... ....ee$$*"  .^                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                         ".  """**"""     .=^                     ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                              "  === """                          ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                           LostIRC Network                        ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û               M O T D: Best viewed with Fixedsys font.         ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                      P O L I C I E S                           ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      spamming, flooding, or related client-abuse.          ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      clones/virtual-clones permitted at any time.          ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      abusive robots, irc scripts, or bnc/proxys.           ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      abused (open) wingate/proxy server-clients allowed.   ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Absolutely NO child pornography, pedofilia, beastiality,      ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    S & M and any other such topics of chat that LostIRC deems    ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    disruptive or immoral                                         ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Connections limited to three(3) per user@ip/ip.block.         ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Your client must respond to ident[RFC1413] connections.       ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Your client must respond to normal ctcp requests.             ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    We reserve the right to sever a connection at our will.       ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    We hold the right to dis-allow specific channels/nicknames.   ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Abuse related items may be reported to our opers              ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û  Irc is a wonderful privilege, not a right. So dont ruin it.     ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û  those who abuse our policies will see damnation. ie: 4DIE!   ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                     C L I E N T   P O R T S                    ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û      Non SSL-------- [6666,6667,6668,6669,7000]                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û      SSL------------ [+6697]                                     ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                     C O N T A C T   I N F O                    ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Report Abuse:-------------- [abuse©lostirc.org]               ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Glines:-------------------- [bans©lostirc.org]                ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Support:------------------- [support©lostirc.org]             ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Admin:--------------------- [admin©lostirc.org]               ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                          4D O N A T I O N S                    ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û LostIRC is a non profit Network, that prides itself to make it a ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û clean, safe place for of all ages, around the world, to come and ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û chat.                                                            ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û  If you like what we do and would like to help, Make a donation! ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û         VISA/MasterCard/Discover/eCheck/Amex Via PayPal        ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                    donations@LostIRC.org                       ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                       D I S C L A I M E R                      ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û Use of this server constitutes a statement by the user of their  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û knowledge oflocal laws and an agreement to abide by those laws.  ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û LostIRC is not to be held responsible for anyones actions, while ±Û
+#bitmetv.announce2015/02/06 07:50:50 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û on this server.                                                  ±Û
+#bitmetv.announce2015/02/06 07:50:51 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 07:50:51 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 07:50:51 <-- :freedom.lostirc.org 376 __evi1m0nk3y :End of /MOTD command.
+#bitmetv.announce2015/02/06 07:50:51 <-- :__evi1m0nk3y MODE __evi1m0nk3y :+iwx
+#bitmetv.announce2015/02/06 07:50:51 <-- :NickServ!services@LostIRC.org NOTICE __evi1m0nk3y :Your nick isn't registered.
+#bitmetv.announce2015/02/06 07:51:00 --> PRIVMSG BitMeTV :!invite evi1m0nk3y 684c54665f1d
+#bitmetv.announce2015/02/06 07:51:00 <-- :freedom.lostirc.org 486 __evi1m0nk3y :You must identify to a registered nick to private message BitMeTV
+#bitmetv.announce2015/02/06 08:02:12 Connected to irc.bitmetv.org:6667 (208.99.89.222:6667)
+#bitmetv.announce2015/02/06 08:02:12 --> PASS 684c54665f1d
+#bitmetv.announce2015/02/06 08:02:12 --> NICK evi1m0nk3y
+#bitmetv.announce2015/02/06 08:02:12 --> USER evi1m0nk3y 0.0.0.0 0.0.0.0 :evi1m0nk3y
+#bitmetv.announce2015/02/06 08:02:12 --> NICK evi1m0nk3y
+#bitmetv.announce2015/02/06 08:02:12 <-- :freedom.lostirc.org NOTICE AUTH :*** Looking up your hostname...
+#bitmetv.announce2015/02/06 08:02:12 <-- :freedom.lostirc.org NOTICE AUTH :*** Found your hostname
+#bitmetv.announce2015/02/06 08:02:12 <-- PING :949897EA
+#bitmetv.announce2015/02/06 08:02:12 --> PONG :949897EA
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 001 evi1m0nk3y :Welcome to the LostIRC IRC Network evi1m0nk3y!evi1m0nk3y@50-197-171-77-static.hfc.comcastbusiness.net
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 002 evi1m0nk3y :Your host is freedom.lostirc.org, running version Unreal3.2.10
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 003 evi1m0nk3y :This server was created Mon Jan 21 2013 at 23:08:17 CST
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 004 evi1m0nk3y freedom.lostirc.org Unreal3.2.10 iowghraAsORTVSxNCWqBzvdHtGpI lvhopsmntikrRcaqOALQbSeIKVfMCuzNTGjZ
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 005 evi1m0nk3y CMDS=KNOCK,MAP,DCCALLOW,USERIP,STARTTLS UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=50 CHANLIMIT=#:50 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 005 evi1m0nk3y MAXTARGETS=20 WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=LostIRC CASEMAPPING=ascii EXTBAN=~,qjncrRa ELIST=MNUCT :are supported by this server
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 005 evi1m0nk3y STATUSMSG=~&@%+ EXCEPTS INVEX :are supported by this server
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 251 evi1m0nk3y :There are 32 users and 355 invisible on 4 servers
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 252 evi1m0nk3y 17 :operator(s) online
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 254 evi1m0nk3y 66 :channels formed
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 255 evi1m0nk3y :I have 218 clients and 1 servers
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 265 evi1m0nk3y 218 413 :Current local users 218, max 413
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 266 evi1m0nk3y 387 1676 :Current global users 387, max 1676
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 375 evi1m0nk3y :- freedom.lostirc.org Message of the Day -
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- 4/3/2007 17:50
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :-
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                        b                         .$              ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                        4r                       .$$              ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                        4$r                     z$$$              ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                        $$$c                   d. $$              ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                        $$d$$c.eeeeePeee..   z"4-'P$              ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                       J$$$$$dP3"""*$*$$ee$$$$$ " $$F             ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                      z$*.P*$ "- .="         '\  $$$$             ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                    .P    'F" *e"               \/$$$             ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                    "      4  ^                  ^ $$b            ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                           4$%                    ^$$$r           ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                            F                      4$$$           ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                           4                        $$$b          ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                .    4$b   P           .ec          $$$$b         ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                     $"               4$P""         $$$$$$c       ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û               ^    4$$$r 4"          4$eec        4$$$$P"*$e     ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û     \         .     $$$   4          ^$$$F        $$$$$E.zd$$$"  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û      ^\       F            r                     d$$P"  *$$$P .^ ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û         -.    .        %   ^.                   J$P      $$F.    ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û              "$\    .z.      -                 $P" ^    .P      .±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                  ""3$$$$$$e    ".           .d"     ^   $F  -"   ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                ^   $$$$$$$$L       ^""=="""""      /   ^         ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                 -  3$ee= "$"                      /  ."          ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                  ^. ^****"                      z"  ^            ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                               z"  /              ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                      -.                   .e$"  =                ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                        ^ ec..... ....ee$$*"  .^                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                         ".  """**"""     .=^                     ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                              "  === """                          ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                           LostIRC Network                        ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û               M O T D: Best viewed with Fixedsys font.         ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                      P O L I C I E S                           ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    NO      spamming, flooding, or related client-abuse.          ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    NO      clones/virtual-clones permitted at any time.          ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    NO      abusive robots, irc scripts, or bnc/proxys.           ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    NO      abused (open) wingate/proxy server-clients allowed.   ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Absolutely NO child pornography, pedofilia, beastiality,      ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    S & M and any other such topics of chat that LostIRC deems    ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    disruptive or immoral                                         ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Connections limited to three(3) per user@ip/ip.block.         ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Your client must respond to ident[RFC1413] connections.       ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Your client must respond to normal ctcp requests.             ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    We reserve the right to sever a connection at our will.       ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    We hold the right to dis-allow specific channels/nicknames.   ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Abuse related items may be reported to our opers              ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û  Irc is a wonderful privilege, not a right. So dont ruin it.     ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û  those who abuse our policies will see damnation. ie: 4DIE!   ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                     C L I E N T   P O R T S                    ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û      Non SSL-------- [6666,6667,6668,6669,7000]                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û      SSL------------ [+6697]                                     ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                     C O N T A C T   I N F O                    ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Report Abuse:-------------- [abuse©lostirc.org]               ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Glines:-------------------- [bans©lostirc.org]                ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Support:------------------- [support©lostirc.org]             ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û    Admin:--------------------- [admin©lostirc.org]               ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                          4D O N A T I O N S                    ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û LostIRC is a non profit Network, that prides itself to make it a ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û clean, safe place for of all ages, around the world, to come and ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û chat.                                                            ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û  If you like what we do and would like to help, Make a donation! ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û         VISA/MasterCard/Discover/eCheck/Amex Via PayPal        ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                    donations@LostIRC.org                       ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                       D I S C L A I M E R                      ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û                                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û Use of this server constitutes a statement by the user of their  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û knowledge oflocal laws and an agreement to abide by those laws.  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û LostIRC is not to be held responsible for anyones actions, while ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±Û on this server.                                                  ±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 372 evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+#bitmetv.announce2015/02/06 08:02:13 <-- :freedom.lostirc.org 376 evi1m0nk3y :End of /MOTD command.
+#bitmetv.announce2015/02/06 08:02:13 <-- :evi1m0nk3y MODE evi1m0nk3y :+iwx
+#bitmetv.announce2015/02/06 08:02:13 <-- :NickServ!services@LostIRC.org NOTICE evi1m0nk3y :This nickname is registered and protected.  If it is your
+#bitmetv.announce2015/02/06 08:02:13 <-- :NickServ!services@LostIRC.org NOTICE evi1m0nk3y :nick, type /msg NickServ IDENTIFY password.  Otherwise,
+#bitmetv.announce2015/02/06 08:02:13 <-- :NickServ!services@LostIRC.org NOTICE evi1m0nk3y :please choose a different nick.
+#bitmetv.announce2015/02/06 08:02:13 <-- :services.LostIRC.org MODE evi1m0nk3y :+r
+#bitmetv.announce2015/02/06 08:02:13 <-- :NickServ!services@LostIRC.org NOTICE evi1m0nk3y :Password accepted - you are now recognized.
+#bitmetv.announce2015/02/06 08:02:17 --> PRIVMSG BitMeTV :!invite evi1m0nk3y 684c54665f1d
+#bitmetv.announce2015/02/06 08:02:22 <-- :BitMeTV!eggdrop@bitmetv.org INVITE evi1m0nk3y :#bitmetv.members
+#bitmetv.announce2015/02/06 08:02:24 <-- :BitMeTV!eggdrop@bitmetv.org INVITE evi1m0nk3y :#bitmetv.announce
+#bitmetv.announce: 2015/02/06 08:02:24 --> JOIN #bitmetv.announce
+#bitmetv.announce: 2015/02/06 08:02:24 <-- :evi1m0nk3y!evi1m0nk3y@Lost-2D449599.hfc.comcastbusiness.net JOIN :#bitmetv.announce
+#bitmetv.announce: 2015/02/06 08:02:24 <-- :freedom.lostirc.org 332 evi1m0nk3y #bitmetv.announce :BitMeTV Torrent Announce Channel. #bitmetv.pre for BitMeTV PRE & #PRE for general pre. DO NOT USE IRCDOWNLOADER 1.1 or LARTS. MAJOR SECURITY FLAWS. USE OFFICIAL BITMETV ONE! NEW Tags: [POSSIBLEDUPE] [POSSIBLENUKE]
+#bitmetv.announce: 2015/02/06 08:02:24 <-- :freedom.lostirc.org 333 evi1m0nk3y #bitmetv.announce desto 1308789505
+#bitmetv.announce: 2015/02/06 08:02:24 <-- :freedom.lostirc.org 353 evi1m0nk3y @ #bitmetv.announce :evi1m0nk3y HAGO xordis Sokar andrewc psyber rimshot Torg guitarman814 xerya Beldin413 ~Q LordNikon vantagebot badger Androcles imnuts zzyx Glathannus maharg jaix97|autoDL cr4zyfr4g fer victorinox32 etmuse apathy Gufra00 w00kie sytym einarinari soonermagic wamjam churchi soopageek skyeyburg Bjeagle _3cranton behtni carus dataphysics kadachi shmee Selaina hardouss harv sigmatc24 monkies8it freque8
+#bitmetv.announce: 2015/02/06 08:02:24 <-- :freedom.lostirc.org 353 evi1m0nk3y @ #bitmetv.announce :flies Noaensl|bot jpcarro thechosen6 sw33ty btvnone100 hbeeman snowjob waldosmart|bot cyberstorm spacechip Froghut normanj crankshaft sierra qnorsten BlackBox Emigrante hashimoto_san papercut41 noony0003 Crohny smileboot Icarus06_BOT plwan Stamp bryanhouse Chakki phroenips rangerohio2-bot1 picko ucai|autodl indignatz cj4258 collison hexus_dl nodisco kurupt evilmonkey477 Anhanga djxkape _0000000BC
+#bitmetv.announce: 2015/02/06 08:02:24 <-- :freedom.lostirc.org 353 evi1m0nk3y @ #bitmetv.announce :gklkjdl gerf sctljk1kjskdjlad MajorFail AwesomSki navidson @BitMeTV stugots kfoda nodbot rangerohio2 jonnyboy82 tturedraider_bot H9dGn unspeakable xt jimhark apberzerk pinpin boomdog redbaron44 &superwad &BitMeTV_Bot ~wOLF EmilEmil
+#bitmetv.announce: 2015/02/06 08:02:24 <-- :freedom.lostirc.org 366 evi1m0nk3y #bitmetv.announce :End of /NAMES list.
+#bitmetv.announce: 2015/02/06 08:02:26 <-- :BitMeTV!eggdrop@bitmetv.org INVITE evi1m0nk3y :#bitmetv.pre
+#bitmetv.announce: 2015/02/06 08:03:16 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: Of course it doesn't work. We've performed a software upgrade.)
+#bitmetv.announce: 2015/02/06 08:03:52 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:04:30 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:04:30 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:06:34 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: old inkjet cartridges emanate barium-based fumes)
+#bitmetv.announce: 2015/02/06 08:06:37 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:06:37 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:06:58 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:08:05 <-- :ostrich94!ostrich94@Lost-C4C19D97.lightspeed.irvnca.sbcglobal.net JOIN :#bitmetv.announce
+#bitmetv.announce: 2015/02/06 08:08:18 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: Interference from the Van Allen Belt.)
+#bitmetv.announce: 2015/02/06 08:08:43 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:08:43 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:09:04 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:10:49 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:10:49 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:11:34 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: not approved by the FCC)
+#bitmetv.announce: 2015/02/06 08:12:11 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:12:54 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:12:54 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:13:20 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: We've picked COBOL as the language of choice.)
+#bitmetv.announce: 2015/02/06 08:14:14 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:15:00 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:15:00 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:16:33 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: PEBKAC (Problem Exists Between Keyboard And Chair))
+#bitmetv.announce: 2015/02/06 08:17:06 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:17:06 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:17:12 --> PING 1423239432417393628
+#bitmetv.announce: 2015/02/06 08:17:13 <-- :freedom.lostirc.org PONG freedom.lostirc.org :1423239432417393628
+#bitmetv.announce: 2015/02/06 08:17:13 Lag: 904.64453mss
+#bitmetv.announce: 2015/02/06 08:17:29 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:18:18 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: Power Company having EMP problems with their reactor)
+#bitmetv.announce: 2015/02/06 08:18:34 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:19:14 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:19:14 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:21:16 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:21:16 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:21:35 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: paradigm shift...without a clutch)
+#bitmetv.announce: 2015/02/06 08:21:38 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:23:18 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:23:18 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:23:18 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: Power company testing new voltage spike (creation) equipment)
+#bitmetv.announce: 2015/02/06 08:23:42 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:25:26 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:25:26 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:26:32 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: monitor resolution too high)
+#bitmetv.announce: 2015/02/06 08:26:50 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:27:29 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:27:29 --> PONG :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:28:18 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :(â—¢_â—£) little robot is sad because page didnt respond to http-query. (Reason: Party-bug in the Aloha protocol.)
+#bitmetv.announce: 2015/02/06 08:28:54 <-- :BitMeTV!eggdrop@bitmetv.org PRIVMSG #bitmetv.announce :angry (â—£_â—¢) robot fully charged with site-access again. prepare to be spammed.
+#bitmetv.announce: 2015/02/06 08:29:36 <-- PING :freedom.lostirc.org
+#bitmetv.announce: 2015/02/06 08:29:36 --> PONG :freedom.lostirc.org
+2015/02/06 08:39:20 Connected to irc.bitmetv.org:6667 (208.99.89.222:6667)
+2015/02/06 08:39:20 --> PASS 684c54665f1d
+2015/02/06 08:39:20 --> NICK evi1m0nk3y
+2015/02/06 08:39:20 --> USER evi1m0nk3y 0.0.0.0 0.0.0.0 :evi1m0nk3y
+2015/02/06 08:39:20 --> NICK evi1m0nk3y
+2015/02/06 08:39:20 <-- :freedom.lostirc.org NOTICE AUTH :*** Looking up your hostname...
+2015/02/06 08:39:20 <-- :freedom.lostirc.org NOTICE AUTH :*** Found your hostname (cached)
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 433 * evi1m0nk3y :Nickname is already in use.
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 433 * evi1m0nk3y :Nickname is already in use.
+2015/02/06 08:39:20 --> NICK _evi1m0nk3y
+2015/02/06 08:39:20 --> NICK __evi1m0nk3y
+2015/02/06 08:39:20 <-- PING :F50C23E
+2015/02/06 08:39:20 --> PONG :F50C23E
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 001 __evi1m0nk3y :Welcome to the LostIRC IRC Network __evi1m0nk3y!evi1m0nk3y@50-197-171-77-static.hfc.comcastbusiness.net
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 002 __evi1m0nk3y :Your host is freedom.lostirc.org, running version Unreal3.2.10
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 003 __evi1m0nk3y :This server was created Mon Jan 21 2013 at 23:08:17 CST
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 004 __evi1m0nk3y freedom.lostirc.org Unreal3.2.10 iowghraAsORTVSxNCWqBzvdHtGpI lvhopsmntikrRcaqOALQbSeIKVfMCuzNTGjZ
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 005 __evi1m0nk3y CMDS=KNOCK,MAP,DCCALLOW,USERIP,STARTTLS UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=50 CHANLIMIT=#:50 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 005 __evi1m0nk3y MAXTARGETS=20 WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=LostIRC CASEMAPPING=ascii EXTBAN=~,qjncrRa ELIST=MNUCT :are supported by this server
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 005 __evi1m0nk3y STATUSMSG=~&@%+ EXCEPTS INVEX :are supported by this server
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 251 __evi1m0nk3y :There are 32 users and 359 invisible on 4 servers
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 252 __evi1m0nk3y 17 :operator(s) online
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 254 __evi1m0nk3y 66 :channels formed
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 255 __evi1m0nk3y :I have 219 clients and 1 servers
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 265 __evi1m0nk3y 219 413 :Current local users 219, max 413
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 266 __evi1m0nk3y 391 1676 :Current global users 391, max 1676
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 375 __evi1m0nk3y :- freedom.lostirc.org Message of the Day -
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- 4/3/2007 17:50
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :-
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        b                         .$              ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        4r                       .$$              ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        4$r                     z$$$              ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        $$$c                   d. $$              ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        $$d$$c.eeeeePeee..   z"4-'P$              ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                       J$$$$$dP3"""*$*$$ee$$$$$ " $$F             ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                      z$*.P*$ "- .="         '\  $$$$             ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                    .P    'F" *e"               \/$$$             ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                    "      4  ^                  ^ $$b            ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                           4$%                    ^$$$r           ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                            F                      4$$$           ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                           4                        $$$b          ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                .    4$b   P           .ec          $$$$b         ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                     $"               4$P""         $$$$$$c       ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û               ^    4$$$r 4"          4$eec        4$$$$P"*$e     ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û     \         .     $$$   4          ^$$$F        $$$$$E.zd$$$"  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û      ^\       F            r                     d$$P"  *$$$P .^ ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û         -.    .        %   ^.                   J$P      $$F.    ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û              "$\    .z.      -                 $P" ^    .P      .±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                  ""3$$$$$$e    ".           .d"     ^   $F  -"   ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                ^   $$$$$$$$L       ^""=="""""      /   ^         ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                 -  3$ee= "$"                      /  ."          ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                  ^. ^****"                      z"  ^            ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                               z"  /              ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                      -.                   .e$"  =                ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                        ^ ec..... ....ee$$*"  .^                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                         ".  """**"""     .=^                     ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                              "  === """                          ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                           LostIRC Network                        ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û               M O T D: Best viewed with Fixedsys font.         ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                      P O L I C I E S                           ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      spamming, flooding, or related client-abuse.          ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      clones/virtual-clones permitted at any time.          ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      abusive robots, irc scripts, or bnc/proxys.           ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    NO      abused (open) wingate/proxy server-clients allowed.   ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Absolutely NO child pornography, pedofilia, beastiality,      ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    S & M and any other such topics of chat that LostIRC deems    ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    disruptive or immoral                                         ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Connections limited to three(3) per user@ip/ip.block.         ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Your client must respond to ident[RFC1413] connections.       ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Your client must respond to normal ctcp requests.             ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    We reserve the right to sever a connection at our will.       ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    We hold the right to dis-allow specific channels/nicknames.   ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Abuse related items may be reported to our opers              ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û  Irc is a wonderful privilege, not a right. So dont ruin it.     ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û  those who abuse our policies will see damnation. ie: 4DIE!   ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                     C L I E N T   P O R T S                    ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û      Non SSL-------- [6666,6667,6668,6669,7000]                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û      SSL------------ [+6697]                                     ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                     C O N T A C T   I N F O                    ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Report Abuse:-------------- [abuse©lostirc.org]               ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Glines:-------------------- [bans©lostirc.org]                ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Support:------------------- [support©lostirc.org]             ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û    Admin:--------------------- [admin©lostirc.org]               ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                          4D O N A T I O N S                    ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û LostIRC is a non profit Network, that prides itself to make it a ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û clean, safe place for of all ages, around the world, to come and ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û chat.                                                            ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û  If you like what we do and would like to help, Make a donation! ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û         VISA/MasterCard/Discover/eCheck/Amex Via PayPal        ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                    donations@LostIRC.org                       ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                       D I S C L A I M E R                      ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û                                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û Use of this server constitutes a statement by the user of their  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û knowledge oflocal laws and an agreement to abide by those laws.  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û LostIRC is not to be held responsible for anyones actions, while ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±Û on this server.                                                  ±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 372 __evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+2015/02/06 08:39:20 <-- :freedom.lostirc.org 376 __evi1m0nk3y :End of /MOTD command.
+2015/02/06 08:39:20 <-- :__evi1m0nk3y MODE __evi1m0nk3y :+iwx
+2015/02/06 08:39:20 <-- :NickServ!services@LostIRC.org NOTICE __evi1m0nk3y :Your nick isn't registered.
+2015/02/06 08:39:25 --> PRIVMSG BitMeTV :!invite evi1m0nk3y 684c54665f1d
+2015/02/06 08:39:25 <-- :freedom.lostirc.org 486 __evi1m0nk3y :You must identify to a registered nick to private message BitMeTV

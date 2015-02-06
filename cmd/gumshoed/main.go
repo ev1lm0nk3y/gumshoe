@@ -61,7 +61,6 @@ func main() {
 				log.Println("starting RSS watcher")
 			case "irc":
 				log.Println("starting IRC watcher")
-        log.Println(tc.Files)
         if tc.IRC.EnableLog {
           tc.IRC.LogPath = filepath.Join(tc.Files["log_dir"], "irc.log")
         }
