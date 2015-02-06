@@ -1,7 +1,7 @@
 {
     "irc_channel": {
-        "nick": "evi1m0nk3y",
-        "key": "684c54665f1d",
+        "nick": "",
+        "key": "",
         "keep_alive": 10,
         "ping_frequency": 30,
         "irc_port": 6667,
