@@ -1,0 +1,56 @@
+{
+    "irc_channel": {
+        "nick": "evi1m0nk3y",
+        "key": "684c54665f1d",
+        "keep_alive": 10,
+        "ping_frequency": 30,
+        "irc_port": 6667,
+        "server": "irc.bitmetv.org",
+        "timeout": 2,
+        "invite_cmd": "/MSG BitMeTV !invite %s %s",
+        "watch_channel": "#bitmetv.announce",
+        "enable_logging": true
+    },
+    "file_options": {
+        "base_dir": "",
+        "download_dir": "",
+        "log_dir": "",
+        "torrent_dir": "",
+        "episode_state": "",
+        "log_name": "",
+        "patterns": "",
+        "rss_state": ""
+    },
+    "operations": {
+        "enable_logging": true,
+        "enable_web": true,
+        "http_port": "20123",
+        "log_level": "debug",
+        "use_imdb_watchlist": false,
+        "watch_methods": {
+					"rss": false,
+					"irc": true,
+					"log": false
+				}
+    },
+    "tracker": {
+        "tracker": "http://www.bitmetv.org",
+        "min_download_rate": 10,
+        "max_download_rate": 30,
+        "max_retries": 3,
+        "queue_size": 0
+    },
+    "rss_channel": {
+        "feed": "https://www.bitmetv.org/rss.php",
+        "passkey": "",
+        "rss_ttl": 10,
+        "rss_uid": "",
+        "use_server_ttl": true
+    },
+    "imdb_cfg": {
+        "user": "",
+        "pass": "",
+        "uid": ""
+    },
+		"last_modified": 0
+}

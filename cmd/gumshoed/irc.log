@@ -1,0 +1,142 @@
+irc.bitmetv.org2015/02/06 06:08:16 Connected to irc.bitmetv.org:6667 (216.86.158.243:6667)
+irc.bitmetv.org2015/02/06 06:08:16 --> PASS 684c54665f1d
+irc.bitmetv.org2015/02/06 06:08:16 --> NICK evi1m0nk3y
+irc.bitmetv.org2015/02/06 06:08:16 --> USER evi1m0nk3y 0.0.0.0 0.0.0.0 :evi1m0nk3y
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org NOTICE AUTH :*** Looking up your hostname...
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org NOTICE AUTH :*** Found your hostname
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 433 * evi1m0nk3y :Nickname is already in use.
+irc.bitmetv.org2015/02/06 06:08:16 --> NICK _evi1m0nk3y
+irc.bitmetv.org2015/02/06 06:08:16 <-- PING :FB13ADC5
+irc.bitmetv.org2015/02/06 06:08:16 --> PONG :FB13ADC5
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 001 _evi1m0nk3y :Welcome to the LostIRC IRC Network _evi1m0nk3y!evi1m0nk3y@50-197-171-77-static.hfc.comcastbusiness.net
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 002 _evi1m0nk3y :Your host is area51.lostirc.org, running version Unreal3.2.10
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 003 _evi1m0nk3y :This server was created Mon Jan 21 2013 at 04:07:55 EST
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 004 _evi1m0nk3y area51.lostirc.org Unreal3.2.10 iowghraAsORTVSxNCWqBzvdHtGpI lvhopsmntikrRcaqOALQbSeIKVfMCuzNTGjZ
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 005 _evi1m0nk3y CMDS=KNOCK,MAP,DCCALLOW,USERIP,STARTTLS UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=50 CHANLIMIT=#:50 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 005 _evi1m0nk3y MAXTARGETS=20 WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=LostIRC CASEMAPPING=ascii EXTBAN=~,qjncrRa ELIST=MNUCT :are supported by this server
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 005 _evi1m0nk3y STATUSMSG=~&@%+ EXCEPTS INVEX :are supported by this server
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 251 _evi1m0nk3y :There are 32 users and 352 invisible on 4 servers
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 252 _evi1m0nk3y 17 :operator(s) online
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 254 _evi1m0nk3y 66 :channels formed
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 255 _evi1m0nk3y :I have 137 clients and 1 servers
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 265 _evi1m0nk3y 137 504 :Current local users 137, max 504
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 266 _evi1m0nk3y 384 1676 :Current global users 384, max 1676
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 375 _evi1m0nk3y :- area51.lostirc.org Message of the Day -
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- 4/3/2007 11:50
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :-
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                        b                         .$              ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                        4r                       .$$              ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                        4$r                     z$$$              ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                        $$$c                   d. $$              ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                        $$d$$c.eeeeePeee..   z"4-'P$              ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                       J$$$$$dP3"""*$*$$ee$$$$$ " $$F             ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                      z$*.P*$ "- .="         '\  $$$$             ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                    .P    'F" *e"               \/$$$             ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                    "      4  ^                  ^ $$b            ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                           4$%                    ^$$$r           ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                            F                      4$$$           ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                           4                        $$$b          ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                .    4$b   P           .ec          $$$$b         ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                     $"               4$P""         $$$$$$c       ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û               ^    4$$$r 4"          4$eec        4$$$$P"*$e     ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û     \         .     $$$   4          ^$$$F        $$$$$E.zd$$$"  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û      ^\       F            r                     d$$P"  *$$$P .^ ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û         -.    .        %   ^.                   J$P      $$F.    ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û              "$\    .z.      -                 $P" ^    .P      .±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                  ""3$$$$$$e    ".           .d"     ^   $F  -"   ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                ^   $$$$$$$$L       ^""=="""""      /   ^         ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                 -  3$ee= "$"                      /  ."          ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                  ^. ^****"                      z"  ^            ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                               z"  /              ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                      -.                   .e$"  =                ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                        ^ ec..... ....ee$$*"  .^                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                         ".  """**"""     .=^                     ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                              "  === """                          ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                           LostIRC Network                        ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û               M O T D: Best viewed with Fixedsys font.         ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                      P O L I C I E S                           ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    NO      spamming, flooding, or related client-abuse.          ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    NO      clones/virtual-clones permitted at any time.          ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    NO      abusive robots, irc scripts, or bnc/proxys.           ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    NO      abused (open) wingate/proxy server-clients allowed.   ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Absolutely NO child pornography, pedofilia, beastiality,      ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    S & M and any other such topics of chat that LostIRC deems    ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    disruptive or immoral                                         ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Connections limited to three(3) per user@ip/ip.block.         ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Your client must respond to ident[RFC1413] connections.       ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Your client must respond to normal ctcp requests.             ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    We reserve the right to sever a connection at our will.       ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    We hold the right to dis-allow specific channels/nicknames.   ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Abuse related items may be reported to our opers              ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û  Irc is a wonderful privilege, not a right. So dont ruin it.     ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û  those who abuse our policies will see damnation. ie: 4DIE!   ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                     C L I E N T   P O R T S                    ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û      Non SSL-------- [6666,6667,6668,6669,7000]                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û      SSL------------ [+6697]                                     ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                     C O N T A C T   I N F O                    ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Report Abuse:-------------- [abuse©lostirc.org]               ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Glines:-------------------- [bans©lostirc.org]                ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Support:------------------- [support©lostirc.org]             ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û    Admin:--------------------- [admin©lostirc.org]               ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                          4D O N A T I O N S                    ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û LostIRC is a non profit Network, that prides itself to make it a ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û clean, safe place for of all ages, around the world, to come and ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û chat.                                                            ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û  If you like what we do and would like to help, Make a donation! ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û         VISA/MasterCard/Discover/eCheck/Amex Via PayPal        ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                    donations@LostIRC.org                       ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Ü
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Ûßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                       D I S C L A I M E R                      ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û                                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û Use of this server constitutes a statement by the user of their  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û knowledge oflocal laws and an agreement to abide by those laws.  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û LostIRC is not to be held responsible for anyones actions, while ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±Û on this server.                                                  ±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±Û
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 372 _evi1m0nk3y :- ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+irc.bitmetv.org2015/02/06 06:08:16 <-- :area51.lostirc.org 376 _evi1m0nk3y :End of /MOTD command.
+irc.bitmetv.org2015/02/06 06:08:16 <-- :_evi1m0nk3y MODE _evi1m0nk3y :+iwx
+irc.bitmetv.org2015/02/06 06:08:16 <-- :NickServ!services@LostIRC.org NOTICE _evi1m0nk3y :Your nick isn't registered.
+irc.bitmetv.org2015/02/06 06:09:16 --> /MSG BitMeTV !invite evi1m0nk3y 684c54665f1d
+irc.bitmetv.org2015/02/06 06:09:16 <-- :area51.lostirc.org 421 _evi1m0nk3y /MSG :Unknown command
+irc.bitmetv.org2015/02/06 06:11:18 <-- PING :area51.lostirc.org
+irc.bitmetv.org2015/02/06 06:11:18 --> PONG :area51.lostirc.org

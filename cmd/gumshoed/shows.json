@@ -1,0 +1,14 @@
+{
+  "tv shows": [
+    {
+      "title": "yo momma",
+      "quality": ["HDTV"],
+      "episodal": true
+    },
+    {
+      "title": "is fat",
+      "quality": ["1080"],
+      "episodal": false
+    }
+  ]
+}

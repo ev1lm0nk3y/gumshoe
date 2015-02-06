@@ -1,0 +1,79 @@
+<div ng-show="tab.isSet(2)" ng-controller="ShowController as showCtrl">
+  <button ng-click="showCtrl.showAddForm = !showCtrl.showAddForm" type="button" class="btn" aria-label="Add Show">Add Show</button>
+  <div ng-show="showCtrl.showAddForm">
+    <form name="newShow" ng-submit="showCtrl.addShow()" novalidate>
+      <fieldset class="form-group">
+        <label for="title">Title</label>
+        <input ng-model="showCtrl.newShow.title" class="form-control" type="text" name="title" required>
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="quality">Quality</label>
+        <input ng-model="showCtrl.newShow.quality" class="form-control" type="text" name="quality">
+      </fieldset>
+      <fieldset class="form-group">
+        <label for="episodal">Episodal</label>
+        <select ng-model="showCtrl.newShow.episodal" class="form-control" name="episodal">
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+      </fieldset>
+      <fieldset class="form-group">
+        <button type="submit" class="btn btn-default">
+          <span class="glyphicon glyphicon-ok" title="Add" aria-hidden="true"></span>
+        </button>
+        <button type="reset" class="btn">
+          <span ng-click="showCtrl.showAddForm = false" class="glyphicon glyphicon-remove" title="Cancel" aria-hidden="true"></span>
+        </button>
+      </fieldset>
+    </form>
+  </div>
+  <div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Quality</th>
+					<th>Episodal</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(i, show) in showCtrl.shows track by $index">
+          <td>
+            <span ng-show="!showCtrl.isEditFormVisible($index)">{{show.title}}</span>
+            <input ng-model="showCtrl.shows[$index].title" ng-show="showCtrl.isEditFormVisible($index)" name="title_$index" type="text" value="{{show.title}}">
+          </td>
+					<td>
+            <span ng-show="!showCtrl.isEditFormVisible($index)">{{show.quality}}</span>
+            <input ng-model="showCtrl.shows[$index].quality" ng-show="showCtrl.isEditFormVisible($index)" name="quality_$index" type="text" value="{{show.quality}}">
+          </td>
+					<td>
+            <span ng-show="!showCtrl.isEditFormVisible($index)">{{show.episodal}}</span>
+            <select ng-model="showCtrl.shows[$index].episodal" name="episodal" ng-show="showCtrl.isEditFormVisible($index)">
+              <option value="true" ng-selected="show.episodal">True</option>
+              <option value="false" ng-selected="!show.episodal">False</option>
+            </select>
+          </td>
+					<td align="right">
+						<div ng-show="!showCtrl.isEditFormVisible($index)" class="btn-group" role="group" aria-label="Tools">
+							<button ng-click="showCtrl.showEditForm($index)" type="button" class="btn btn-default">
+								<span class="glyphicon glyphicon-pencil" title="Edit" aria-hidden="true"></span>
+							</button>
+							<button ng-click="showCtrl.deleteShow($index)" type="button" class="btn btn-default">
+								<span class="glyphicon glyphicon-remove" title="Remove" aria-hidden="true"></span>
+							</button>
+            </div>
+						<div ng-show="showCtrl.isEditFormVisible($index)" class="btn-group" role="group" aria-label="Tools">
+							<button ng-click="showCtrl.editShow($index)" type="button" class="btn btn-default">
+								<span class="glyphicon glyphicon-ok" title="Save" aria-hidden="true"></span>
+							</button>
+							<button ng-click="showCtrl.showEditForm($index)" type="button" class="btn btn-default">
+								<span class="glyphicon glyphicon-remove" title="Cancel" aria-hidden="true"></span>
+							</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+  </div>
+</div>
