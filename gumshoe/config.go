@@ -86,6 +86,15 @@ func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {
 	return nil
 }
 
+// An easy utility to generate the fully qualified path name of a given string and the base path flag.
+func (tc *TrackerConfig) CreateFullPathname(f, t string) string {
+  if t != nil {
+    subpath := strings.Join([t, "_dir"], "")
+    return path.Join(&tc["base_dir"], &tc[subpath], f)
+  }
+  return path.Join(&tc["base_dir"], f)
+}
+
 /*
 func (tc *TrackerConfig) WriteGumshoeConfig(update []byte) error {
 	err := json.Unmarshal(update, &tc)

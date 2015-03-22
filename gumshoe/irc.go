@@ -1,9 +1,9 @@
 package gumshoe
 
 import (
+  "errors"
 	"log"
   "os"
-  //"path/filepath"
 	"regexp"
 	"strings"
   "strconv"
@@ -15,12 +15,9 @@ var (
   announceLine *regexp.Regexp
   episodePattern *regexp.Regexp
   watchChannel string
-  //watchingChannel chan bool
 )
 
 func init() {
-	// Metrics
-
 	// TODO(ryan): make this configurable
 	announceLine = regexp.MustCompile("BitMeTV-IRC2RSS: (?P<title>.*?) : (?P<url>.*)")
 	episodePattern = regexp.MustCompile("^([\\w\\d\\s.]+)[. ](?:s(\\d{1,2})e(\\d{1,2})|(\\d)x?(\\d{2})|Star.Wars)([. ])")
@@ -97,13 +94,9 @@ func handleInvite(e *irc.Event) {
 // StartIRC kick off the IRC client
 func StartIRC(tc *TrackerConfig) (*irc.Connection, error) {
   ircClient := irc.IRC(tc.IRC.Nick, tc.IRC.Nick)
-  ircLog, err := os.OpenFile("irc.log", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-  if err == nil {
-    ircClient.Log = log.New(ircLog, "", log.LstdFlags)
-  } else {
-    log.Println("Unable to open log file for IRC logging. Writing IRC logs to STDOUT")
+  if ircClient == nil {
+    return nil, errors.New("IRC client not initialized. Check IRC config.")
   }
-  watchChannel = tc.IRC.WatchChannel
 
   ircClient.Password = tc.IRC.Key
   ircClient.PingFreq = 15 * time.Minute
@@ -114,14 +107,13 @@ func StartIRC(tc *TrackerConfig) (*irc.Connection, error) {
 	ircClient.AddCallback("msg", matchAnnounce)
   ircClient.AddCallback("privmsg", matchAnnounce)
 
-  // Now make the final connection to the IRC tracker with a timeout
-  /*timeout := time.AfterFunc(2 * time.Minute,
-    func() {
-      ircClient.Disconnect()
-      return errors.New("IRC connection timed out.")
-    }(error)
-  )
-  */
-  err = connectToTracker(tc, ircClient)
-  return ircClient, err
+  ircLog, err := os.OpenFile(tc.CreateFullPathname("irc.log", "log"), os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+  if err == nil {
+    ircClient.Log = log.New(ircLog, "", log.LstdFlags)
+  } else {
+    log.Println("Unable to open log file for IRC logging. Writing IRC logs to STDOUT")
+  }
+  watchChannel = tc.IRC.WatchChannel
+
+  return ircClient, connectToTracker(tc, ircClient)
 }
