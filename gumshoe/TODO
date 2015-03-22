@@ -1,0 +1,33 @@
+
++ integrate martini
+- define structs/ORM
+	- patterns
+	- shows
+		- layer shows on top of patterns
+  - state tracker
+	- config
+- port episode tracker to Go
+- implement Watcher interface
+	- rss Watcher
+	- irc Watcher
+	- log Watcher
+- implement file downloader
+	- need rate limited queue
+		- one queue per host
+	- need cookie support
+	- need custom user agent
+- implement export functions
+  - i/o is json format
+	- get/set to queue
+	- get/set patterns
+	- get/set config
+- implement Angular+Bootstrap webui
+  - shows/patterns page
+	- config page
+	- status page (needed?)
+	- logs page?
+- implement simple CLI
+	- add file to download queue
+	- query queue
+	- get/set patterns
+	- get/set configs
