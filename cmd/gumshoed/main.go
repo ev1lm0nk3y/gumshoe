@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"runtime/debug"
 
-	"gumshoe/gumshoe"
+	"github.com/ev1lm0nk3y/gumshoe/gumshoe"
 )
 
 // HTTP Server Flags

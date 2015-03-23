@@ -2,10 +2,9 @@ package gumshoe
 
 import (
 	"encoding/json"
-  //"encoding/xml"
 	"io/ioutil"
 	"log"
-  //"path/filepath"
+	"path/filepath"
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
@@ -18,19 +17,19 @@ type IMDBConfig struct {
 }
 
 type IRCChannel struct {
-	Nick          string `json:"nick"`
-	Key           string `json:"key"`
-	Server        string `json:"server"`
-  ChannelOwner  string `json:"channel_owner"`
-	NeedInvite    bool   `json:"invite_needed"`
-	WatchChannel  string `json:"watch_channel"`
-	KeepAlive     int    `json:"keep_alive"`
-	PingFreq      int    `json:"ping_frequency"`
-	IRCPort       int    `json:"irc_port"`
-	Timeout       int    `json:"timeout"`
-	EnableLog     bool   `json:"enable_logging"`
-  LogPath       string
-  Debug         bool   `json:"debug"`
+	Nick         string `json:"nick"`
+	Key          string `json:"key"`
+	Server       string `json:"server"`
+	ChannelOwner string `json:"channel_owner"`
+	NeedInvite   bool   `json:"invite_needed"`
+	WatchChannel string `json:"watch_channel"`
+	KeepAlive    int    `json:"keep_alive"`
+	PingFreq     int    `json:"ping_frequency"`
+	IRCPort      int    `json:"irc_port"`
+	Timeout      int    `json:"timeout"`
+	EnableLog    bool   `json:"enable_logging"`
+	LogPath      string
+	Debug        bool `json:"debug"`
 }
 
 type RSSChannel struct {
@@ -42,19 +41,19 @@ type RSSChannel struct {
 }
 
 type Operations struct {
-	EnableLog     bool            `json:"enable_logging"`
-	EnableWeb     bool            `json:"enable_web"`
-	HttpPort      string          `json:"http_port"`
-	LogLevel      string          `json:"log_level"`
-	UseIMDB       bool            `json:"use_imdb_watchlist"`
-	WatchMethods  map[string]bool `json:"watch_methods"`
+	EnableLog    bool            `json:"enable_logging"`
+	EnableWeb    bool            `json:"enable_web"`
+	HttpPort     string          `json:"http_port"`
+	LogLevel     string          `json:"log_level"`
+	UseIMDB      bool            `json:"use_imdb_watchlist"`
+	WatchMethods map[string]bool `json:"watch_methods"`
 }
 
 type TrackerConfig struct {
 	Cookiejar    map[string]interface{} `json:"cookiejar"`
 	Files        map[string]string      `json:"file_options"`
 	IMDB         IMDBConfig
-	IRC          IRCChannel             `json:"irc_channel"`
+	IRC          IRCChannel `json:"irc_channel"`
 	Operations   Operations
 	RSS          RSSChannel
 	Tracker      map[string]interface{} `json:"tracker"`
@@ -86,13 +85,10 @@ func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {
 	return nil
 }
 
-// An easy utility to generate the fully qualified path name of a given string and the base path flag.
-func (tc *TrackerConfig) CreateFullPathname(f, t string) string {
-  if t != nil {
-    subpath := strings.Join([t, "_dir"], "")
-    return path.Join(&tc["base_dir"], &tc[subpath], f)
-  }
-  return path.Join(&tc["base_dir"], f)
+// An easy utility to generate the fully qualified path name of a given filename
+// and prepending the base directory and a subdirectory, if given.
+func (tc *TrackerConfig) CreateLocalPath(f, s string) string {
+	return filepath.Join(tc.Files["base_dir"], s, f)
 }
 
 /*

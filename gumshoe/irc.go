@@ -107,7 +107,7 @@ func StartIRC(tc *TrackerConfig) (*irc.Connection, error) {
 	ircClient.AddCallback("msg", matchAnnounce)
   ircClient.AddCallback("privmsg", matchAnnounce)
 
-  ircLog, err := os.OpenFile(tc.CreateFullPathname("irc.log", "log"), os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+  ircLog, err := os.OpenFile(tc.CreateFullPath("irc.log", tc.Files["log_dir"]), os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
   if err == nil {
     ircClient.Log = log.New(ircLog, "", log.LstdFlags)
   } else {
