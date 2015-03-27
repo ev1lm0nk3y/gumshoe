@@ -1,6 +1,7 @@
 package main
 
 import (
+  "expvar"
 	"flag"
 	"log"
 	"os"
@@ -16,6 +17,8 @@ var port = flag.String("p", "http",
 var baseDir = flag.String("d",
 	filepath.Join(os.Getenv("HOME"), ".local", "gumshoe"),
 	"Base path for gumshoe.")
+var quiet = flag.Bool("q", false,
+  "Supress log messages.")
 
 // Base Config Stuff
 var configFile = flag.String("c", "",
@@ -30,6 +33,18 @@ var (
 	gumshoeSrc = os.Getenv("GUMSHOESRC")
 	gcstat     = debug.GCStats{}
 )
+
+// Metrics
+var (
+  argv = expvar.NewString("argv")
+  watchLastUpdateTime = expvar.NewInt("watch_updated_timestamp")
+  httpPort = expvar.NewInt("port")
+)
+
+func init() {
+  argv.Set(strings.Join(os.Args, " "))
+  watchLastUpdateTime.Set(int64(0))
+}
 
 func main() {
 	flag.Parse()
@@ -46,6 +61,7 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+  httpPort.Set(tc.Operations.HttpPort)
 
 	log.Println("Starting up gumshoe...")
 	gumshoe.InitShowDb(*baseDir)
@@ -58,25 +74,19 @@ func main() {
 		if v {
 			switch k {
 			case "rss":
-				log.Println("starting RSS watcher")
+				log.Println("pretending to starting RSS watcher")
 			case "irc":
 				log.Println("starting IRC watcher")
-        if tc.IRC.EnableLog {
-          tc.IRC.LogPath = filepath.Join(tc.Files["log_dir"], "irc.log")
-        }
         watcher, err := gumshoe.StartIRC(tc)
         if err != nil {
           log.Println(err)
           log.Println("IRC config unusable. Update config and try again.")
         }
-        est := "disconnected"
-        if (watcher.Connected()) {
-          est = "connected"
-        }
-        log.Printf("IRC connection to %s is %s", watcher.Server, est)
+        log.Printf("IRC connection to %s is %s", watcher.Server, watcher.Connected())
 			case "log":
-				log.Println("starting log file watcher")
+				log.Println("pretending to starting log file watcher")
 			}
+      watchLastUpdateTime.Set(time.Now().Unix())
 		}
 	}
 
