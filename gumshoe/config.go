@@ -5,8 +5,9 @@ import (
 	"io/ioutil"
 	"log"
   "net/http"
-  "net/http/cookiejar"
 	"path/filepath"
+  "strconv"
+  "time"
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
@@ -51,6 +52,15 @@ type Operations struct {
 	WatchMethods map[string]bool `json:"watch_methods"`
 }
 
+type Download struct {
+  Tracker     string  `json:"tracker"`
+  Rate        int     `json:"download_rate"`
+  MaxRetries  int     `json:"max_retries"`
+  QueueSize   int     `json:"queue_size"`
+  Secure      bool    `json:"is_secure"`
+  Cookies     []map[string]string  `json:"cookies"`
+}
+
 type TrackerConfig struct {
 	Cookiejar    []*http.Cookie
 	Files        map[string]string      `json:"file_options"`
@@ -58,7 +68,7 @@ type TrackerConfig struct {
 	IRC          IRCChannel `json:"irc_channel"`
 	Operations   Operations
 	RSS          RSSChannel
-	Tracker      map[string]interface{} `json:"tracker"`
+	Download     Download `json:"download_params"`
 	LastModified int64                  `json:"last_modified"`
 }
 
@@ -83,23 +93,29 @@ func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {
 			return err
 		}
 	}
-  if tc.Tracker["is_secure"] {
+  if tc.Download.Secure {
     tc.SetTrackerCookies()
   }
 	return nil
 }
 
 func (tc *TrackerConfig) SetTrackerCookies() {
-  tc.Cookiejar = new([]http.Cookie])
-  for cookie := range tc.Tracker["cookies"] {
-    c := http.Cookie{
-      Name:  cookie.Name,
-      Value: cookie.Value,
-      Path:  cookie.Path,
-      Domain: cooking.Domain,
+  tc.Cookiejar = nil
+  for i := range tc.Download.Cookies {
+    cookie := tc.Download.Cookies[i]
+    c := &http.Cookie{
+      Name:  cookie["Name"],
+      Value: cookie["Value"],
+      Path:  cookie["Path"],
+      Domain: cookie["Domain"],
     }
-    c.Expires = time.Unix(cookie.Expires, 0)
-    tc.Cookiejar.Append(c)
+    exp, err := strconv.Atoi(cookie["Expires"])
+    if err == nil {
+      c.Expires = time.Unix(int64(exp), 0)
+    } else {
+      c.Expires = time.Now().AddDate(10, 0, 0)
+    }
+    tc.Cookiejar = append(tc.Cookiejar, c)
   }
 }
 

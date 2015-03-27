@@ -4,11 +4,11 @@ import (
   "log"
   "expvar"
   "io/ioutil"
-  "os"
-  "path/filepath"
   "net/http"
   "net/http/cookiejar"
   "net/url"
+  "os"
+  "path/filepath"
   "strconv"
   "time"
 )
@@ -17,12 +17,10 @@ var (
   lastFetch = expvar.NewInt("last_fetch_timestamp")  // timestamp of last successful fetch
   fetchResultMap = expvar.NewMap("fetch_results").Init()  // map of fetch return code counters
   downloadQueue = make(chan int, 10)
-  random rand.Rand
 )
 
 func init() {
   lastFetch.Set(int64(0))
-  random = rand.New(rand.NewSource(int64(15))
 }
 
 func UpdateResultMap(r string) {
@@ -34,19 +32,22 @@ func UpdateResultMap(r string) {
   fetchResultMap.Add(r, 1)
 }
 
-func RetrieveEpisode(url string, tc *TrackerConfig) {
+func RetrieveEpisode(link string, tc *TrackerConfig) {
   downloadQueue<- 1
   go func() {
-    u, err := url.Parse(url)
+    u, err := url.Parse(link)
     if err != nil {
       log.Println(err)
       <-downloadQueue
       return
     }
-    c := &http.Client{Jar: cookiejar.SetCookie(u, tc.Cookiejar)}
-    time.Sleep(time.Duration(random.Float64() * time.Second))
-    log.Printf("Retrieving %s", url)
-    resp, err := c.Get(url)
+    jar, _ := cookiejar.New(nil)
+    jar.SetCookies(u, tc.Cookiejar)
+    c := &http.Client{Jar: jar}
+    sleepDuration := time.Duration(GetRandom(int64(tc.Download.Rate)).Int63())
+    time.Sleep(sleepDuration * time.Second)
+    log.Printf("Retrieving %s", link)
+    resp, err := c.Get(link)
     if err != nil {
       log.Println(err)
       <-downloadQueue
@@ -61,11 +62,7 @@ func RetrieveEpisode(url string, tc *TrackerConfig) {
       return
     }
     _, dlFile := filepath.Split(u.RequestURI())
-    err := ioutil.WriteFile(
-      filepath.Join(tc.Files["base_dir"],
-                    tc.Files["torrent_dir"],
-                    dlFile),
-      body, os.ModePerm)
+    err = ioutil.WriteFile(filepath.Join(tc.Files["base_dir"], tc.Files["torrent_dir"], dlFile), body, os.ModePerm)
     if err != nil {
       log.Println(err)
       <-downloadQueue

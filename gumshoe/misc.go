@@ -2,6 +2,8 @@ package gumshoe
 
 import (
   "log"
+  "math/rand"
+  "strconv"
 )
 
 func checkErr(err error, msg string) {
@@ -10,7 +12,11 @@ func checkErr(err error, msg string) {
 	}
 }
 
-func getInt(s string) int {
+func GetInt(s string) int {
 	r, _ := strconv.Atoi(s)
 	return r
+}
+
+func GetRandom(seed int64) *rand.Rand {
+  return rand.New(rand.NewSource(seed))
 }

@@ -6,9 +6,10 @@ package gumshoe
 
 import (
 	"errors"
+  "fmt"
 	"log"
 	"regexp"
-	"strconv"
+	//"strconv"
 	"strings"
 	"time"
 
@@ -138,16 +139,15 @@ func IsNewEpisode(e []string) error {
 	// [ "whole string match", "show title", "full episode desc", "season #", "episode #",
 	//   "remainder" ]
 	// Though if there are no season or episode numbers, this could mean that it is a daily show.
-  var episode *Episode
 	showTitle := episodeRewriter(e[1])
 	tvShow, err := GetShowByTitle(showTitle)
   if err != nil {
     return err
   }
 
-  tvShow.LastUpdate = time.Now().Unix()
+  tvShow.LastUpdate = time.Now()
   if !verifyQuality(&tvShow, e[3]) {
-    return errors.New("No quality match for %s\n", e[0])
+    return errors.New(fmt.Sprintf("No quality match for %s\n", e[0]))
   }
 
   switch len(e) {
@@ -164,17 +164,17 @@ func IsNewEpisode(e []string) error {
     }
     AddEpisode(episode)
   default:
-    return errors.New("Episode string invalidly parsed: %s", e)
+    return errors.New(fmt.Sprintf("Episode string invalidly parsed: %s", e))
   }
   return nil
 }
 
 func unseenEpisode(show *Show, t, s, e string) (*Episode, error) {
 	if show.Episodal {
-		eCheck := newEpisode(t, getInt(s), getInt(e))
+		eCheck := newEpisode(t, GetInt(s), GetInt(e))
 		err := showDB.SelectOne(&eCheck,
 			"select * from episodes where Title=? and Season=? and Episode=?",
-			t, getInt(s), getInt(e))
+			t, GetInt(s), GetInt(e))
 		return eCheck, err
 	}
 	return nil, errors.New("Something went wrong with the regex match.")

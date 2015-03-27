@@ -2,11 +2,13 @@ package gumshoe
 
 import (
 	"encoding/json"
+  "expvar"
 	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
 	"strconv"
+  "strings"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
@@ -95,6 +97,22 @@ func render(res http.ResponseWriter, data interface{}) string {
 	return asJson(res, thing)
 }
 
+func getVarz(res http.ResponseWriter) string {
+  var output = []string{}
+  res.Header().Set("Content-Type", "application/json; charset=utf-8")
+  output = append(output, fmt.Sprintf("{", "\n"))
+  first := true
+  expvar.Do(func(kv expvar.KeyValue) {
+    if !first {
+      output = append(output, fmt.Sprintf(",\n"))
+      first = false
+    }
+    output = append(output, fmt.Sprintf("%q: %s", kv.Key, kv.Value))
+  })
+  output = append(output, "\n}\n")
+  return strings.Join(output, "")
+}
+
 func asJson(res http.ResponseWriter, data []byte) string {
 	res.Header().Set("Content-Type", "application/json")
 	res.Header().Set("Access-Control-Allow-Origin", "*")
@@ -110,6 +128,7 @@ func StartHTTPServer(baseDir string, port string) {
 	m.NotFound(static, http.NotFound)
 
 	m.Get("/status", getStatus)
+  m.Get("/debug/vars", getVarz)
 
 	m.Get("/api/shows", getShows)
 	m.Group("/api/show", func(r martini.Router) {

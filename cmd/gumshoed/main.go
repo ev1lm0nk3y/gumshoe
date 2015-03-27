@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"runtime/debug"
+  "strings"
+  "time"
 
 	"github.com/ev1lm0nk3y/gumshoe/gumshoe"
 )
@@ -38,7 +40,7 @@ var (
 var (
   argv = expvar.NewString("argv")
   watchLastUpdateTime = expvar.NewInt("watch_updated_timestamp")
-  httpPort = expvar.NewInt("port")
+  httpPort = expvar.NewString("port")
 )
 
 func init() {
