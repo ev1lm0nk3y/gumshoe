@@ -64,16 +64,21 @@ type Download struct {
 type TrackerConfig struct {
 	Cookiejar    []*http.Cookie
 	Files        map[string]string `json:"file_options"`
-	IMDB         IMDBConfig
+  IMDB         IMDBConfig        `json:"imdb_cfg"`
 	IRC          IRCChannel `json:"irc_channel"`
-	Operations   Operations
-	RSS          RSSChannel
-	Download     Download `json:"download_params"`
+  Operations   Operations `json:"operations"`
+  RSS          RSSChannel        `json:"rss_channel"`
+	Download  `json:"download_params"`
 	LastModified int64    `json:"last_modified"`
 }
 
 func NewTrackerConfig() *TrackerConfig {
 	return &TrackerConfig{}
+}
+
+func (tc *TrackerConfig) String() string {
+  output, _ := json.MarshalIndent(&tc, "", "\t")
+  return string(output)
 }
 
 func (tc *TrackerConfig) LoadGumshoeConfig(cfgFile string) error {

@@ -1,0 +1,22 @@
+{
+  "file_options": {
+    "base_dir": "/home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/gumshoe"
+  },
+  "imdb_cfg": {
+    "user": "",
+    "pass": "",
+    "uid": 1
+  },
+  "irc_channel": {
+    "nick": "test",
+    "key": "testkey",
+    "server": "test.test.org",
+    "irc_port": 2021,
+    "debug": true
+  },
+  "download_params": {
+    "is_secure": false,
+    "queue_size": 1
+  },
+  "last_modified": 0
+}
