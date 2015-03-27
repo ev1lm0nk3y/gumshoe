@@ -133,7 +133,7 @@ func episodeRewriter(ep string) string {
 	return strings.Title(e)
 }
 
-func IsNewEpisode(e []string, isNew chan<- bool, errChan chan<- error) {
+func IsNewEpisode(e []string) error {
   // the string slice should be as follows:
 	// [ "whole string match", "show title", "full episode desc", "season #", "episode #",
 	//   "remainder" ]
@@ -142,38 +142,31 @@ func IsNewEpisode(e []string, isNew chan<- bool, errChan chan<- error) {
 	showTitle := episodeRewriter(e[1])
 	tvShow, err := GetShowByTitle(showTitle)
   if err != nil {
-    errChan<- err
-    return
+    return err
   }
 
-  tvShow.LastUpdate = time.Now()
+  tvShow.LastUpdate = time.Now().Unix()
   if !verifyQuality(&tvShow, e[3]) {
-    qErr := errors.New("No quality match for %s.\n", e[0])
-    errChan<- qErr
-    return
+    return errors.New("No quality match for %s\n", e[0])
   }
 
   switch len(e) {
   case 6:
     episode, err := unseenEpisode(&tvShow, showTitle, e[3], e[4])
     if err != nil {
-      errChan<- err
-      break
+      return err
     }
     AddEpisode(episode)
-    isNew<- true
   case 4:
     episode, err := unseenDaily(&tvShow, showTitle, e[2])
     if err != nil {
-      errChan<- err
-      break
+      return err
     }
     AddEpisode(episode)
-    isNew<- true
   default:
-    errChan<- errors.New("Episode string invalidly parsed: %s", e)
-    isNew<- false
+    return errors.New("Episode string invalidly parsed: %s", e)
   }
+  return nil
 }
 
 func unseenEpisode(show *Show, t, s, e string) (*Episode, error) {

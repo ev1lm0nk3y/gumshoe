@@ -19,6 +19,7 @@ var (
   watchChannel string
   ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
   ircUpdateTimestamp = expvar.NewInt("irc_last_update_timestamp")
+  tConfig *TrackerConfig
 )
 
 func init() {
@@ -62,11 +63,11 @@ func matchAnnounce(e *irc.Event) {
 	if aMatch != nil {
 		eMatch := episodePattern.FindStringSubmatch(aMatch[1])
 		if eMatch != nil {
-      episodeChan := make(chan bool, 1)
-      errChan := make(chan error, 1)
-			go IsNewEpisode(eMatch, episodeChan, errChan)
-      go RetrieveEpisode(aMatch[2], episodeChan, errChan)
-      for err := range errChan {
+      // Is this safe without a mutex? We are checking a DB, so 2 incoming lines
+      // could collide.
+      if err := IsNewEpisode(eMatch); err == nil {
+        RetrieveEpisode(aMatch[2], tConfig)
+      } else {
         log.Println(err)
       }
 		} else {
@@ -118,6 +119,7 @@ func StartIRC(tc *TrackerConfig) (*irc.Connection, error) {
     log.Println("Unable to open log file for IRC logging. Writing IRC logs to STDOUT")
   }
   watchChannel = tc.IRC.WatchChannel
+  tConfig = tc
 
   return ircClient, connectToTracker(tc, ircClient)
 }
