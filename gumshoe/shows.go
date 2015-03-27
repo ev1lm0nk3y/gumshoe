@@ -6,7 +6,7 @@ package gumshoe
 
 import (
 	"errors"
-  "fmt"
+	"fmt"
 	"log"
 	"regexp"
 	//"strconv"
@@ -16,14 +16,14 @@ import (
 	"github.com/coopernurse/gorp"
 )
 
-var showDB *gorp.DbMap   // Database
+var showDB *gorp.DbMap // Database
 
 type Show struct {
-	ID       int64  `json:"ID,omitempty"`
-	Title    string `json:"title" binding:"required"`
-	Quality  string `json:"quality"`
-	Episodal bool   `json:"episodal"`
-  LastUpdate time.Time `json:"last_update"`
+	ID         int64     `json:"ID,omitempty"`
+	Title      string    `json:"title" binding:"required"`
+	Quality    string    `json:"quality"`
+	Episodal   bool      `json:"episodal"`
+	LastUpdate time.Time `json:"last_update"`
 }
 
 type Shows struct {
@@ -41,10 +41,10 @@ type Episode struct {
 
 func newShow(t string, q string, e bool) *Show {
 	return &Show{
-		Title:    t,
-		Quality:  q,
-		Episodal: e,
-    LastUpdate: time.Now(),
+		Title:      t,
+		Quality:    q,
+		Episodal:   e,
+		LastUpdate: time.Now(),
 	}
 }
 
@@ -135,38 +135,38 @@ func episodeRewriter(ep string) string {
 }
 
 func IsNewEpisode(e []string) error {
-  // the string slice should be as follows:
+	// the string slice should be as follows:
 	// [ "whole string match", "show title", "full episode desc", "season #", "episode #",
 	//   "remainder" ]
 	// Though if there are no season or episode numbers, this could mean that it is a daily show.
 	showTitle := episodeRewriter(e[1])
 	tvShow, err := GetShowByTitle(showTitle)
-  if err != nil {
-    return err
-  }
+	if err != nil {
+		return err
+	}
 
-  tvShow.LastUpdate = time.Now()
-  if !verifyQuality(&tvShow, e[3]) {
-    return errors.New(fmt.Sprintf("No quality match for %s\n", e[0]))
-  }
+	tvShow.LastUpdate = time.Now()
+	if !verifyQuality(&tvShow, e[3]) {
+		return errors.New(fmt.Sprintf("No quality match for %s\n", e[0]))
+	}
 
-  switch len(e) {
-  case 6:
-    episode, err := unseenEpisode(&tvShow, showTitle, e[3], e[4])
-    if err != nil {
-      return err
-    }
-    AddEpisode(episode)
-  case 4:
-    episode, err := unseenDaily(&tvShow, showTitle, e[2])
-    if err != nil {
-      return err
-    }
-    AddEpisode(episode)
-  default:
-    return errors.New(fmt.Sprintf("Episode string invalidly parsed: %s", e))
-  }
-  return nil
+	switch len(e) {
+	case 6:
+		episode, err := unseenEpisode(&tvShow, showTitle, e[3], e[4])
+		if err != nil {
+			return err
+		}
+		AddEpisode(episode)
+	case 4:
+		episode, err := unseenDaily(&tvShow, showTitle, e[2])
+		if err != nil {
+			return err
+		}
+		AddEpisode(episode)
+	default:
+		return errors.New(fmt.Sprintf("Episode string invalidly parsed: %s", e))
+	}
+	return nil
 }
 
 func unseenEpisode(show *Show, t, s, e string) (*Episode, error) {
@@ -197,15 +197,15 @@ func unseenDaily(show *Show, t, eDetails string) (*Episode, error) {
 }
 
 func verifyQuality(show *Show, s string) bool {
-  hdtvRegexp, _ := regexp.Compile("(720|1080)[ip]")
-  isHDTV := hdtvRegexp.MatchString(s)
-  if show.Quality == "420" && isHDTV {
-    return false
-  } else {
-    hdtvQuality := hdtvRegexp.FindStringSubmatch(s)[1]
-    if show.Quality != hdtvQuality {
-      return false
-    }
-  }
+	hdtvRegexp, _ := regexp.Compile("(720|1080)[ip]")
+	isHDTV := hdtvRegexp.MatchString(s)
+	if show.Quality == "420" && isHDTV {
+		return false
+	} else {
+		hdtvQuality := hdtvRegexp.FindStringSubmatch(s)[1]
+		if show.Quality != hdtvQuality {
+			return false
+		}
+	}
 	return true
 }

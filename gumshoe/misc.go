@@ -1,9 +1,9 @@
 package gumshoe
 
 import (
-  "log"
-  "math/rand"
-  "strconv"
+	"log"
+	"math/rand"
+	"strconv"
 )
 
 func checkErr(err error, msg string) {
@@ -18,5 +18,5 @@ func GetInt(s string) int {
 }
 
 func GetRandom(seed int64) *rand.Rand {
-  return rand.New(rand.NewSource(seed))
+	return rand.New(rand.NewSource(seed))
 }

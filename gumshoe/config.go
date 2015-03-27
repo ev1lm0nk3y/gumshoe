@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-  "net/http"
+	"net/http"
 	"path/filepath"
-  "strconv"
-  "time"
+	"strconv"
+	"time"
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
@@ -53,23 +53,23 @@ type Operations struct {
 }
 
 type Download struct {
-  Tracker     string  `json:"tracker"`
-  Rate        int     `json:"download_rate"`
-  MaxRetries  int     `json:"max_retries"`
-  QueueSize   int     `json:"queue_size"`
-  Secure      bool    `json:"is_secure"`
-  Cookies     []map[string]string  `json:"cookies"`
+	Tracker    string              `json:"tracker"`
+	Rate       int                 `json:"download_rate"`
+	MaxRetries int                 `json:"max_retries"`
+	QueueSize  int                 `json:"queue_size"`
+	Secure     bool                `json:"is_secure"`
+	Cookies    []map[string]string `json:"cookies"`
 }
 
 type TrackerConfig struct {
 	Cookiejar    []*http.Cookie
-	Files        map[string]string      `json:"file_options"`
+	Files        map[string]string `json:"file_options"`
 	IMDB         IMDBConfig
 	IRC          IRCChannel `json:"irc_channel"`
 	Operations   Operations
 	RSS          RSSChannel
 	Download     Download `json:"download_params"`
-	LastModified int64                  `json:"last_modified"`
+	LastModified int64    `json:"last_modified"`
 }
 
 func NewTrackerConfig() *TrackerConfig {
@@ -93,30 +93,30 @@ func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {
 			return err
 		}
 	}
-  if tc.Download.Secure {
-    tc.SetTrackerCookies()
-  }
+	if tc.Download.Secure {
+		tc.SetTrackerCookies()
+	}
 	return nil
 }
 
 func (tc *TrackerConfig) SetTrackerCookies() {
-  tc.Cookiejar = nil
-  for i := range tc.Download.Cookies {
-    cookie := tc.Download.Cookies[i]
-    c := &http.Cookie{
-      Name:  cookie["Name"],
-      Value: cookie["Value"],
-      Path:  cookie["Path"],
-      Domain: cookie["Domain"],
-    }
-    exp, err := strconv.Atoi(cookie["Expires"])
-    if err == nil {
-      c.Expires = time.Unix(int64(exp), 0)
-    } else {
-      c.Expires = time.Now().AddDate(10, 0, 0)
-    }
-    tc.Cookiejar = append(tc.Cookiejar, c)
-  }
+	tc.Cookiejar = nil
+	for i := range tc.Download.Cookies {
+		cookie := tc.Download.Cookies[i]
+		c := &http.Cookie{
+			Name:   cookie["Name"],
+			Value:  cookie["Value"],
+			Path:   cookie["Path"],
+			Domain: cookie["Domain"],
+		}
+		exp, err := strconv.Atoi(cookie["Expires"])
+		if err == nil {
+			c.Expires = time.Unix(int64(exp), 0)
+		} else {
+			c.Expires = time.Now().AddDate(10, 0, 0)
+		}
+		tc.Cookiejar = append(tc.Cookiejar, c)
+	}
 }
 
 // An easy utility to generate the fully qualified path name of a given filename
