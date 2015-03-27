@@ -1,6 +1,7 @@
 package gumshoe
 
 import (
+  "fmt"
 	"database/sql"
 	"path/filepath"
 
@@ -11,7 +12,7 @@ import (
 func initDb(baseDir string, dbName string) *gorp.DbMap {
 	dbPath := filepath.Join(baseDir, dbName+".db")
 	db, err := sql.Open("sqlite3", dbPath)
-	checkErr(err, "sql.Open failed for "+dbPath)
+	checkErr(err, fmt.Sprintf("sql.Open failed for %s", dbPath))
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
 
 	return dbmap

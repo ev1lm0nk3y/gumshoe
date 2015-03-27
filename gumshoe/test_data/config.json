@@ -1,6 +1,7 @@
 {
   "file_options": {
-    "base_dir": "/home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/gumshoe"
+    "base_dir": "/home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/gumshoe",
+    "torrent_dir": "test_data"
   },
   "imdb_cfg": {
     "user": "",
@@ -15,6 +16,7 @@
     "debug": true
   },
   "download_params": {
+    "download_rate": 20,
     "is_secure": false,
     "queue_size": 1
   },

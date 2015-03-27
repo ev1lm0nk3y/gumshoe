@@ -21,6 +21,7 @@ var (
 var tc_test = &TrackerConfig{
   Files: map[string]string{
     "base_dir": pwd,
+    "torrent_dir": "test_data",
   },
   IMDB: IMDBConfig{
     User: "",
@@ -35,6 +36,7 @@ var tc_test = &TrackerConfig{
     Debug: true,
   },
   Download: Download{
+    Rate: 20,
     Secure: false,
     QueueSize: 1,
   },
