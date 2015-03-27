@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+  "net/http"
+  "net/http/cookiejar"
 	"path/filepath"
 )
 
@@ -50,14 +52,14 @@ type Operations struct {
 }
 
 type TrackerConfig struct {
-	Cookiejar    map[string]interface{} `json:"cookiejar"`
+	Cookiejar    []*http.Cookie
 	Files        map[string]string      `json:"file_options"`
 	IMDB         IMDBConfig
 	IRC          IRCChannel `json:"irc_channel"`
 	Operations   Operations
 	RSS          RSSChannel
 	Tracker      map[string]interface{} `json:"tracker"`
-	LastModified int                    `json:"last_modified"`
+	LastModified int64                  `json:"last_modified"`
 }
 
 func NewTrackerConfig() *TrackerConfig {
@@ -81,8 +83,24 @@ func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {
 			return err
 		}
 	}
-	// config <- true
+  if tc.Tracker["is_secure"] {
+    tc.SetTrackerCookies()
+  }
 	return nil
+}
+
+func (tc *TrackerConfig) SetTrackerCookies() {
+  tc.Cookiejar = new([]http.Cookie])
+  for cookie := range tc.Tracker["cookies"] {
+    c := http.Cookie{
+      Name:  cookie.Name,
+      Value: cookie.Value,
+      Path:  cookie.Path,
+      Domain: cooking.Domain,
+    }
+    c.Expires = time.Unix(cookie.Expires, 0)
+    tc.Cookiejar.Append(c)
+  }
 }
 
 // An easy utility to generate the fully qualified path name of a given filename
