@@ -2,6 +2,7 @@ package gumshoe
 
 import (
   "errors"
+  "expvar"
 	"log"
   "os"
 	"regexp"
@@ -11,10 +12,13 @@ import (
 
 	"github.com/thoj/go-ircevent"
 )
+
 var (
   announceLine *regexp.Regexp
   episodePattern *regexp.Regexp
   watchChannel string
+  ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
+  ircUpdateTimestamp = expvar.NewInt("irc_last_update_timestamp")
 )
 
 func init() {
@@ -30,6 +34,7 @@ func connectToTracker(tc *TrackerConfig, c *irc.Connection) error {
   if connerr := c.Connect(server); connerr != nil {
     return connerr
   }
+  ircConnectTimestamp.Set(time.Now().Unix())
   if tc.IRC.NeedInvite {
     c.Nick(tc.IRC.Nick)
     if c.Debug {
@@ -53,22 +58,21 @@ func connectToTracker(tc *TrackerConfig, c *irc.Connection) error {
 
 func matchAnnounce(e *irc.Event) {
 	aMatch := announceLine.FindStringSubmatch(e.Message())
+  ircUpdateTimestamp.Set(time.Now().Unix())
 	if aMatch != nil {
 		eMatch := episodePattern.FindStringSubmatch(aMatch[1])
 		if eMatch != nil {
-			err := IsNewEpisode(eMatch)
-			if err != nil {
+      episodeChan := make(chan bool, 1)
+      errChan := make(chan error, 1)
+			go IsNewEpisode(eMatch, episodeChan, errChan)
+      go RetrieveEpisode(aMatch[2], episodeChan, errChan)
+      for err := range errChan {
         log.Println(err)
-      } else {
-				log.Println("This is where we would pick up the new episode.")
-				// go RetrieveEpisode(aMatch[2])
-			}
+      }
 		} else {
       log.Println("Not an episode match.")
     }
-	} else {
-    log.Println("Not an episode announcement. Basicaly garbage.")
-  }
+	}
 }
 
 func handleInvite(e *irc.Event) {
@@ -107,7 +111,7 @@ func StartIRC(tc *TrackerConfig) (*irc.Connection, error) {
 	ircClient.AddCallback("msg", matchAnnounce)
   ircClient.AddCallback("privmsg", matchAnnounce)
 
-  ircLog, err := os.OpenFile(tc.CreateFullPath("irc.log", tc.Files["log_dir"]), os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+  ircLog, err := os.OpenFile(tc.CreateLocalPath("irc.log", tc.Files["log_dir"]), os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
   if err == nil {
     ircClient.Log = log.New(ircLog, "", log.LstdFlags)
   } else {
