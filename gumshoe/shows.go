@@ -15,13 +15,14 @@ import (
 	"github.com/coopernurse/gorp"
 )
 
-var showDB *gorp.DbMap
+var showDB *gorp.DbMap   // Database
 
 type Show struct {
 	ID       int64  `json:"ID,omitempty"`
 	Title    string `json:"title" binding:"required"`
 	Quality  string `json:"quality"`
 	Episodal bool   `json:"episodal"`
+  LastUpdate time.Time `json:"last_update"`
 }
 
 type Shows struct {
@@ -42,6 +43,7 @@ func newShow(t string, q string, e bool) *Show {
 		Title:    t,
 		Quality:  q,
 		Episodal: e,
+    LastUpdate: time.Now(),
 	}
 }
 
@@ -131,35 +133,47 @@ func episodeRewriter(ep string) string {
 	return strings.Title(e)
 }
 
-func IsNewEpisode(e []string) error {
+func IsNewEpisode(e []string, isNew chan<- bool, errChan chan<- error) {
   // the string slice should be as follows:
 	// [ "whole string match", "show title", "full episode desc", "season #", "episode #",
 	//   "remainder" ]
 	// Though if there are no season or episode numbers, this could mean that it is a daily show.
+  var episode *Episode
 	showTitle := episodeRewriter(e[1])
 	tvShow, err := GetShowByTitle(showTitle)
-	if err == nil {
-		if len(e) == 6 {
-			episode, err := unseenEpisode(&tvShow, showTitle, e[3], e[4])
-			if err == nil && verifyQuality(&tvShow, e[3]) {
-				AddEpisode(episode)
-			}
-			return err
-		}
-		if len(e) == 4 {
-			episode, err := unseenDaily(&tvShow, showTitle, e[2])
-			if err == nil && verifyQuality(&tvShow, e[3]) {
-				AddEpisode(episode)
-			}
-			return err
-		}
-	}
-	return err
-}
+  if err != nil {
+    errChan<- err
+    return
+  }
 
-func getInt(s string) int {
-	r, _ := strconv.Atoi(s)
-	return r
+  tvShow.LastUpdate = time.Now()
+  if !verifyQuality(&tvShow, e[3]) {
+    qErr := errors.New("No quality match for %s.\n", e[0])
+    errChan<- qErr
+    return
+  }
+
+  switch len(e) {
+  case 6:
+    episode, err := unseenEpisode(&tvShow, showTitle, e[3], e[4])
+    if err != nil {
+      errChan<- err
+      break
+    }
+    AddEpisode(episode)
+    isNew<- true
+  case 4:
+    episode, err := unseenDaily(&tvShow, showTitle, e[2])
+    if err != nil {
+      errChan<- err
+      break
+    }
+    AddEpisode(episode)
+    isNew<- true
+  default:
+    errChan<- errors.New("Episode string invalidly parsed: %s", e)
+    isNew<- false
+  }
 }
 
 func unseenEpisode(show *Show, t, s, e string) (*Episode, error) {
