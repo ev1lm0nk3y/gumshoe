@@ -58,6 +58,7 @@ func main() {
 	if err := tc.LoadGumshoeConfig(*configFile); err != nil {
 		log.Fatal(err)
 	}
+  tc.SetGlobalTrackerConfig()
 	if tc.Operations.HttpPort != *port && tc.Operations.HttpPort != "" {
 		if err := flag.Set("p", tc.Operations.HttpPort); err != nil {
 			log.Fatal(err)
@@ -79,12 +80,7 @@ func main() {
 				log.Println("pretending to starting RSS watcher")
 			case "irc":
 				log.Println("starting IRC watcher")
-				watcher, err := gumshoe.StartIRC(tc)
-				if err != nil {
-					log.Println(err)
-					log.Println("IRC config unusable. Update config and try again.")
-				}
-				log.Printf("IRC connection to %s is %s", watcher.Server, watcher.Connected())
+				gumshoe.StartIRC()
 			case "log":
 				log.Println("pretending to starting log file watcher")
 			}

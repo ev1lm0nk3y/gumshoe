@@ -14,10 +14,6 @@ var (
   tc  *TrackerConfig
 )
 
-func init() {
-  tc = NewTrackerConfig()
-}
-
 // The primary structure holding the config data, which is read from the preferrences file.
 // Options can be changed from the web app or directly in the file. A file watcher will update
 // the configuration automatically when the prferrence file is modified.
@@ -39,8 +35,8 @@ type IRCChannel struct {
 	IRCPort      int    `json:"irc_port"`
 	Timeout      int    `json:"timeout"`
 	EnableLog    bool   `json:"enable_logging"`
-	LogPath      string
-	Debug        bool `json:"debug"`
+  LogPath      string `json:"LogPath"`
+	Debug        bool   `json:"debug"`
 }
 
 type RSSChannel struct {
@@ -61,6 +57,8 @@ type Operations struct {
 }
 
 type Download struct {
+  AnnounceRegexp  string         `json:"announce_regex"`
+  EpisodeRegexp   string         `json:"episode_regex"`
 	Tracker    string              `json:"tracker"`
 	Rate       int                 `json:"download_rate"`
 	MaxRetries int                 `json:"max_retries"`
@@ -76,7 +74,7 @@ type TrackerConfig struct {
 	IRC          IRCChannel `json:"irc_channel"`
   Operations   Operations `json:"operations"`
   RSS          RSSChannel        `json:"rss_channel"`
-	Download  `json:"download_params"`
+	Download     Download          `json:"download_params"`
 	LastModified int64    `json:"last_modified"`
 }
 
@@ -96,6 +94,10 @@ func (tc *TrackerConfig) LoadGumshoeConfig(cfgFile string) error {
 		return tc.ProcessGumshoeJSON("config/gumshoe_config.json")
 	}
 	return nil
+}
+
+func (tcfg *TrackerConfig) SetGlobalTrackerConfig() {
+  tc = tcfg
 }
 
 func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {

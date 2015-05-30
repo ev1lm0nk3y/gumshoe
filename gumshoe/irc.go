@@ -1,14 +1,15 @@
 package gumshoe
 
 import (
-	"errors"
+  "errors"
 	"expvar"
 	"log"
-	"os"
+	//"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+  "net/url"
 
 	"github.com/thoj/go-ircevent"
 )
@@ -16,94 +17,85 @@ import (
 var (
 	announceLine        *regexp.Regexp
 	episodePattern      *regexp.Regexp
-	watchChannel        string
 	ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
 	ircUpdateTimestamp  = expvar.NewInt("irc_last_update_timestamp")
+  ircClient           *irc.Connection
+  metricUpdate        = make(chan int64)
+  checkDBLock         = make(chan int)
+  IRCEnabled          = make(chan bool)
+  IRCConfigChanged    = make(chan bool)
+  IRCConfigError      = make(chan error)
 )
 
-func init() {
-	// TODO(ryan): make this configurable
-	announceLine = regexp.MustCompile("BitMeTV-IRC2RSS: (?P<title>.*?) : (?P<url>.*)")
-	episodePattern = regexp.MustCompile("^([\\w\\d\\s.]+)[. ](?:s(\\d{1,2})e(\\d{1,2})|(\\d)x?(\\d{2})|Star.Wars)([. ])")
-}
-
-// should this be refactored so that it can reconnect on config changes instead of diconnect and
-// connect. TODO(ryan)
-func connectToTracker(c *irc.Connection) error {
+func connectToTracker() {
+  log.Printf("Connection to %s:%d commencing. ", tc.IRC.Server, tc.IRC.IRCPort)
 	server := tc.IRC.Server + ":" + strconv.Itoa(tc.IRC.IRCPort)
-	if connerr := c.Connect(server); connerr != nil {
-		return connerr
+	if err := ircClient.Connect(server); err != nil {
+		IRCConfigError<- err
 	}
 	ircConnectTimestamp.Set(time.Now().Unix())
 	if tc.IRC.NeedInvite {
-		c.Nick(tc.IRC.Nick)
-		if c.Debug {
+		ircClient.Nick(tc.IRC.Nick)
+		if ircClient.Debug {
 			log.Println("Sleeping for 5s before requesting the invite.")
 		}
 		time.Sleep(5 * time.Second)
 		if tc.IRC.ChannelOwner != "" {
-			if c.Debug {
-				log.Printf("sending invite message to %s", tc.IRC.ChannelOwner)
+			if ircClient.Debug {
+				log.Println("sending invite message to %s", tc.IRC.ChannelOwner)
 			}
-			c.Privmsgf(tc.IRC.ChannelOwner, "!invite %s %s", tc.IRC.Nick, tc.IRC.Key)
+			ircClient.Privmsgf(tc.IRC.ChannelOwner, "!invite %s %s", tc.IRC.Nick, tc.IRC.Key)
 		}
 	} else {
 		if tc.IRC.WatchChannel != "" {
 			log.Printf("Joining channel %s", tc.IRC.WatchChannel)
-			c.Join(tc.IRC.WatchChannel)
+			ircClient.Join(tc.IRC.WatchChannel)
 		}
 	}
-	return nil
 }
 
 func matchAnnounce(e *irc.Event) {
+  metricUpdate<- time.Now().Unix()
 	aMatch := announceLine.FindStringSubmatch(e.Message())
-	ircUpdateTimestamp.Set(time.Now().Unix())
 	if aMatch != nil {
 		eMatch := episodePattern.FindStringSubmatch(aMatch[1])
 		if eMatch != nil {
-			// Is this safe without a mutex? We are checking a DB, so 2 incoming lines
-			// could collide.
-			if err := IsNewEpisode(eMatch); err == nil {
-				AddEpisodeToQueue(aMatch[2])
-			} else {
-				log.Println(err)
-			}
-		} else {
-			log.Println("Not an episode match.")
+      // Want to make sure we don't attempt to read/write to the Db at the same
+      // time, so during the next call, we block all other updates.
+      checkDBLock<- 1
+			err := IsNewEpisode(eMatch)
+      <-checkDBLock
+      if err != nil {
+        return
+      }
+			AddEpisodeToQueue(aMatch[2])
 		}
 	}
 }
 
 func handleInvite(e *irc.Event) {
-	if watchChannel == "" {
-		log.Println("Ignoring invite event because no channel has been designated to watch.")
+	if tc.IRC.WatchChannel == "" {
+		log.Println("Ignoring invite event because no channels are tracked.")
 		return
 	}
 	if e.Connection.Debug {
 		log.Printf("Handling IRC invite event: %s", e.Message())
 	}
 	c := e.Connection
-	if strings.Index(e.Message(), watchChannel) != -1 {
-		if e.Connection.Debug {
-			log.Printf("We have been invited to %s. Joining Now.", watchChannel)
-		}
-		c.Join(watchChannel)
+	if strings.Index(e.Message(), tc.IRC.WatchChannel) != -1 {
+		log.Printf("IRC channel invitation successful to %s. Joining Now.\n", tc.IRC.WatchChannel)
+		c.Join(tc.IRC.WatchChannel)
 		if c.Log != nil {
-			c.Log.SetPrefix(watchChannel + ": ")
+			c.Log.SetPrefix(tc.IRC.WatchChannel + ": ")
 		}
 	}
 }
 
-// StartIRC kick off the IRC client
-func StartIRC() (*irc.Connection, error) {
-	ircClient := irc.IRC(tc.IRC.Nick, tc.IRC.Nick)
-	if ircClient == nil {
-		return nil, errors.New("IRC client not initialized. Check IRC config.")
-	}
+func _InitIRC() {
+	ircClient = irc.IRC(tc.IRC.Nick, tc.IRC.Nick)
 
 	ircClient.Password = tc.IRC.Key
-	ircClient.PingFreq = 15 * time.Minute
+	ircClient.PingFreq = time.Duration(tc.IRC.PingFreq) * time.Minute
 	ircClient.Debug = tc.IRC.Debug
 
 	// Callbacks for various IRC events.
@@ -111,13 +103,75 @@ func StartIRC() (*irc.Connection, error) {
 	ircClient.AddCallback("msg", matchAnnounce)
 	ircClient.AddCallback("privmsg", matchAnnounce)
 
-	ircLog, err := os.OpenFile(tc.CreateLocalPath("irc.log", tc.Files["log_dir"]), os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	if err == nil {
-		ircClient.Log = log.New(ircLog, "", log.LstdFlags)
-	} else {
-		log.Println("Unable to open log file for IRC logging. Writing IRC logs to STDOUT")
-	}
-	watchChannel = tc.IRC.WatchChannel
+  ar, _ := url.QueryUnescape(tc.Download.AnnounceRegexp)
+  announceLine = regexp.MustCompile(ar)
+  er, _ := url.QueryUnescape(tc.Download.EpisodeRegexp)
+  episodePattern = regexp.MustCompile(er)
+}
 
-	return ircClient, connectToTracker(ircClient)
+func _TrackIRCStatus() {
+  for {
+    select {
+    // Turn on and off the IRC service.
+    case e := <-IRCEnabled:
+      if e && ircClient == nil {
+        _InitIRC()
+     if ircClient == nil {
+      IRCConfigError<- errors.New("IRC Configuration Issues. Not Connected.")
+     }
+      } else if e && ircClient != nil && !ircClient.Connected() {
+        connectToTracker()
+      } else if !e && ircClient.Connected() {
+        ircClient.Disconnect()
+      }
+    // Update the IRC configuration.
+    case cfg := <-IRCConfigChanged:
+      if cfg {
+        if ircClient != nil {
+          ircClient.Disconnect()
+        }
+        if tc.Operations.WatchMethods["irc"] {
+          _InitIRC()
+          if ircClient == nil {
+            IRCConfigError<- errors.New("IRC Configuration Issues. Not Connected.")
+          }
+          connectToTracker()
+        }
+      }
+    // Updates the lastest timestamp metric.
+    case ts := <-metricUpdate:
+      last, _ := strconv.Atoi(ircUpdateTimestamp.String())
+      if ts > int64(last) {
+        ircUpdateTimestamp.Set(ts)
+      }
+    case err := <-IRCConfigError:
+      if err == nil {
+        continue
+      }
+      log.Println(err)
+      ircClient.Disconnect()
+      return
+    }
+  }
+}
+
+func StartIRC() {
+  //if tc.IRC.Debug {
+	//ircLog, _ := os.OpenFile(tc.CreateLocalPath("irc.log", tc.Files["log_dir"]), os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	//if err == nil {
+	//ircClient.Log = log.New(ircLog, "", log.LstdFlags)
+	//} else {
+  //  log.Println(err)
+	//	log.Println("Unable to open log file for IRC logging. Writing IRC logs to STDOUT")
+	//}
+  //}
+
+  _InitIRC()
+  connectToTracker()
+
+  go _TrackIRCStatus()
+  IRCEnabled<- tc.Operations.WatchMethods["irc"]
+  IRCConfigChanged<- false
+  IRCConfigError<- nil
+  metricUpdate<- 0
 }
