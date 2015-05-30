@@ -1,6 +1,12 @@
-/* Package watcher
- * Program that takes episode listings in, parses them and compares the title, episode number and
- * quality against the watchlist.
+/* TV Show and Episode Tracker
+ *
+ * Add, delete and list shows and episodes that you keep track of with this
+ * component. The section labeled "User Functions" lists the actions that you
+ * can perform with the data.
+ *
+ * The remainder of the code takes input from your sources, parses them and
+ * compares the title, episode number and quality against the watchlist.
+ * Also keeps track of seen episodes to prevent duplicates.
  */
 package gumshoe
 
@@ -9,7 +15,6 @@ import (
 	"fmt"
 	"log"
 	"regexp"
-	//"strconv"
 	"strings"
 	"time"
 
@@ -67,8 +72,6 @@ func newDaily(t, d string) *Episode {
 
 func InitShowDb(baseDir string) {
 	showDB = initDb(baseDir, "shows")
-	//TODO(deekue) is this needed?
-	// defer showDB.Db.Close()
 	initTable(showDB, Show{}, "shows")
 	initTable(showDB, Episode{}, "episodes")
 }
@@ -89,6 +92,9 @@ func LoadTestData() {
 	log.Println("InitShowDb:AddShow:err", err)
 }
 
+/*
+ * Begin User Functions
+ */
 func AddEpisode(episode *Episode) error {
 	err := showDB.Insert(episode)
 	return err
@@ -127,6 +133,10 @@ func UpdateShow(show Show) error {
 	_, err := showDB.Update(&show)
 	return err
 }
+/*
+ * End User Functions
+ */
+
 
 func episodeRewriter(ep string) string {
 	// strip show title of "." and make it Title cased, easier to do string matching
@@ -197,6 +207,7 @@ func unseenDaily(show *Show, t, eDetails string) (*Episode, error) {
 }
 
 func verifyQuality(show *Show, s string) bool {
+  // TODO: TV show quality will change over the years, make this more maintainable.
 	hdtvRegexp, _ := regexp.Compile("(720|1080)[ip]")
 	isHDTV := hdtvRegexp.MatchString(s)
 	if show.Quality == "420" && isHDTV {
