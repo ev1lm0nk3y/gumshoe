@@ -19,7 +19,6 @@ var (
 	watchChannel        string
 	ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
 	ircUpdateTimestamp  = expvar.NewInt("irc_last_update_timestamp")
-	tConfig             *TrackerConfig
 )
 
 func init() {
@@ -30,7 +29,7 @@ func init() {
 
 // should this be refactored so that it can reconnect on config changes instead of diconnect and
 // connect. TODO(ryan)
-func connectToTracker(tc *TrackerConfig, c *irc.Connection) error {
+func connectToTracker(c *irc.Connection) error {
 	server := tc.IRC.Server + ":" + strconv.Itoa(tc.IRC.IRCPort)
 	if connerr := c.Connect(server); connerr != nil {
 		return connerr
@@ -66,7 +65,7 @@ func matchAnnounce(e *irc.Event) {
 			// Is this safe without a mutex? We are checking a DB, so 2 incoming lines
 			// could collide.
 			if err := IsNewEpisode(eMatch); err == nil {
-				RetrieveEpisode(aMatch[2], tConfig)
+				AddEpisodeToQueue(aMatch[2])
 			} else {
 				log.Println(err)
 			}
@@ -97,7 +96,7 @@ func handleInvite(e *irc.Event) {
 }
 
 // StartIRC kick off the IRC client
-func StartIRC(tc *TrackerConfig) (*irc.Connection, error) {
+func StartIRC() (*irc.Connection, error) {
 	ircClient := irc.IRC(tc.IRC.Nick, tc.IRC.Nick)
 	if ircClient == nil {
 		return nil, errors.New("IRC client not initialized. Check IRC config.")
@@ -119,7 +118,6 @@ func StartIRC(tc *TrackerConfig) (*irc.Connection, error) {
 		log.Println("Unable to open log file for IRC logging. Writing IRC logs to STDOUT")
 	}
 	watchChannel = tc.IRC.WatchChannel
-	tConfig = tc
 
-	return ircClient, connectToTracker(tc, ircClient)
+	return ircClient, connectToTracker(ircClient)
 }
