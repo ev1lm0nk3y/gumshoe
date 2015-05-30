@@ -11,7 +11,7 @@ import (
 )
 
 var (
-  tc  *TrackerConfig
+	tc *TrackerConfig
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
@@ -35,7 +35,7 @@ type IRCChannel struct {
 	IRCPort      int    `json:"irc_port"`
 	Timeout      int    `json:"timeout"`
 	EnableLog    bool   `json:"enable_logging"`
-  LogPath      string `json:"LogPath"`
+	LogPath      string `json:"LogPath"`
 	Debug        bool   `json:"debug"`
 }
 
@@ -57,25 +57,25 @@ type Operations struct {
 }
 
 type Download struct {
-  AnnounceRegexp  string         `json:"announce_regex"`
-  EpisodeRegexp   string         `json:"episode_regex"`
-	Tracker    string              `json:"tracker"`
-	Rate       int                 `json:"download_rate"`
-	MaxRetries int                 `json:"max_retries"`
-	QueueSize  int                 `json:"queue_size"`
-	Secure     bool                `json:"is_secure"`
-	Cookies    []map[string]string `json:"cookies"`
+	AnnounceRegexp string              `json:"announce_regex"`
+	EpisodeRegexp  string              `json:"episode_regex"`
+	Tracker        string              `json:"tracker"`
+	Rate           int                 `json:"download_rate"`
+	MaxRetries     int                 `json:"max_retries"`
+	QueueSize      int                 `json:"queue_size"`
+	Secure         bool                `json:"is_secure"`
+	Cookies        []map[string]string `json:"cookies"`
 }
 
 type TrackerConfig struct {
 	Cookiejar    []*http.Cookie
 	Files        map[string]string `json:"file_options"`
-  IMDB         IMDBConfig        `json:"imdb_cfg"`
-	IRC          IRCChannel `json:"irc_channel"`
-  Operations   Operations `json:"operations"`
-  RSS          RSSChannel        `json:"rss_channel"`
+	IMDB         IMDBConfig        `json:"imdb_cfg"`
+	IRC          IRCChannel        `json:"irc_channel"`
+	Operations   Operations        `json:"operations"`
+	RSS          RSSChannel        `json:"rss_channel"`
 	Download     Download          `json:"download_params"`
-	LastModified int64    `json:"last_modified"`
+	LastModified int64             `json:"last_modified"`
 }
 
 func NewTrackerConfig() *TrackerConfig {
@@ -83,8 +83,8 @@ func NewTrackerConfig() *TrackerConfig {
 }
 
 func (tc *TrackerConfig) String() string {
-  output, _ := json.MarshalIndent(&tc, "", "\t")
-  return string(output)
+	output, _ := json.MarshalIndent(&tc, "", "\t")
+	return string(output)
 }
 
 func (tc *TrackerConfig) LoadGumshoeConfig(cfgFile string) error {
@@ -97,7 +97,7 @@ func (tc *TrackerConfig) LoadGumshoeConfig(cfgFile string) error {
 }
 
 func (tcfg *TrackerConfig) SetGlobalTrackerConfig() {
-  tc = tcfg
+	tc = tcfg
 }
 
 func (tc *TrackerConfig) ProcessGumshoeJSON(cfgJson string) error {

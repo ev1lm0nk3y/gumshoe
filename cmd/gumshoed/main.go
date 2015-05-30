@@ -58,7 +58,7 @@ func main() {
 	if err := tc.LoadGumshoeConfig(*configFile); err != nil {
 		log.Fatal(err)
 	}
-  tc.SetGlobalTrackerConfig()
+	tc.SetGlobalTrackerConfig()
 	if tc.Operations.HttpPort != *port && tc.Operations.HttpPort != "" {
 		if err := flag.Set("p", tc.Operations.HttpPort); err != nil {
 			log.Fatal(err)
