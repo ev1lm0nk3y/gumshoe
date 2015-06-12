@@ -1,24 +1,36 @@
 {
-  "file_options": {
-    "base_dir": "/home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/gumshoe",
+  "dir_options": {
+    "base_dir": "",
+    "log_dir": "test_data",
+    "user_dir": "test_data",
     "torrent_dir": "test_data"
-  },
-  "imdb_cfg": {
-    "user": "",
-    "pass": "",
-    "uid": 1
   },
   "irc_channel": {
     "nick": "test",
     "key": "testkey",
-    "server": "test.test.org",
-    "irc_port": 2021,
-    "debug": true
+    "server": "localhost",
+    "port": 6626,
+    "log_irc": true,
+    "invite_cmd": "/MSG BitMeTV !invite $nick $key",
+    "watch_channel": "#announce",
+    "announce_regex": "BitMeTV-IRC2RSS%3A%20(%3FP%3Ctitle%3E.*%3F)%20%3A%20(%3FP%3Curl%3E.*)",
+    "episode_regex": "(%5B%5C%5C%5C%5Cw%5C%5C%5C%5Cd%5C%5C%5C%5Cs.%5D%2B)%5B.%20%5D(%3F%3As(%5C%5C%5C%5Cd%7B1%2C2%7D)e(%5C%5C%5C%5Cd%7B1%2C2%7D)%7C(%5C%5C%5C%5Cd)x%3F(%5C%5C%5C%5Cd%7B2%7D)%7CStar.Wars)(%5B.%20%5D)"
   },
   "download_params": {
+    "tracker": "localhost",
     "download_rate": 20,
     "is_secure": false,
-    "queue_size": 1
+    "queue_size": 1,
+    "max_retries": 3
+  },
+  "operations": {
+    "enable_logging": true,
+    "enable_web": true,
+    "http_port": "8080",
+    "watch_methods": {
+      "irc": true,
+      "rss": false
+    }
   },
   "last_modified": 0
 }
