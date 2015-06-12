@@ -57,8 +57,8 @@ func deleteShow(res http.ResponseWriter, params martini.Params) string {
 	return render(res, err)
 }
 
-func getConfigs() string {
-	return "getConfigs"
+func getConfigs(res http.ResponseWriter, params martini.Params) string {
+  return "getConfigs"
 }
 
 func createConfig() string {
@@ -139,7 +139,7 @@ func StartHTTPServer(baseDir string, port string) {
 	})
 
 	m.Group("/api/config", func(r martini.Router) {
-		r.Get("/:id", getConfigs)
+		r.Get("/", getConfigs)
 		r.Post("/new", createConfig)
 		r.Put("/update/:id", updateConfig)
 		r.Delete("/delete/:id", deleteConfig)

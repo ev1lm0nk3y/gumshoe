@@ -40,7 +40,7 @@ type FileFetch struct {
 func (ff *FileFetch) SetClientCookie() error {
 	if ff.Url != nil {
 		jar, _ := cookiejar.New(nil)
-		jar.SetCookies(ff.Url, tc.Cookiejar)
+		jar.SetCookies(ff.Url, cj)
 		ff.HttpClient.Jar = jar
 		return nil
 	}
@@ -94,7 +94,7 @@ func AddEpisodeToQueue(link string) error {
 		return err
 	}
 	_, dlFile := filepath.Split(u.RequestURI())
-	s := filepath.Join(tc.Files["base_dir"], tc.Files["torrent_dir"], dlFile)
+	s := filepath.Join(tc.Directories["base_dir"], tc.Directories["torrent_dir"], dlFile)
 	ff.SaveLocation = s
 	episodeQueue.PushBack(ff)
   return nil

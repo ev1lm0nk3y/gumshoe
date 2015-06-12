@@ -28,23 +28,22 @@ var (
 )
 
 func connectToTracker() {
-	log.Printf("Connection to %s:%d commencing. ", tc.IRC.Server, tc.IRC.IRCPort)
-	server := tc.IRC.Server + ":" + strconv.Itoa(tc.IRC.IRCPort)
+	log.Printf("Connection to %s:%d commencing. ", tc.IRC.Server, tc.IRC.Port)
+	server := tc.IRC.Server + ":" + strconv.Itoa(tc.IRC.Port)
 	if err := ircClient.Connect(server); err != nil {
 		IRCConfigError <- err
 	}
 	ircConnectTimestamp.Set(time.Now().Unix())
-	if tc.IRC.NeedInvite {
+	if tc.IRC.InviteCmd != "" {
 		ircClient.Nick(tc.IRC.Nick)
 		if ircClient.Debug {
 			log.Println("Sleeping for 5s before requesting the invite.")
 		}
 		time.Sleep(5 * time.Second)
-		if tc.IRC.ChannelOwner != "" {
-			if ircClient.Debug {
-				log.Println("sending invite message to %s", tc.IRC.ChannelOwner)
-			}
-			ircClient.Privmsgf(tc.IRC.ChannelOwner, "!invite %s %s", tc.IRC.Nick, tc.IRC.Key)
+		if tc.IRC.InviteCmd != "" {
+      invite := strings.Replace(tc.IRC.InviteCmd, "%nick%", tc.IRC.Nick, -1)
+      invite = strings.Replace(invite, "%key%", tc.IRC.Key, -1)
+			ircClient.Privmsgf(tc.IRC.ChannelOwner, invite)
 		}
 	} else {
 		if tc.IRC.WatchChannel != "" {
@@ -96,16 +95,15 @@ func _InitIRC() {
 
 	ircClient.Password = tc.IRC.Key
 	ircClient.PingFreq = time.Duration(tc.IRC.PingFreq) * time.Minute
-	ircClient.Debug = tc.IRC.Debug
 
 	// Callbacks for various IRC events.
 	ircClient.AddCallback("invite", handleInvite)
 	ircClient.AddCallback("msg", matchAnnounce)
 	ircClient.AddCallback("privmsg", matchAnnounce)
 
-	ar, _ := url.QueryUnescape(tc.Download.AnnounceRegexp)
+	ar, _ := url.QueryUnescape(tc.IRC.AnnounceRegexp)
 	announceLine = regexp.MustCompile(ar)
-	er, _ := url.QueryUnescape(tc.Download.EpisodeRegexp)
+	er, _ := url.QueryUnescape(tc.IRC.EpisodeRegexp)
 	episodePattern = regexp.MustCompile(er)
 }
 
