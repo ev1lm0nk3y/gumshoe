@@ -3,8 +3,8 @@ package gumshoe
 import (
 	"errors"
 	"expvar"
+	"fmt"
 	"log"
-	//"os"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -15,41 +15,53 @@ import (
 )
 
 var (
-	announceLine        *regexp.Regexp
-	episodePattern      *regexp.Regexp
+	// Regexp for messages from IRC channel announcing something to do something about
+	announceLine *regexp.Regexp
+	// Regexp to determine if the announce regexp matches a known episode structure
+	episodePattern *regexp.Regexp
+	// Time, in ms, when the connection to the IRC server was established
 	ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
-	ircUpdateTimestamp  = expvar.NewInt("irc_last_update_timestamp")
-  ircStatus           = expvar.NewString("irc_status")
-	ircClient           *irc.Connection
-	metricUpdate        = make(chan int64)
-	checkDBLock         = make(chan int)
-	IRCEnabled          = make(chan bool)
-	IRCConfigChanged    = make(chan bool)
-	IRCConfigError      = make(chan error)
-  ErrNoUser           = errors.New("No such user online or registered.")
-  ErrNotRecognized    = errors.New("user not recognized as nickname's owner.")
-  ErrListOnly         = errors.New("user recognized as owner via access list only.")
+	// Time, in ms, when the channel was last updated
+	ircUpdateTimestamp = expvar.NewInt("irc_last_update_timestamp")
+	// String relating to the current state of the IRC watcher
+	ircStatus = expvar.NewString("irc_status")
+	// IRC client object
+	ircClient *irc.Connection
+	// channel that gets timestamp updates for ircUpdateTimestamp in order to ensure we write only the most recent timestamp into that exported variable.
+	metricUpdate = make(chan int64)
+	// channel that locks the DB while we update it to prevent data corruption.
+	checkDBLock = make(chan int)
+	// Channel that is used to turn on and off the IRC watcher.
+	IRCEnabled = make(chan bool)
+	// Channel to signify if the IRC config has changed. Changes will restart the IRC watcher.
+	IRCConfigChanged = make(chan bool)
+	// Channel that collects all IRC errors and will disconnect the IRC watcher if it encounters one.
+	IRCConfigError = make(chan error)
 )
 
 func connectToTracker() {
-	log.Printf("Connection to %s:%d commencing. ", tc.IRC.Server, tc.IRC.Port)
+	log.Printf("Connection to %s:%d commencing.\n", tc.IRC.Server, tc.IRC.Port)
 	server := tc.IRC.Server + ":" + strconv.Itoa(tc.IRC.Port)
 	if err := ircClient.Connect(server); err != nil {
 		IRCConfigError <- err
 	}
-  ircStatus.Set("Connected")
-	ircConnectTimestamp.Set(time.Now().Unix())
-  registerNick()
-  watchIRCChannel()
+	if ircClient.Connected() {
+		ircStatus.Set("Connected")
+		ircConnectTimestamp.Set(time.Now().Unix())
+		registerNick()
+		// give the server a chance to see the user before attempting to watch the IRC channel.
+		time.Sleep(5 * time.Second)
+		watchIRCChannel()
+	}
 }
 
 func watchIRCChannel() {
 	if tc.IRC.InviteCmd != "" {
-    invite := strings.Replace(tc.IRC.InviteCmd, "%n%", tc.IRC.Nick, -1)
-    invite = strings.Replace(invite, "%k%", tc.IRC.Key, -1)
-    PrintDebugf("Sending invite: %s\n", invite)
-    ircStatus.Set("Requesting Invite")
-	  ircClient.Privmsgf(tc.IRC.ChannelOwner, invite)
+		invite := strings.Replace(tc.IRC.InviteCmd, "%n%", tc.IRC.Nick, -1)
+		invite = strings.Replace(invite, "%k%", tc.IRC.Key, -1)
+		PrintDebugf("Sending invite to %s: %s\n", tc.IRC.ChannelOwner, invite)
+		ircStatus.Set("Requesting Invite")
+		ircClient.Privmsgf(tc.IRC.ChannelOwner, invite)
 	} else {
 		if tc.IRC.WatchChannel != "" {
 			log.Printf("Joining channel %s", tc.IRC.WatchChannel)
@@ -59,36 +71,42 @@ func watchIRCChannel() {
 }
 
 func registerNick() {
-  if tc.IRC.Nick ==  "" {
-    PrintDebugln("No nickname set. IRC will not work properly.")
-    return
-  }
-  ircClient.Nick(tc.IRC.Nick)
-  while !tc.IRC.Registered {
-    err := <-IRCConfigError
-
-    ircClient.Privmsgf("nickserv", "register %s %s", tc.IRC.Key, tc.Operations.Email)
-  }
-  ircClient.Privmsgf("nickserv", "identify %s", tc.IRC.Key)
-  PrintDebugln("IRC nick ready for use")
+	if tc.IRC.Nick == "" {
+		PrintDebugln("No nickname set. IRC will not work properly.")
+		return
+	}
+	ircClient.Nick(tc.IRC.Nick)
+	if !tc.IRC.Registered {
+		ircClient.Privmsgf("nickserv", "register %s %s", tc.IRC.Key, tc.Operations.Email)
+	}
+	if ircClient.Connected() && tc.IRC.Registered {
+		PrintDebugln("identifying to nickserv")
+		ircClient.Privmsgf("nickserv", "identify %s", tc.IRC.Key)
+	}
 }
 
 func msgToUser(e *irc.Event) {
-  if e.User == "NickServ" {
-    if strings.Contains(e.Message, "isn't") || strings.Contains(e.Message, "incorrect") {
-      IRCConfigError<- errors.New(e.Message)
-      return
-    }
-    if strings.Contains("registered") {
-      ircStatus.Set("Nick Ready")
-    }
-    if strings.Contains(e.Message, "Password" {
-      ircStatus.Set("Nick Registered")
-    }
-  }
+	PrintDebugf("msgToUser: %s", e.Message())
+	msg := e.Message()
+	if e.User == "NickServ" {
+		if strings.Contains(msg, "isn't") || strings.Contains(msg, "incorrect") {
+			IRCConfigError <- errors.New(msg)
+		} else if strings.Contains(msg, "registered") {
+			ircStatus.Set("Nick Ready")
+		} else if strings.Contains(msg, "assword") {
+			ircStatus.Set("Nick Registered")
+		}
+	} else if e.User == tc.IRC.ChannelOwner {
+		if strings.Contains(msg, "invite") {
+			go handleInvite(e)
+		} else {
+			log.Print(msg)
+		}
+	}
 }
 
 func matchAnnounce(e *irc.Event) {
+	PrintDebugf("matchAnnounce: %s\n", e.Message())
 	metricUpdate <- time.Now().Unix()
 	aMatch := announceLine.FindStringSubmatch(e.Message())
 	if aMatch != nil {
@@ -108,6 +126,7 @@ func matchAnnounce(e *irc.Event) {
 }
 
 func handleInvite(e *irc.Event) {
+	PrintDebugf("handleInvite: %s\n", e.Message())
 	if tc.IRC.WatchChannel == "" {
 		log.Println("Ignoring invite event because no channels are tracked.")
 		return
@@ -117,7 +136,7 @@ func handleInvite(e *irc.Event) {
 	if strings.Index(e.Message(), tc.IRC.WatchChannel) != -1 {
 		PrintDebugln("IRC channel invitation successful. Joining Now.")
 		c.Join(tc.IRC.WatchChannel)
-    ircStatus.Set("Watching Channel")
+		ircStatus.Set("Watching Channel")
 		if c.Log != nil {
 			c.Log.SetPrefix(tc.IRC.WatchChannel + ": ")
 		}
@@ -139,7 +158,7 @@ func _InitIRC() {
 	announceLine = regexp.MustCompile(ar)
 	er, _ := url.QueryUnescape(tc.IRC.EpisodeRegexp)
 	episodePattern = regexp.MustCompile(er)
-  ircStatus.Set("Ready")
+	ircStatus.Set("Ready")
 }
 
 func _TrackIRCStatus() {
@@ -182,6 +201,7 @@ func _TrackIRCStatus() {
 				continue
 			}
 			log.Println(err)
+			ircStatus.Set(fmt.Sprintf("Config Error: %s\n", err))
 			ircClient.Disconnect()
 			return
 		}

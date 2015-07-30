@@ -1,7 +1,7 @@
 package gumshoe
 
 import (
-  "fmt"
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -23,15 +23,15 @@ func GetRandom(seed int64) *rand.Rand {
 }
 
 func PrintDebug(s ...interface{}) {
-  PrintDebugf("%s", s...)
+	PrintDebugf("%s", s...)
 }
 
 func PrintDebugln(s ...interface{}) {
-  PrintDebugf("%s\n", s...)
+	PrintDebugf("%s\n", s...)
 }
 
 func PrintDebugf(f string, i ...interface{}) {
-  if tc.Operations.Debug {
-    log.Printf("[DEBUG] %s", fmt.Sprintf(f, i...))
-  }
+	if tc.Operations.Debug {
+		log.Printf("[DEBUG] %s", fmt.Sprintf(f, i...))
+	}
 }
