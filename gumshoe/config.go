@@ -23,7 +23,7 @@ var (
 type IRCChannel struct {
 	ChannelOwner   string `json:"owner"`
 	Nick           string `json:"nick"`
-	Registered     string `json:"registered"`
+	Registered     bool   `json:"registered"`
 	Key            string `json:"key"`
 	Server         string `json:"server"`
 	InviteCmd      string `json:"invite_cmd"`
