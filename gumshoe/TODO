@@ -6,10 +6,13 @@
 		- layer shows on top of patterns
   - state tracker
 	- config
-- implement Watcher interface
-	- rss Watcher
-	- log Watcher
+- implement Watcher interfaces
+	- rss
+		- low priority (slow updates)
+	- log
+		- low priority (requires another watcher to create logs)
 	- need custom user agent
+		- huh?
 - implement export functions
   - i/o is json format
 	- get/set to queue
@@ -18,7 +21,16 @@
 - implement Angular+Bootstrap webui
   - shows/patterns page
 	- config page
-	- status page (needed?)
+	- status page
+		- Watcher active (last update seen)
+		- last show downloaded
+		- map {
+			show: {
+				last seen: timestamp,
+				latest season: int,
+				latest episode: int,
+			}
+		}
 	- logs page?
 - implement simple CLI
 	- add file to download queue
