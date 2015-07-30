@@ -21,10 +21,11 @@ var (
 // Options can be changed from the web app or directly in the file. A file watcher will update
 // the configuration automatically when the prferrence file is modified.
 type IRCChannel struct {
+  ChannelOwner string `json:"owner"`
 	Nick         string `json:"nick"`
+  Registered   string `json:"registered"`
 	Key          string `json:"key"`
 	Server       string `json:"server"`
-  ChannelOwner string `json:"owner"`
 	InviteCmd    string `json:"invite_cmd"`
 	WatchChannel string `json:"watch_channel"`
 	KeepAlive    int    `json:"keep_alive"`
@@ -48,7 +49,9 @@ type RSSFeed struct {
 }
 
 type Operations struct {
+  Email        string          `json:"email"`
 	EnableLog    bool            `json:"enable_logging"`
+  Debug        bool            `json:"log_debug"`
 	EnableWeb    bool            `json:"enable_web"`
 	HttpPort     string          `json:"http_port"`
 	WatchMethods map[string]bool `json:"watch_methods"`
