@@ -1,0 +1,53 @@
+<div ng-show="sTab.isSet(1)">
+  <form ng-controller="ConfigController" class="form-horizontal" name="gumshoe-basic-settings" role="form">
+    <span class="col-md-12 opt-title">User Setup<hr></span>
+  <div class="form-group row">
+    <label class="col-sm-2 control-label" for="email">Email</label>
+    <div class="col-sm-4">
+      <input class="form-control input-sm" type="email" ng-model="email" required>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 control-label" for="user_dir">Config Directory</label>
+    <div class="col-sm-4">
+      <input class="form-control input-sm" ng-change="UpdateField(this)" ng-model="user_dir" type="text" name="dir_options.user_dir" required>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 control-label" for="fetch_dir">Download Location</label>
+    <div class="col-sm-4">
+      <input class="form-control input-sm" ng-model="fetch_dir" type="text" name="dir_options.fetch_dir" required>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 control-label" for="move_files">Move Completed Files</label>
+    <div class="col-sm-4">
+      <input class="form-control input-sm" ng-model="download_dir" type="text" name="dir_options.download_dir">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 control-label" for="enable_logging">Enable Logging?</label>
+    <div class="col-sm-6">
+      <div class="col-sm-1">
+        <input class="form-control" ng-model="enable_logging" ng-checked="enable_logging" type="checkbox" name="operations.enable_logging">
+      </div>
+      <label class="col-sm-3 control-label" for="log_dir">Write to</label>
+      <div class="col-sm-4">
+        <input class="form-control input-sm" ng-disabled="!(enable_logging)" ng-model="log_dir" type="text" name="dir_options.log_dir">
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 control-label" for="enable_logging">Enable Web?</label>
+    <div class="col-sm-6">
+      <div class="col-sm-1">
+        <input class="form-control" ng-model="enable_web" ng-checked="enable_web" type="checkbox" name="operations.enable_web">
+      </div>
+      <label class="col-sm-3 control-label" for="http_port">Port</label>
+      <div class="col-sm-4">
+        <input class="form-control input-sm" ng-disabled="!(enable_web)" ng-model="http_port" type="text" name="operations.http_port">
+      </div>
+    </div>
+  </div>
+  </form>
+</div>

@@ -1,4 +1,4 @@
-  <div class="col-sm-3 col-md-2 sidebar">
+  <div class="col-sm-4 col-md-2 sidebar">
 		<ul class="nav nav-sidebar">
 			<li ng-class="{ active:tab.isSet(1) }">
 				<a href ng-click="tab.setTab(1)">Status</a>
@@ -9,13 +9,15 @@
 			<li ng-class="{ active:tab.isSet(3) }">
 				<a href ng-click="tab.setTab(3)">Queue</a>
 			</li>
+			<li ng-class="{ active:tab.isSet(4) }">
+				<a href ng-click="tab.setTab(4)">Settings</a>
+			</li>
 		</ul>
   </div>
 
-  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<gumshoe-status></gumshoe-status>
-		<gumshoe-shows></gumshoe-shows>
-		<gumshoe-queue></gumshoe-queue>
-  </div>
-
-
+<div class="col-sm-9 col-sm-offset-4 col-md-10 col-md-offset-2 main">
+	<gumshoe-status></gumshoe-status>
+	<gumshoe-shows></gumshoe-shows>
+  <gumshoe-queue></gumshoe-queue>
+  <gumshoe-settings></gumshoe-settings>
+</div>

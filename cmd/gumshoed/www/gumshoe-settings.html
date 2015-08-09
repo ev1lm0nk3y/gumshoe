@@ -1,20 +1,37 @@
-<div class="snav">
-  <div id="basic" class="snav_selected">
-    Basics
+<div ng-show="tab.isSet(4)">
+  <div class="navbar-collapse collapse container_fluid">
+    <ul id="snav" class="nav navbar-nav navbar-left setting-nav">
+      <li ng-class="{ active:sTab.isSet(1) }">
+        <a href ng-click="sTab.setTab(1)">Basics</a>
+      </li>
+      <li ng-class="{ active:sTab.isSet(2) }">
+        <a href ng-click="sTab.setTab(2)">Tracker</a>
+      </li>
+      <li ng-class="{ active:sTab.isSet(3) }">
+        <a href ng-click="sTab.setTab(3)">Watcher</a>
+      </li>
+    </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li><a href="#">Documentation</a></li>
+    </ul>
   </div>
-  <div id="tracker" class="snav_item">
-    Tracker
-  </div>
-  <div id="watcher" class="snav_item">
-    Watcher
-  </div>
-  <div id="IMDB" class="snav_item">
-    IMDB
-  </div>
-  <div class="ops">
-    <input type=button onClick="saveConfig();" value="Save Config">
-    <input type=button onClick="restoreDefault();" value="Restore Default">
+  <div class="panel setting-panel">
+    <div class="panel-body panel-info">
+      <gumshoe-basic-settings></gumshoe-basic-settings>
+      <!--
+      <setting-tracker></setting-tracker>
+      <setting-watcher></setting-watcher>
+      -->
+    </div>
+    <div class="col-sm-1 panel-footer" aria-label="Actions">
+      <button ng-click="UpdateConfig()" type=button class="btn btn-default">
+        <span class="glyphicon glyphicon-ok" title="Submit" aria-hidden="true"></span>
+      </button>
+      <button ng-click="ReloadConfig()" type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-remove" title="Cancel" aria-hidden="true"></span>
+      </button>
+    </div>
+    </form>
   </div>
 </div>
-<div class="spanel">
-  <div id="bpanel" class="
+

@@ -66,6 +66,36 @@ body {
   background-color: #428bca;
 }
 
+/*
+ * Settings content
+ */
+.setting-nav {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.setting-nav > li > a {
+  font-size: 14pt;
+  font-weight: 700;
+  /*border-bottom: 1px solid #699DF4;*/
+}
+
+.setting-nav > .active > a,
+.setting-nav > .active > a:hover,
+.setting-nav > .active > a:focus {
+  color: #fff;
+  background-color: #B6C0CA;
+}
+
+.setting-panel {
+  overflow-y: auto;
+  height: 80%;
+}
+
+.opt-title {
+  font-size: 18pt;
+  font-weight: bold !important
+}
 
 /*
  * Main content

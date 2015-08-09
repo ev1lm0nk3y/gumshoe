@@ -1,6 +1,52 @@
 (function() {
 	var app = angular.module('gumshoe', ['fundoo.services']);
 
+  app.controller('ConfigController', ['$scope', function($scope){
+    var setCtrl = this;
+    setCtrl.current = {};
+    setCtrl.updates = [];
+
+    $.getJSON("/settings")
+      .done(function( json ) {
+        setCtrl.current = json;
+        $scope.user_dir = json.dir_options["user_dir"];
+        $scope.fetch_dir = $scope.user_dir + "/" + json.dir_options["fetch_dir"];
+        $scope.download_dir = $scope.user_dir + "/" + json.dir_options["download_dir"];
+        $scope.log_dir = $scope.user_dir + "/" + json.dir_options["log_dir"];
+        $scope.enable_logging = json.operations["enable_logging"];
+        $scope.email = json.operations["email"];
+        $scope.enable_web = json.operations["enable_web"];
+        $scope.http_port = json.operations["http_port"];
+      });
+
+    this.UpdateConfig = function() {
+      var udict = {};
+      for (var i = 0; i < setCtrl.updates.length; i++) {
+        var elem = setCtrl.updates[i].split(".");
+        udict[elem[0]] = !(elem[0] in udict) ? {} : udict[elem[0]];
+        udict[elem[0]][elem[1]] = this.getElementsByName(setCtrl.updates[i]).value;
+      }
+      $.post({
+        url: "/api/config/update",
+        contentType: "application/json",
+        async: true,
+        data: JSON.stringify(udict),
+        success: function() {
+          this.getElementsByName("update_msg").hidden = false;
+          setCtrl.updates = [];
+        },
+      });
+    };
+
+    this.ReloadConfig = function() {
+      setCtrl.updates = [];
+    };
+
+    this.UpdateField = function(field) {
+      setCtrl.updates.push(field.name);
+    };
+  }]);
+
   app.controller('ShowController', ['$log', '$http', function($log, $http){
     var showCtrl = this;
     showCtrl.shows = [];
@@ -87,6 +133,26 @@
      };
    });
 
+  app.directive("gumshoeSettings", function() {
+    return {
+      restrict: "E",
+      templateUrl: "gumshoe-settings.html",
+      controller: function() {
+        this.sTab = 1;
+
+        this.isSet = function(checkTab) {
+          return this.sTab == checkTab;
+        };
+
+        this.setTab = function(activeTab) {
+          // Check for changes before navigatingaway from tab.
+          this.sTab = activeTab;
+        };
+      },
+      controllerAs: "sTab"
+    };
+  });
+
 	app.directive("gumshoeStatus", function() {
 		return {
       restrict: 'E',
@@ -105,37 +171,16 @@
       templateUrl: "gumshoe-queue.html"
     };
   });
-
-  app.controller('SettingsDialog', ['$scope', 'createDialog', function($scope, createDialogService) {
-    $scope.launchSettingsModal = function() {
-      createDialogService({
-        id: 'gumshoeSettings',
-        template: 'gumshoe-settings.html',
-        title: 'Gumshoe Settings',
-        backdrop: true,
-        success: {label: 'Save Changes', fn: this.saveSettings()},
-        controller: 'SettingsController'
-      }, {
-        settings: $http({
-          method: 'JSONP',
-          url: '/api/settings/'})
-      });
-    };
-    $scope.launchHelpModal = function() {console.log('show help message.');};
-  }]);
-
-  app.controller('SettingsController', ['$scope', 'SettingsFactory', 'settings',
-      function($scope, SettingsFactory, settings) {
-        $scope.settings = settings;
-  }]);
-
-  app.factory('SettingsFactory', function() {
+  app.directive("gumshoeBasicSettings", function() {
     return {
-      sample: function() {
-        console.log('Sample');
-      }
+      restrict: 'E',
+      templateUrl: "setting-basics.html"
     };
   });
-
-
+//  app.directive("settingTracker", function() {
+//    return {
+//      restrict: 'E',
+//      templateUrl: "settings-tracker.html"
+//    };
+//  });
 })();
