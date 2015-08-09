@@ -1,17 +1,19 @@
 {
   "dir_options": {
     "base_dir": "",
+    "data_dir": "test_data",
     "log_dir": "test_data",
-    "user_dir": "test_data",
+    "user_dir": "/home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/gumshoe",
     "torrent_dir": "test_data"
   },
   "irc_channel": {
+    "owner": "BitMeTV",
     "nick": "test",
     "key": "testkey",
     "server": "localhost",
     "port": 6626,
     "log_irc": true,
-    "invite_cmd": "/MSG BitMeTV !invite $nick $key",
+    "invite_cmd": "!invite %nick% %key%",
     "watch_channel": "#announce",
     "announce_regex": "BitMeTV-IRC2RSS%3A%20(%3FP%3Ctitle%3E.*%3F)%20%3A%20(%3FP%3Curl%3E.*)",
     "episode_regex": "(%5B%5C%5C%5C%5Cw%5C%5C%5C%5Cd%5C%5C%5C%5Cs.%5D%2B)%5B.%20%5D(%3F%3As(%5C%5C%5C%5Cd%7B1%2C2%7D)e(%5C%5C%5C%5Cd%7B1%2C2%7D)%7C(%5C%5C%5C%5Cd)x%3F(%5C%5C%5C%5Cd%7B2%7D)%7CStar.Wars)(%5B.%20%5D)"
