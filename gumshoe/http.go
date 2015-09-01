@@ -54,23 +54,45 @@ func deleteShow(res http.ResponseWriter, params martini.Params) string {
 		show := Show{ID: id}
 		err = DeleteShow(show)
 	}
+  if err != nil {
+    res.WriteHeader(500)
+  }
 	return render(res, err)
 }
 
-func getConfigs(res http.ResponseWriter, params martini.Params) string {
-  return "getConfigs"
+func getEpisodes(res http.ResponseWriter, params martini.Params) string {
+  sid, err := strconv.ParseInt(params["id"], 10, 64)
+  if err != nil {
+    res.WriteHeader(500)
+    return render(res, err)
+  }
+  e, err := GetEpisodesByShowID(sid)
+  if err != nil {
+    res.WriteHeader(500)
+    return render(res, err)
+  }
+  return render(res, e)
 }
 
-func createConfig() string {
-	return "createConfig"
+func getConfig(res http.ResponseWriter, params martini.Params) string {
+  if s, ok := params["section"]; ok {
+    o, err := tc.GetConfigOption(s)
+    if err != nil {
+      res.WriteHeader(500)
+      err.Error()
+    }
+    return asJson(res, o)
+  }
+  o, err := json.Marshal(tc)
+  if err != nil {
+    res.WriteHeader(500)
+    return "Invalid Config"
+  }
+  return asJson(res, o)
 }
 
 func updateConfig() string {
 	return "updateConfig"
-}
-
-func deleteConfig() string {
-	return "deleteConfig"
 }
 
 func getQueueItems() string {
@@ -85,14 +107,24 @@ func deleteQueueItem() string {
 	return "deleteQueueItem"
 }
 
-func getStatus() string {
-	return "OK"
+func getStatus(res http.ResponseWriter) string {
+  //_, err := torrentClient.GetTorrents()
+  //if err != nil {
+  //  res.WriteHeader(500)
+  //  return err.Error()
+  //}
+  return "OK"
+}
+
+func getSettings(res http.ResponseWriter, params martini.Params) string {
+  return render(res, tc)
 }
 
 func render(res http.ResponseWriter, data interface{}) string {
 	thing, err := json.Marshal(data)
 	if err != nil {
-		panic(err)
+    res.WriteHeader(500)
+    return err.Error()
 	}
 	return asJson(res, thing)
 }
@@ -128,9 +160,12 @@ func StartHTTPServer(baseDir string, port string) {
 	m.NotFound(static, http.NotFound)
 
 	m.Get("/status", getStatus)
-	m.Get("/debug/vars", getVarz)
+  m.Get("/settings", getSettings)
+	m.Get("/vars", getVarz)
 
 	m.Get("/api/shows", getShows)
+  m.Get("/api/configs", getSettings)
+
 	m.Group("/api/show", func(r martini.Router) {
 		r.Get("/:id", getShow)
 		r.Post("/new", binding.Bind(Show{}), createShow)
@@ -138,12 +173,10 @@ func StartHTTPServer(baseDir string, port string) {
 		r.Delete("/delete/:id", deleteShow)
 	})
 
-	m.Group("/api/config", func(r martini.Router) {
-		r.Get("/", getConfigs)
-		r.Post("/new", createConfig)
-		r.Put("/update/:id", updateConfig)
-		r.Delete("/delete/:id", deleteConfig)
-	})
+  m.Group("/api/config", func(r martini.Router) {
+    r.Get("/:id", getConfig)
+    r.Post("/update", updateConfig)
+  })
 
 	m.Group("/api/queue", func(r martini.Router) {
 		r.Get("/:id", getQueueItems)

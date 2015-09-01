@@ -2,6 +2,7 @@ package gumshoe
 
 import (
 	"encoding/json"
+  "errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -63,6 +64,9 @@ type Download struct {
 	MaxRetries int    `json:"max_retries"`
 	QueueSize  int    `json:"queue_size"`
 	Secure     bool   `json:"is_secure"`
+  TorrentURL string `json:"torrent_url"`
+  TorrentUser string `json:"torrent_user"`
+  TorrentPass string `json:"torrent_pass"`
 }
 
 type TrackerConfig struct {
@@ -72,6 +76,22 @@ type TrackerConfig struct {
 	LastModified int64             `json:"last_modified"`
 	Operations   Operations        `json:"operations"`
 	// RSS          RSSChannel        `json:"rss_channel"`
+}
+
+type ConfigError struct {
+  E   error
+  prefix  string
+}
+
+func NewConfigError(e error, p string) *ConfigError {
+  return &ConfigError{
+    E: e,
+    prefix: p,
+  }
+}
+
+func (e *ConfigError) Error() string {
+  return fmt.Sprintf("%s: %s", e.prefix, e.E)
 }
 
 func NewTrackerConfig() *TrackerConfig {
@@ -123,60 +143,87 @@ func (tc *TrackerConfig) ProcessGumshoeCfgFile(c string) error {
 			return fmt.Errorf("Error unmarshaling configs: %s", err)
 		}
 	}
-	if err := tc.SetTrackerCookies(); err != nil {
-		return fmt.Errorf("Error setting cookiejar: %s", err)
-	}
+  if tc.Download.Secure {
+    if err := tc.SetTrackerCookies(); err != nil {
+		  return fmt.Errorf("Error setting cookiejar (CfgFile): %s", err.Error())
+	  }
+  }
 	return nil
 }
 
 func (tc *TrackerConfig) ProcessGumshoeCfgJson(j []byte) error {
 	err := json.Unmarshal(j, &tc)
 	if err != nil {
-		return fmt.Errorf("Invalid JSON: %s", err)
+		return errors.New(fmt.Sprintf("Invalid JSON: %s", err))
 	}
-	err = tc.SetTrackerCookies()
-	if err != nil {
-		return fmt.Errorf("Error setting cookiejar: %s", err)
-	}
+  if tc.Download.Secure {
+    err = tc.SetTrackerCookies()
+	  if err != nil {
+		  return errors.New(fmt.Sprintf("Error setting cookiejar: %s", err))
+	  }
+  }
 	return nil
 }
 
-func (tc *TrackerConfig) WriteGumshoeConfig(update []byte, f string) error {
+func (tc *TrackerConfig) UpdateGumshoeConfig(u []byte) *ConfigError {
+  err := json.Unmarshal(u, &tc)
+  if err != nil {
+    return NewConfigError(err, "Update is not a valid TrackerConfig JSON")
+  }
+  return nil
+}
+
+func (tc *TrackerConfig) WriteGumshoeConfig(f string) *ConfigError {
 	// This is for tests. The normal config file name is as follows.
-	cFile := "gumshoe_config.json"
+	cFile := "config.json"
 	if f != "" {
 		cFile = f
 	}
-	fullCfgFilepath := filepath.Join(tc.Directories["user_dir"], cFile)
-
-	err := json.Unmarshal(update, &tc)
-	if err != nil {
-		return err
-	}
-	ioutil.WriteFile(fullCfgFilepath, []byte(tc.String()), 0655)
+  b, err := json.Marshal(tc)
+  if err != nil {
+    return NewConfigError(err, "Encoding TrackerConfig to JSON")
+  }
+	ioutil.WriteFile(CreateLocalPath(tc, cFile), b, 0655)
 	return nil
 }
 
+func (tc *TrackerConfig) GetConfigOption(o string) ([]byte, error) {
+  switch {
+  case o == "dir_options":
+    return json.Marshal(tc.Directories)
+  case o == "operations":
+    return json.Marshal(tc.Operations)
+  case o == "download_params":
+    return json.Marshal(tc.Download)
+  case o == "irc_channel":
+    return json.Marshal(tc.IRC)
+  //case o == "rss_feed":
+  //  return json.Marshal(tc.RSSFeed)
+  default:
+    return nil, errors.New("Unknown Option")
+  }
+}
+
 type tempCookies struct {
-	Cookies []map[string]string
+  Cookies []map[string]string  `json:"cookies"`
 }
 
 // TODO(ryan): Learn a bit more about encryption, these files shouldn't just
 // be lying around.
-func (tc *TrackerConfig) SetTrackerCookies() error {
+func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 	if !tc.Download.Secure {
 		return nil
 	}
 	// decrypt file here
-	cjBuf, err := ioutil.ReadFile(CreateLocalPath("tracker.cj"))
+	cjBuf, err := ioutil.ReadFile(CreateLocalPath(tc, "tracker.cj"))
 	if err != nil {
-		return err
+		return NewConfigError(err, "Cookie File Not Exist")
 	}
 
 	cookies := &tempCookies{}
 	err = json.Unmarshal(cjBuf, &cookies)
 	if err != nil {
-		return err
+		return NewConfigError(err, "Unmarshal cookie JSON")
 	}
 
 	for _, cookie := range cookies.Cookies {
@@ -203,6 +250,6 @@ func GetTrackerCookies() []*http.Cookie {
 
 // An easy utility to generate the fully qualified path name of a given filename
 // in the user's data directory.
-func CreateLocalPath(fn string) string {
+func CreateLocalPath(tc *TrackerConfig, fn string) string {
 	return filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], fn)
 }
