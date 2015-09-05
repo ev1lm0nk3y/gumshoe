@@ -36,12 +36,17 @@ type Shows struct {
 }
 
 type Episode struct {
-	ID      int64     `json:"ID"`
+	ID      int64     `json:"id"`
+  ShowID  int64     `json:"show_id" binding:"required"`
 	Title   string    `json:"title" binding:"required"`
 	Season  int       `json:"season"`
 	Episode int       `json:"episode"`
 	AirDate string    `json:"airdate"`
 	Added   time.Time `json:"added"`
+}
+
+type Episodes struct {
+  Episodes []Episode
 }
 
 func newShow(t string, q string, e bool) *Show {
@@ -53,8 +58,9 @@ func newShow(t string, q string, e bool) *Show {
 	}
 }
 
-func newEpisode(t string, s, e int) *Episode {
+func newEpisode(sid int64, t string, s, e int) *Episode {
 	return &Episode{
+    ShowID:  sid,
 		Title:   t,
 		Season:  s,
 		Episode: e,
@@ -62,8 +68,9 @@ func newEpisode(t string, s, e int) *Episode {
 	}
 }
 
-func newDaily(t, d string) *Episode {
+func newDaily(sid int64, t, d string) *Episode {
 	return &Episode{
+    ShowID:  sid,
 		Title:   t,
 		AirDate: d,
 		Added:   time.Now(),
@@ -98,6 +105,13 @@ func LoadTestData() {
 func AddEpisode(episode *Episode) error {
 	err := showDB.Insert(episode)
 	return err
+}
+
+func GetEpisodesByShowID(id int64) (Episodes, error) {
+  var allE Episodes
+  e := Episode{ShowID: id}
+  _, err := showDB.Select(&allE.Episodes, "select * from episode where ShowID=?", e.ShowID)
+  return allE, err
 }
 
 func ListShows() (Shows, error) {
@@ -181,7 +195,7 @@ func IsNewEpisode(e []string) error {
 
 func unseenEpisode(show *Show, t, s, e string) (*Episode, error) {
 	if show.Episodal {
-		eCheck := newEpisode(t, GetInt(s), GetInt(e))
+		eCheck := newEpisode(show.ID, t, GetInt(s), GetInt(e))
 		err := showDB.SelectOne(&eCheck,
 			"select * from episodes where Title=? and Season=? and Episode=?",
 			t, GetInt(s), GetInt(e))
@@ -195,7 +209,7 @@ func unseenDaily(show *Show, t, eDetails string) (*Episode, error) {
 		dRegexp, _ := regexp.Compile("^.*(\\d{4}\\.\\d{2}\\.\\d{2}).+$")
 		date := dRegexp.FindString(eDetails)
 		if date != "" {
-			eCheck := newDaily(t, date)
+			eCheck := newDaily(show.ID, t, date)
 			err := showDB.SelectOne(&eCheck,
 				"select * from episodes where Title=? and AirDate=?",
 				t, date)

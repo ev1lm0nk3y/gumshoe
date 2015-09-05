@@ -64,6 +64,9 @@ type Download struct {
 	MaxRetries int    `json:"max_retries"`
 	QueueSize  int    `json:"queue_size"`
 	Secure     bool   `json:"is_secure"`
+  TorrentURL string `json:"torrent_url"`
+  TorrentUser string `json:"torrent_user"`
+  TorrentPass string `json:"torrent_pass"`
 }
 
 type TrackerConfig struct {

@@ -96,13 +96,10 @@ func msgToUser(e *irc.Event) {
 		} else if strings.Contains(msg, "assword") {
 			ircStatus.Set("Nick Registered")
 		}
-	} else if e.User == tc.IRC.ChannelOwner {
-		if strings.Contains(msg, "invite") {
-			go handleInvite(e)
-		} else {
-			log.Print(msg)
-		}
-	}
+	} else {
+    PrintDebugf("msgToUser: checking message for show announcement.")
+    go matchAnnounce(e)
+  }
 }
 
 func matchAnnounce(e *irc.Event) {
@@ -110,8 +107,10 @@ func matchAnnounce(e *irc.Event) {
 	metricUpdate <- time.Now().Unix()
 	aMatch := announceLine.FindStringSubmatch(e.Message())
 	if aMatch != nil {
+    PrintDebugln("matchAnnounce: IRC message is a valid announce line.")
 		eMatch := episodePattern.FindStringSubmatch(aMatch[1])
 		if eMatch != nil {
+      PrintDebugln("matchAnnounce: IRC message is a valid episode pattern.")
 			// Want to make sure we don't attempt to read/write to the Db at the same
 			// time, so during the next call, we block all other updates.
 			checkDBLock <- 1
@@ -152,7 +151,7 @@ func _InitIRC() {
 	// Callbacks for various IRC events.
 	ircClient.AddCallback("invite", handleInvite)
 	ircClient.AddCallback("msg", matchAnnounce)
-	ircClient.AddCallback("privmsg", msgToUser)
+	ircClient.AddCallback("privmsg", matchAnnounce)
 
 	ar, _ := url.QueryUnescape(tc.IRC.AnnounceRegexp)
 	announceLine = regexp.MustCompile(ar)
