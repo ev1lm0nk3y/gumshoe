@@ -52,8 +52,8 @@ func (mt *MockTime) Sleep(t time.Duration) {
 
 func setUp() {
 	tc.LoadGumshoeConfig(configFile)
-	testUrls, err := ioutil.ReadFile(filepath.Join(pwd, "test_data", "test_urls"))
 	testDataDir = filepath.Join(pwd, "test_data")
+	testUrls, err := ioutil.ReadFile(filepath.Join(testDataDir, "test_urls"))
 	if err != nil {
 		fmt.Print(err)
     os.Exit(5)
@@ -86,7 +86,7 @@ func TestSetClientCookie(t *testing.T) {
 		HttpClient: &http.Client{},
 		Url:        tUrl}
 	tj, _ := cookiejar.New(nil)
-	tj.SetCookies(ff.Url, tc.Cookiejar)
+	tj.SetCookies(ff.Url, cj)
 	err := ff.SetClientCookie()
 	assert.Nil(t, err)
 	assert.Equal(t, ff.HttpClient.Jar, tj)
@@ -106,22 +106,22 @@ func TestRetrieveEpisode(t *testing.T) {
 	for episodeQueue.Len() > 0 {
 		f := episodeQueue.PopFront().(*FileFetch)
     err := f.RetrieveEpisode()
-		assert.Nil(t, err)
+		assert.NoError(t, err)
 		assert.NotEqual(t, lastFetch.String(), string(start.Unix()))
 		assert.NotNil(t, fetchResultMap.Get("200"))
 	}
   fetchResultMap.Do(func(kv expvar.KeyValue) {
     fmt.Printf("%s: %s\n", kv.Key, kv.Value.String())})
-	contents, err := ioutil.ReadDir(filepath.Join(pwd, "test_data"))
+	contents, err := ioutil.ReadDir(testDataDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 	torrents := []string{}
-	for f := range contents {
-		if contents[f].IsDir() || !strings.Contains(contents[f].Name(), ".torrent") {
+	for _, f := range contents {
+		if f.IsDir() || !strings.Contains(f.Name(), ".torrent") {
 			continue
 		}
-		torrents = append(torrents, contents[f].Name())
+		torrents = append(torrents, f.Name())
 	}
 	assert.Equal(t, len(urls), len(torrents))
 

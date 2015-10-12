@@ -7,7 +7,7 @@ import (
   "strings"
   "testing"
 
-  "github.com/ev1lm0nk3y/gumshoe/gumshoe"
+  //  "github.com/ev1lm0nk3y/gumshoe/gumshoe"
   "github.com/stretchr/testify/assert"
   "github.com/stretchr/testify/mock"
 )
@@ -19,15 +19,15 @@ var (
   malformedConfigFile = filepath.Join(pwd, "test_data", "malformed.json")
 )
 
-var tc_test = &gumshoe.TrackerConfig{
+var tc_test = &TrackerConfig{
   Directories: map[string]string{
     "base_dir": "",
     "data_dir": "test_data",
     "log_dir": "test_data",
     "user_dir": pwd,
-    "torrent_dir": "test_data",
+    "torrent_dir": filepath.Join(pwd, "test_data"),
   },
-  IRC: gumshoe.IRCChannel{
+  IRC: IRCChannel{
     ChannelOwner: "BitMeTV",
     Nick: "test",
     Key: "testkey",
@@ -37,16 +37,16 @@ var tc_test = &gumshoe.TrackerConfig{
     InviteCmd: "!invite %nick% %key%",
     WatchChannel: "#announce",
     AnnounceRegexp: "BitMeTV-IRC2RSS%3A%20(%3FP%3Ctitle%3E.*%3F)%20%3A%20(%3FP%3Curl%3E.*)",
-    EpisodeRegexp: "(%5B%5C%5C%5C%5Cw%5C%5C%5C%5Cd%5C%5C%5C%5Cs.%5D%2B)%5B.%20%5D(%3F%3As(%5C%5C%5C%5Cd%7B1%2C2%7D)e(%5C%5C%5C%5Cd%7B1%2C2%7D)%7C(%5C%5C%5C%5Cd)x%3F(%5C%5C%5C%5Cd%7B2%7D)%7CStar.Wars)(%5B.%20%5D)",
+    EpisodeRegexp: "%28%5C%5CS%2B%29%5C%5C.%28%3Fi%3As%28%5C%5Cd%7B2%7D%29e%28%5C%5Cd%7B2%7D%29%7C%28%5C%5Cd%7B4%7D.%5C%5Cd%7B2%7D.%5C%5Cd%7B2%7D%29%7C%28%5C%5Cd%29x%3F%28%5C%5Cd%7B2%7D%29%29%5C%5C.%28.%2B%29%3F%5C%5C.%3F%28%3Fi%3A720p%7C1080p%29%3F%5C%5C.%3F%28%3Fi%3Ahdtv%7Cweb.%2B%29%5C%5C..%2B%5C%5C.torrent",
   },
-  Download: gumshoe.Download{
+  Download: Download{
     Tracker: "localhost",
     Rate: 20,
     Secure: false,
     QueueSize: 1,
     MaxRetries: 3,
   },
-  Operations: gumshoe.Operations{
+  Operations: Operations{
     EnableLog: true,
     EnableWeb: true,
     HttpPort: "8080",
@@ -60,7 +60,7 @@ var tc_test = &gumshoe.TrackerConfig{
 
 type MockTrackerConfig struct {
   mock.Mock
-  mtc *gumshoe.TrackerConfig
+  mtc *TrackerConfig
 }
 
 func (m *MockTrackerConfig) ProcessGumshoeCfgFile(c string) error {
@@ -70,24 +70,24 @@ func (m *MockTrackerConfig) ProcessGumshoeCfgFile(c string) error {
 
 /*func (m *MockTrackerConfig) LoadGumshoeConfig(c string) error {
   args := m.Called(c)
-  rtc := gumshoe.NewTrackerConfig()
+  rtc := NewTrackerConfig()
   err := rtc.LoadGumshoeConfig(args.String(0))
   return err
 }*/
 
 func TestLoadGumshoeConfig_success(t *testing.T) {
-  mtc := gumshoe.NewTrackerConfig()
+  mtc := NewTrackerConfig()
   tErr := mtc.LoadGumshoeConfig(configFile)
   assert.Nil(t, tErr)
 }
 
 func TestLoadGumshoeCfgFile_failure(t *testing.T) {
-  mtc := gumshoe.NewTrackerConfig()
+  mtc := NewTrackerConfig()
   assert.NotNil(t, mtc.LoadGumshoeConfig(badConfigFile))
 }
 
 func TestProcessGumshoeCfgFile_success(t *testing.T) {
-  tc := gumshoe.NewTrackerConfig()
+  tc := NewTrackerConfig()
   if !assert.Nil(t, tc.ProcessGumshoeCfgFile(configFile)) {
     t.Error("Errors seen while processing config file.")
   }
@@ -98,14 +98,14 @@ func TestProcessGumshoeCfgFile_success(t *testing.T) {
 
 func TestProcessGumshoeCfgFile_failure(t *testing.T) {
   mtc := new(MockTrackerConfig)
-  mtc.mtc = gumshoe.NewTrackerConfig()
+  mtc.mtc = NewTrackerConfig()
   assert.NotNil(t, mtc.mtc.ProcessGumshoeCfgFile(badConfigFile))
   mtc.AssertNumberOfCalls(t, "json.Unmarshal", 0)
 }
 
 func TestProcessGumshoeCfgJson_success(t *testing.T) {
   o, _ := json.MarshalIndent(tc_test, "", "\t")
-  tc := gumshoe.NewTrackerConfig()
+  tc := NewTrackerConfig()
   err := tc.ProcessGumshoeCfgJson(o)
   if !assert.Nil(t, err) {
     t.Error(err)
@@ -116,7 +116,7 @@ func TestProcessGumshoeCfgJson_success(t *testing.T) {
 }
 
 func TestProcessGumshoeCfgJson_failure(t *testing.T) {
-  tc := gumshoe.NewTrackerConfig()
+  tc := NewTrackerConfig()
   tJson := []byte("{ 'unknown': { 'foo': 'bar', 'baz': false }}")
   err := tc.ProcessGumshoeCfgJson(tJson)
   if !assert.NotNil(t, err) {
@@ -127,7 +127,7 @@ func TestProcessGumshoeCfgJson_failure(t *testing.T) {
 func TestCreateLocalPath(t *testing.T) {
   tc_test.Directories["user_dir"] = pwd
   tc_test.Directories["data_dir"] = "test_data"
-  clp := gumshoe.CreateLocalPath(tc_test, "config.json")
+  clp := CreateLocalPath(tc_test, "config.json")
   if !assert.Equal(t, clp, configFile) {
     t.Errorf("Results to not match:\n\tExpected: %s\n\tActual:   %s\n", configFile, clp)
   }
@@ -152,7 +152,7 @@ func TestWriteGumshoeConfig(t *testing.T) {
 
 func TestSetTrackerCookies(t *testing.T) {
   mtc := new(MockTrackerConfig)
-  mtc.mtc = gumshoe.NewTrackerConfig()
+  mtc.mtc = NewTrackerConfig()
   assert.Nil(t, mtc.mtc.LoadGumshoeConfig(configFile))
   mtc.mtc.Download.Secure = true
   mtc.mtc.Directories["data_dir"] = "test_data"
@@ -163,7 +163,7 @@ func TestSetTrackerCookies(t *testing.T) {
   expected := []string{"user=tester; Path=/; Domain=test.com; Expires=Fri, 27 Mar 2015 17:12:53 UTC",
                        "pass=thistest; Path=/; Domain=test.com; Expires=DatePastHereMakesNoDifference"}
 
-  for i, cookie := range gumshoe.GetTrackerCookies() {
+  for i, cookie := range GetTrackerCookies() {
     assert.Equal(t, strings.LastIndex(expected[i], "="), strings.LastIndex(cookie.String(), "="))
   }
 }

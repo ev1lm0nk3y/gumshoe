@@ -94,8 +94,7 @@ func AddEpisodeToQueue(link string) error {
 		return err
 	}
 	_, dlFile := filepath.Split(u.RequestURI())
-	s := filepath.Join(tc.Directories["user_dir"], tc.Directories["fetch_dir"], dlFile)
-	ff.SaveLocation = s
+	ff.SaveLocation = filepath.Join(tc.Directories["torrent_dir"], string(dlFile[len(dlFile)-1]))
 	episodeQueue.PushBack(ff)
   return nil
 }

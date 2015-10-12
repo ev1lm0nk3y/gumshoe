@@ -34,7 +34,8 @@ func getShow(res http.ResponseWriter, params martini.Params) string {
 }
 
 func createShow(res http.ResponseWriter, params martini.Params, show Show) string {
-	err := AddShow(show.Title, show.Quality, show.Episodal)
+	newShow := newShow(show.Title, show.Quality, show.Episodal)
+  err := newShow.AddShow()
 	return render(res, err)
 }
 
@@ -43,7 +44,7 @@ func updateShow(res http.ResponseWriter, params martini.Params, show Show) strin
 	if err == nil {
 		temp := newShow(show.Title, show.Quality, show.Episodal)
 		temp.ID = id
-		err = UpdateShow(*temp)
+		err = temp.UpdateShow()
 	}
 	return render(res, err)
 }
@@ -51,8 +52,8 @@ func updateShow(res http.ResponseWriter, params martini.Params, show Show) strin
 func deleteShow(res http.ResponseWriter, params martini.Params) string {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err == nil {
-		show := Show{ID: id}
-		err = DeleteShow(show)
+		show := &Show{ID: id}
+		err = show.DeleteShow()
 	}
   if err != nil {
     res.WriteHeader(500)
