@@ -7,20 +7,19 @@
 package gumshoe
 
 import (
-  "fmt"
 	"errors"
+	"fmt"
 	"regexp"
-  "strings"
+	"strings"
 	"time"
 )
 
 var (
 	// Regexp to determine if the announce regexp matches a known episode structure
 	episodePattern *regexp.Regexp
-  // Quickly determine the quality of the show with this regex
-  episodeQualityRegexp = regexp.MustCompile("720p|1080p")
+	// Quickly determine the quality of the show with this regex
+	episodeQualityRegexp = regexp.MustCompile("720p|1080p")
 )
-
 
 type Episode struct {
 	ID      int64  `json:"id"`
@@ -53,24 +52,24 @@ func newDaily(sid int64, t, d string) *Episode {
 
 // Start User Functions
 func (e *Episode) AddEpisode() error {
-  e.Added = time.Now().UnixNano()
+	e.Added = time.Now().UnixNano()
 	return gDb.Insert(e)
 }
 
 func (e *Episode) IsNewEpisode() bool {
-  err := gDb.SelectOne(&Episode{}, "select ID from episode where ShowID=? and Season=? and Episode=? and AirDate=?",
-      e.ShowID, e.Season, e.Episode, e.AirDate)
-  if err == nil {
-    return false
-  }
-  return true
+	err := gDb.SelectOne(&Episode{}, "select ID from episode where ShowID=? and Season=? and Episode=? and AirDate=?",
+		e.ShowID, e.Season, e.Episode, e.AirDate)
+	if err == nil {
+		return false
+	}
+	return true
 }
 
 func (e *Episode) ValidEpisodeQuality(s string) bool {
 	isHDTV := episodeQualityRegexp.MatchString(s)
-  show, _ := GetShow(e.ShowID)
+	show, _ := GetShow(e.ShowID)
 	if show.Quality == "420" || show.Quality == "" {
-    return !isHDTV
+		return !isHDTV
 	} else {
 		return show.Quality == episodeQualityRegexp.FindString(s)
 	}
@@ -83,31 +82,31 @@ func GetEpisodesByShowID(id int64) (*[]Episode, error) {
 }
 
 func ParseTorrentString(e string) (*Episode, error) {
-  eMatch := episodePattern.FindStringSubmatch(e)
-  if eMatch == nil {
-    return nil, errors.New(fmt.Sprintf("This isn't an episode: %s", e))
-  }
-  st := episodeRewriter(eMatch[1])
-  sid, err := GetShowByTitle(st)
-  if err != nil {
-    return nil, errors.New(fmt.Sprintf("Show %s is not being tracked.", st))
-  }
-  episode := &Episode{
-    ShowID: sid.ID,
-    Title: eMatch[7],
-  }
-  if eMatch[4] != "" {
-    episode.AirDate = eMatch[4]
-  } else {
-    if eMatch[2] != "" {
-      episode.Season = GetInt(eMatch[2])
-      episode.Episode = GetInt(eMatch[3])
-    } else {
-      episode.Season = GetInt(eMatch[5])
-      episode.Episode = GetInt(eMatch[6])
-    }
-  }
-  return episode, nil
+	eMatch := episodePattern.FindStringSubmatch(e)
+	if eMatch == nil {
+		return nil, errors.New(fmt.Sprintf("This isn't an episode: %s", e))
+	}
+	st := episodeRewriter(eMatch[1])
+	sid, err := GetShowByTitle(st)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Show %s is not being tracked.", st))
+	}
+	episode := &Episode{
+		ShowID: sid.ID,
+		Title:  eMatch[7],
+	}
+	if eMatch[4] != "" {
+		episode.AirDate = eMatch[4]
+	} else {
+		if eMatch[2] != "" {
+			episode.Season = GetInt(eMatch[2])
+			episode.Episode = GetInt(eMatch[3])
+		} else {
+			episode.Season = GetInt(eMatch[5])
+			episode.Episode = GetInt(eMatch[6])
+		}
+	}
+	return episode, nil
 }
 
 // End User Functions

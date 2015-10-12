@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-  "net/http/cookiejar"
+	"net/http/cookiejar"
 	"net/url"
-  "os"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -56,7 +56,7 @@ func setUp() {
 	testUrls, err := ioutil.ReadFile(filepath.Join(testDataDir, "test_urls"))
 	if err != nil {
 		fmt.Print(err)
-    os.Exit(5)
+		os.Exit(5)
 	}
 	urls = bytes.Split(bytes.TrimSpace(testUrls), []byte("\n"))
 
@@ -76,13 +76,13 @@ func tearDown() {
 	tc = NewTrackerConfig()
 	testDataDir = ""
 	urls = [][]byte{}
-  mhc = &MockHttpClient{}
+	mhc = &MockHttpClient{}
 	mt = &MockTime{}
 }
 
 func TestSetClientCookie(t *testing.T) {
-  tUrl, _ := url.Parse("http://www.evilshatner.com/download.php/344551/conan.2015.03.26.will.ferrell.hdtv.x264-daview.mp4.torrent")
-  ff := &FileFetch{
+	tUrl, _ := url.Parse("http://www.evilshatner.com/download.php/344551/conan.2015.03.26.will.ferrell.hdtv.x264-daview.mp4.torrent")
+	ff := &FileFetch{
 		HttpClient: &http.Client{},
 		Url:        tUrl}
 	tj, _ := cookiejar.New(nil)
@@ -95,23 +95,24 @@ func TestSetClientCookie(t *testing.T) {
 func TestRetrieveEpisode(t *testing.T) {
 	setUp()
 	start := time.Now()
-  var num_episodes int
+	var num_episodes int
 	for _, u := range urls {
 		err := AddEpisodeToQueue(string(u))
-    if err != nil {
-		  t.Fatal(err)
-    }
-    num_episodes = num_episodes + 1
+		if err != nil {
+			t.Fatal(err)
+		}
+		num_episodes = num_episodes + 1
 	}
 	for episodeQueue.Len() > 0 {
 		f := episodeQueue.PopFront().(*FileFetch)
-    err := f.RetrieveEpisode()
+		err := f.RetrieveEpisode()
 		assert.NoError(t, err)
 		assert.NotEqual(t, lastFetch.String(), string(start.Unix()))
 		assert.NotNil(t, fetchResultMap.Get("200"))
 	}
-  fetchResultMap.Do(func(kv expvar.KeyValue) {
-    fmt.Printf("%s: %s\n", kv.Key, kv.Value.String())})
+	fetchResultMap.Do(func(kv expvar.KeyValue) {
+		fmt.Printf("%s: %s\n", kv.Key, kv.Value.String())
+	})
 	contents, err := ioutil.ReadDir(testDataDir)
 	if err != nil {
 		t.Fatal(err)
@@ -130,23 +131,23 @@ func TestRetrieveEpisode(t *testing.T) {
 	assert.True(t, int64(lft) >= start.Unix(), "Timestamp not updated.\n\tStarted: %d\n\tTimestamp: %d", start.Unix(), lft)
 	st := strconv.Itoa(len(torrents))
 	assert.Equal(t, fmt.Sprintf("{\"200\": %s}", st), expvar.Get("fetch_results").String())
-  tearDown()
+	tearDown()
 }
 
 func TestUpdateResultMap(t *testing.T) {
 	fetchResultMap = expvar.NewMap("test_fetch_results").Init()
-  UpdateResultMap("ryan")
+	UpdateResultMap("ryan")
 	UpdateResultMap("daniel")
 	UpdateResultMap("ryan")
 	UpdateResultMap("monkeys")
 	fetchResultMap.Do(func(kv expvar.KeyValue) {
 		if kv.Key == "ryan" {
 			assert.Equal(t, kv.Value.String(), "2")
-    } else if kv.Key == "daniel" {
+		} else if kv.Key == "daniel" {
 			assert.Equal(t, kv.Value.String(), "1")
-    } else if kv.Key == "monkeys" {
+		} else if kv.Key == "monkeys" {
 			assert.Equal(t, kv.Value.String(), "1")
-    } else {
+		} else {
 			t.Fatal("A value in the result map is messing things up.")
 		}
 	})

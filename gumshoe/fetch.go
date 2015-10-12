@@ -1,7 +1,7 @@
 package gumshoe
 
 import (
-  "errors"
+	"errors"
 	"expvar"
 	"fmt"
 	"io/ioutil"
@@ -10,7 +10,7 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"os"
-  "path/filepath"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -23,7 +23,7 @@ var (
 	queueDepth     int
 	episodeQueue   *fifo_queue.Queue
 	downloader_on  = make(chan bool)
-  process_queue  = make(chan bool)
+	process_queue  = make(chan bool)
 )
 
 func init() {
@@ -64,7 +64,7 @@ func (ff *FileFetch) RetrieveEpisode() error {
 	}
 	lastFetch.Set(time.Now().Unix())
 	UpdateResultMap(strconv.Itoa(resp.StatusCode))
-  return nil
+	return nil
 }
 
 func (ff *FileFetch) Print() string {
@@ -77,7 +77,7 @@ func UpdateResultMap(r string) {
 		fr := expvar.NewInt(r)
 		fr.Set(int64(1))
 		fetchResultMap.Set(r, fr)
-    return
+		return
 	}
 	fetchResultMap.Add(r, 1)
 }
@@ -96,42 +96,42 @@ func AddEpisodeToQueue(link string) error {
 	_, dlFile := filepath.Split(u.RequestURI())
 	ff.SaveLocation = filepath.Join(tc.Directories["torrent_dir"], string(dlFile[len(dlFile)-1]))
 	episodeQueue.PushBack(ff)
-  return nil
+	return nil
 }
 
 func StartDownloader() {
-  log.Println("Downloader starting.")
+	log.Println("Downloader starting.")
 	go func() {
 		for {
-      process_queue<- (episodeQueue.Len() > 0)
-      select {
-      case on := <-downloader_on:
+			process_queue <- (episodeQueue.Len() > 0)
+			select {
+			case on := <-downloader_on:
 				if episodeQueue.Len() > 0 && !on {
 					log.Println("Waiting for %d items to finish downloading.", episodeQueue.Len())
 					time.Sleep(time.Second * time.Duration(tc.Download.Rate))
-          continue
+					continue
 				}
 				return
-      case do := <-process_queue:
+			case do := <-process_queue:
 				queueDepth = episodeQueue.Len()
-        if do {
-          f := episodeQueue.PopFront().(*FileFetch)
-				  time.Sleep(time.Duration(GetRandom(int64(tc.Download.Rate)).Int63()))
+				if do {
+					f := episodeQueue.PopFront().(*FileFetch)
+					time.Sleep(time.Duration(GetRandom(int64(tc.Download.Rate)).Int63()))
 					err := f.RetrieveEpisode()
 					if err != nil {
 						log.Println("[%s] Download Error: %s", time.Now().Format("2015-05-30 08:23:45"), err)
 						UpdateResultMap("download_errors")
 					}
 					lastFetch.Set(time.Now().Unix())
-        }
+				}
 			default:
 				time.Sleep(time.Minute * 5)
-        process_queue<- false
+				process_queue <- false
 			}
 		}
 	}()
 	downloader_on <- true
-  process_queue <- false
+	process_queue <- false
 }
 
 func StopDownloader() {

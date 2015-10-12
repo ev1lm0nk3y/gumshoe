@@ -17,8 +17,8 @@ import (
 var (
 	// Regexp for messages from IRC channel announcing something to do something about
 	announceLine *regexp.Regexp
-  // Regexp to determine if the announce regexp matches a known daily episode structure
-  //dailyPattern *regexp.Regexp
+	// Regexp to determine if the announce regexp matches a known daily episode structure
+	//dailyPattern *regexp.Regexp
 	// Time, in ms, when the connection to the IRC server was established
 	ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
 	// Time, in ms, when the channel was last updated
@@ -97,9 +97,9 @@ func msgToUser(e *irc.Event) {
 			ircStatus.Set("Nick Registered")
 		}
 	} else {
-    PrintDebugf("msgToUser: checking message for show announcement.")
-    go matchAnnounce(e)
-  }
+		PrintDebugf("msgToUser: checking message for show announcement.")
+		go matchAnnounce(e)
+	}
 }
 
 func matchAnnounce(e *irc.Event) {
@@ -107,23 +107,23 @@ func matchAnnounce(e *irc.Event) {
 	metricUpdate <- time.Now().Unix()
 	aMatch := announceLine.FindStringSubmatch(e.Message())
 	if aMatch != nil {
-    PrintDebugln("matchAnnounce: IRC message is a valid announce line.")
-    ep, err := ParseTorrentString(aMatch[1])
-    if err != nil {
-      PrintDebugf("Error parsing string: %s\n", err)
-      return
-    }
+		PrintDebugln("matchAnnounce: IRC message is a valid announce line.")
+		ep, err := ParseTorrentString(aMatch[1])
+		if err != nil {
+			PrintDebugf("Error parsing string: %s\n", err)
+			return
+		}
 		// Want to make sure we don't attempt to read/write to the Db at the same
 		// time, so during the next call, we block all other updates.
 		checkDBLock <- 1
-    if ep.IsNewEpisode() && ep.ValidEpisodeQuality(aMatch[1]) {
-      AddEpisodeToQueue(aMatch[2])
-      err := ep.AddEpisode()
-      if err != nil {
-        log.Printf("Episode is downloading, but didn't update the db: %s\n", err)
-      }
-    }
-    <-checkDBLock
+		if ep.IsNewEpisode() && ep.ValidEpisodeQuality(aMatch[1]) {
+			AddEpisodeToQueue(aMatch[2])
+			err := ep.AddEpisode()
+			if err != nil {
+				log.Printf("Episode is downloading, but didn't update the db: %s\n", err)
+			}
+		}
+		<-checkDBLock
 	}
 }
 
@@ -158,7 +158,7 @@ func _InitIRC() {
 
 	ar, _ := url.QueryUnescape(tc.IRC.AnnounceRegexp)
 	announceLine = regexp.MustCompile(ar)
-  //dailyPattern = regexp.MustCompile("([\\\\w\\\\d\\\\s]+)\\\\.(\\\\d{4}\\\\.\\\\d{2}\\\\.\\\\d{2})(.+)\\\\.([1080p|720p|HDTV|hdtv]).+$")
+	//dailyPattern = regexp.MustCompile("([\\\\w\\\\d\\\\s]+)\\\\.(\\\\d{4}\\\\.\\\\d{2}\\\\.\\\\d{2})(.+)\\\\.([1080p|720p|HDTV|hdtv]).+$")
 	ircStatus.Set("Ready")
 }
 

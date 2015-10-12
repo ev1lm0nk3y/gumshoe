@@ -13,11 +13,11 @@ package gumshoe
 import "time"
 
 type Show struct {
-	ID         int64     `json:"ID,omitempty"`
-	Title      string    `json:"title" binding:"required"`
-	Quality    string    `json:"quality"`
-	Episodal   bool      `json:"episodal"`
-	LastUpdate int64     `json:"last_update"`
+	ID         int64  `json:"ID,omitempty"`
+	Title      string `json:"title" binding:"required"`
+	Quality    string `json:"quality"`
+	Episodal   bool   `json:"episodal"`
+	LastUpdate int64  `json:"last_update"`
 }
 
 func newShow(t, q string, e bool) *Show {
