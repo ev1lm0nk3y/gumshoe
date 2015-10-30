@@ -2,7 +2,7 @@ package gumshoe
 
 import (
 	"encoding/json"
-  "errors"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -46,7 +46,6 @@ type RSSFeed struct {
 	RssTtl        int    `json:"ttl"`
 	UseServerTtl  bool   `json:"use_server_ttl"`
 	EpisodeRegexp string `json:"episode_regex"`
-	CookieFile    string `json:"cookie_file"`
 }
 
 type Operations struct {
@@ -59,14 +58,15 @@ type Operations struct {
 }
 
 type Download struct {
-	Tracker    string `json:"tracker"`
-	Rate       int    `json:"download_rate"`
-	MaxRetries int    `json:"max_retries"`
-	QueueSize  int    `json:"queue_size"`
-	Secure     bool   `json:"is_secure"`
-  TorrentURL string `json:"torrent_url"`
-  TorrentUser string `json:"torrent_user"`
-  TorrentPass string `json:"torrent_pass"`
+	Tracker     string `json:"tracker"`
+	Rate        int    `json:"download_rate"`
+	MaxRetries  int    `json:"max_retries"`
+	QueueSize   int    `json:"queue_size"`
+	Secure      bool   `json:"is_secure"`
+	CookieFile  string `json:"cookie_file"`
+	TorrentURL  string `json:"torrent_url"`
+	TorrentUser string `json:"torrent_user"`
+	TorrentPass string `json:"torrent_pass"`
 }
 
 type TrackerConfig struct {
@@ -79,19 +79,19 @@ type TrackerConfig struct {
 }
 
 type ConfigError struct {
-  E   error
-  prefix  string
+	E      error
+	prefix string
 }
 
 func NewConfigError(e error, p string) *ConfigError {
-  return &ConfigError{
-    E: e,
-    prefix: p,
-  }
+	return &ConfigError{
+		E:      e,
+		prefix: p,
+	}
 }
 
 func (e *ConfigError) Error() string {
-  return fmt.Sprintf("%s: %s", e.prefix, e.E)
+	return fmt.Sprintf("%s: %s", e.prefix, e.E)
 }
 
 func NewTrackerConfig() *TrackerConfig {
@@ -143,11 +143,11 @@ func (tc *TrackerConfig) ProcessGumshoeCfgFile(c string) error {
 			return fmt.Errorf("Error unmarshaling configs: %s", err)
 		}
 	}
-  if tc.Download.Secure {
-    if err := tc.SetTrackerCookies(); err != nil {
-		  return fmt.Errorf("Error setting cookiejar (CfgFile): %s", err.Error())
-	  }
-  }
+	if tc.Download.Secure {
+		if err := tc.SetTrackerCookies(); err != nil {
+			return fmt.Errorf("Error setting cookiejar (CfgFile): %s", err.Error())
+		}
+	}
 	return nil
 }
 
@@ -156,21 +156,21 @@ func (tc *TrackerConfig) ProcessGumshoeCfgJson(j []byte) error {
 	if err != nil {
 		return errors.New(fmt.Sprintf("Invalid JSON: %s", err))
 	}
-  if tc.Download.Secure {
-    err = tc.SetTrackerCookies()
-	  if err != nil {
-		  return errors.New(fmt.Sprintf("Error setting cookiejar: %s", err))
-	  }
-  }
+	if tc.Download.Secure {
+		err = tc.SetTrackerCookies()
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error setting cookiejar: %s", err))
+		}
+	}
 	return nil
 }
 
 func (tc *TrackerConfig) UpdateGumshoeConfig(u []byte) *ConfigError {
-  err := json.Unmarshal(u, &tc)
-  if err != nil {
-    return NewConfigError(err, "Update is not a valid TrackerConfig JSON")
-  }
-  return nil
+	err := json.Unmarshal(u, &tc)
+	if err != nil {
+		return NewConfigError(err, "Update is not a valid TrackerConfig JSON")
+	}
+	return nil
 }
 
 func (tc *TrackerConfig) WriteGumshoeConfig(f string) *ConfigError {
@@ -179,33 +179,33 @@ func (tc *TrackerConfig) WriteGumshoeConfig(f string) *ConfigError {
 	if f != "" {
 		cFile = f
 	}
-  b, err := json.Marshal(tc)
-  if err != nil {
-    return NewConfigError(err, "Encoding TrackerConfig to JSON")
-  }
+	b, err := json.Marshal(tc)
+	if err != nil {
+		return NewConfigError(err, "Encoding TrackerConfig to JSON")
+	}
 	ioutil.WriteFile(CreateLocalPath(tc, cFile), b, 0655)
 	return nil
 }
 
 func (tc *TrackerConfig) GetConfigOption(o string) ([]byte, error) {
-  switch {
-  case o == "dir_options":
-    return json.Marshal(tc.Directories)
-  case o == "operations":
-    return json.Marshal(tc.Operations)
-  case o == "download_params":
-    return json.Marshal(tc.Download)
-  case o == "irc_channel":
-    return json.Marshal(tc.IRC)
-  //case o == "rss_feed":
-  //  return json.Marshal(tc.RSSFeed)
-  default:
-    return nil, errors.New("Unknown Option")
-  }
+	switch {
+	case o == "dir_options":
+		return json.Marshal(tc.Directories)
+	case o == "operations":
+		return json.Marshal(tc.Operations)
+	case o == "download_params":
+		return json.Marshal(tc.Download)
+	case o == "irc_channel":
+		return json.Marshal(tc.IRC)
+	//case o == "rss_feed":
+	//  return json.Marshal(tc.RSSFeed)
+	default:
+		return nil, errors.New("Unknown Option")
+	}
 }
 
 type tempCookies struct {
-  Cookies []map[string]string  `json:"cookies"`
+	Cookies []map[string]string `json:"cookies"`
 }
 
 // TODO(ryan): Learn a bit more about encryption, these files shouldn't just

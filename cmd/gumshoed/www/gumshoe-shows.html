@@ -13,7 +13,7 @@
       <fieldset class="form-group">
         <label for="episodal">Episodal</label>
         <select ng-model="showCtrl.newShow.episodal" class="form-control" name="episodal">
-          <option value="true">True</option>
+          <option value="true" selected>True</option>
           <option value="false">False</option>
         </select>
       </fieldset>
@@ -34,6 +34,7 @@
 					<th>Title</th>
 					<th>Quality</th>
 					<th>Episodal</th>
+          <th>Last Update</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
@@ -54,6 +55,9 @@
               <option value="false" ng-selected="!show.episodal">False</option>
             </select>
           </td>
+          <td>
+            <span ng-show="!showCtrl.isEditFormVisible($index)">{{show.last_updated}}</span>
+            <input ng-model="showCtrl.shows[$index].last_updated" ng-show="showCtrl.isEditFormVisible($index)" name="last_updated_$index" type="text" value="{{show.last_updated}}">
 					<td align="right">
 						<div ng-show="!showCtrl.isEditFormVisible($index)" class="btn-group" role="group" aria-label="Tools">
 							<button ng-click="showCtrl.showEditForm($index)" type="button" class="btn btn-default">

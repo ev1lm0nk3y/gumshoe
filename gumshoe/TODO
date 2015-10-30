@@ -1,11 +1,4 @@
-
 + integrate martini
-- define structs/ORM
-	- patterns
-	- shows
-		- layer shows on top of patterns
-  - state tracker
-	- config
 - implement Watcher interfaces
 	- rss
 		- low priority (slow updates)
