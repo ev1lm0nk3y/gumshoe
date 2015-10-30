@@ -17,8 +17,6 @@ import (
 var (
 	// Regexp for messages from IRC channel announcing something to do something about
 	announceLine *regexp.Regexp
-	// Regexp to determine if the announce regexp matches a known daily episode structure
-	//dailyPattern *regexp.Regexp
 	// Time, in ms, when the connection to the IRC server was established
 	ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
 	// Time, in ms, when the channel was last updated
@@ -158,7 +156,6 @@ func _InitIRC() {
 
 	ar, _ := url.QueryUnescape(tc.IRC.AnnounceRegexp)
 	announceLine = regexp.MustCompile(ar)
-	//dailyPattern = regexp.MustCompile("([\\\\w\\\\d\\\\s]+)\\\\.(\\\\d{4}\\\\.\\\\d{2}\\\\.\\\\d{2})(.+)\\\\.([1080p|720p|HDTV|hdtv]).+$")
 	ircStatus.Set("Ready")
 }
 

@@ -1,36 +1,44 @@
 (function() {
 	var app = angular.module('gumshoe', ['fundoo.services']);
 
-  app.controller('ConfigController', ['$scope', function($scope){
+  app.controller('ConfigController', ['$log', '$scope', function($log, $scope){
     var setCtrl = this;
     setCtrl.current = {};
     setCtrl.updates = [];
+    setCtrl.preventNav = false;
 
     $.getJSON("/settings")
       .done(function( json ) {
         setCtrl.current = json;
         $scope.user_dir = json.dir_options["user_dir"];
-        $scope.fetch_dir = $scope.user_dir + "/" + json.dir_options["fetch_dir"];
-        $scope.download_dir = $scope.user_dir + "/" + json.dir_options["download_dir"];
-        $scope.log_dir = $scope.user_dir + "/" + json.dir_options["log_dir"];
-        $scope.enable_logging = json.operations["enable_logging"];
-        $scope.email = json.operations["email"];
-        $scope.enable_web = json.operations["enable_web"];
-        $scope.http_port = json.operations["http_port"];
+        $scope.fetch_dir = json.dir_options["fetch_dir"];
+        $scope.download_dir = json.dir_options["download_dir"];
+        $scope.log_dir = json.dir_options["log_dir"];
+        $scope.ops = json.operations;
+        $scope.tracker = json.download_params
+        $scope.irc = json.irc_channel
       });
 
     this.UpdateConfig = function() {
-      var udict = {};
-      for (var i = 0; i < setCtrl.updates.length; i++) {
-        var elem = setCtrl.updates[i].split(".");
-        udict[elem[0]] = !(elem[0] in udict) ? {} : udict[elem[0]];
-        udict[elem[0]][elem[1]] = this.getElementsByName(setCtrl.updates[i]).value;
+      if ($scope.$pristine) {
+        $log.log("Nothing to update.");
+        return
       }
+      var sNew = setCtrl.current;
+      sNew.download_params = $scope.tracker;
+      sNew.operations = $scope.ops;
+      sNew.irc_channel = $scope.irc;
+      sNew.dir_options["user_dir"] = $scope.user_dir;
+      sNew.dir_options["fetch_dir"] = $scope.fetch_dir;
+      sNew.dir_options["download_dir"] = $scope.download_dir;
+      sNew.dir_options["log_dir"] = $scope.log_dir;
+
+      $log.log('Sending update now.');
       $.post({
         url: "/api/config/update",
         contentType: "application/json",
         async: true,
-        data: JSON.stringify(udict),
+        data: JSON.stringify(sNew),
         success: function() {
           this.getElementsByName("update_msg").hidden = false;
           setCtrl.updates = [];
@@ -42,9 +50,20 @@
       setCtrl.updates = [];
     };
 
-    this.UpdateField = function(field) {
-      setCtrl.updates.push(field.name);
+    this.UpdateEvent = function($event) {
+      $scope.preventNav = true;
+      setCtrl.updates.push($event.ngModel);
     };
+
+    this.ShowHint = function($event) {
+      // Raise tooltip box with text from a help file.
+      return;
+    };
+
+    $scope.$watch('gumshoe-tracker-settings', function(newValue, oldValue) {
+      $scope.cPendingBB = true;
+      // Do other things here to ensure settings get saved appropriately
+    });
   }]);
 
   app.controller('ShowController', ['$log', '$http', function($log, $http){
@@ -54,7 +73,7 @@
     var showAddForm = false;
 
     $http.get("/api/shows").success(function(data){
-      showCtrl.shows = data.Shows;
+      showCtrl.shows = data;
     });
 
     this.boolConv = function(str) {
@@ -67,12 +86,11 @@
     };
 
     this.addShow = function() {
-      $log.log("addShow");
       this.newShow.episodal = this.boolConv(this.newShow.episodal);
       $http.post("/api/show/new", this.newShow).success(function(data){
-        showCtrl.shows.push(showCtrl.newShow);
         showCtrl.newShow = {};
         showCtrl.showAddForm = false;
+        showCtrl.shows.push(data);
       }).error(function(data, status, headers, config){
         $log.log(data, status, headers, config);
       });
@@ -141,7 +159,7 @@
         this.sTab = 1;
 
         this.isSet = function(checkTab) {
-          return this.sTab == checkTab;
+          return this.sTab === checkTab;
         };
 
         this.setTab = function(activeTab) {
@@ -177,10 +195,10 @@
       templateUrl: "setting-basics.html"
     };
   });
-//  app.directive("settingTracker", function() {
-//    return {
-//      restrict: 'E',
-//      templateUrl: "settings-tracker.html"
-//    };
-//  });
+  app.directive("settingTracker", function() {
+    return {
+      restrict: 'E',
+      templateUrl: "setting-tracker.html"
+    };
+  });
 })();

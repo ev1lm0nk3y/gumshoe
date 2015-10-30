@@ -67,10 +67,8 @@ func main() {
 	httpPort.Set(tc.Operations.HttpPort)
 
 	log.Println("Starting up gumshoe...")
-	gumshoe.InitShowDb(*baseDir)
-
-	//DEBUG
-	gumshoe.LoadTestData()
+	gumshoe.InitDb()
+  gumshoe.StartDownloader()
 
 	// start enabled watchers
 	for k, v := range tc.Operations.WatchMethods {

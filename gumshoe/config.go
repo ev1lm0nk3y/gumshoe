@@ -46,7 +46,6 @@ type RSSFeed struct {
 	RssTtl        int    `json:"ttl"`
 	UseServerTtl  bool   `json:"use_server_ttl"`
 	EpisodeRegexp string `json:"episode_regex"`
-	CookieFile    string `json:"cookie_file"`
 }
 
 type Operations struct {
@@ -64,6 +63,7 @@ type Download struct {
 	MaxRetries  int    `json:"max_retries"`
 	QueueSize   int    `json:"queue_size"`
 	Secure      bool   `json:"is_secure"`
+	CookieFile  string `json:"cookie_file"`
 	TorrentURL  string `json:"torrent_url"`
 	TorrentUser string `json:"torrent_user"`
 	TorrentPass string `json:"torrent_pass"`

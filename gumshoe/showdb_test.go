@@ -33,9 +33,7 @@ func TestMain(m *testing.M) {
 	err = s.AddShow()
 	if err != nil {
 		log.Println("InitDb:AddShow:err", err)
-
 	}
-
 	s = newShow("Daily Shown", "1080p", false)
 	err = s.AddShow()
 	if err != nil {
@@ -55,9 +53,10 @@ func TestMain(m *testing.M) {
 func TestListShows(t *testing.T) {
 	allShows, err := ListShows()
 	assert.NoError(t, err)
-	for _, i := range *allShows {
+	for _, i := range allShows {
 		assert.IsType(t, "test", i.Title)
 		assert.NotEmpty(t, i.ID, "IDs were not automatically added to %s.", i.Title)
+    assert.NoEqual(t, i.ID, 0, "ID numbers should never be 0."
 	}
 }
 

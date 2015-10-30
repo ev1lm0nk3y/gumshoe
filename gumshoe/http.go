@@ -16,10 +16,11 @@ import (
 
 func getShows(res http.ResponseWriter) string {
 	data, err := ListShows()
-	if err == nil {
-		return render(res, data)
+	if err != nil {
+    res.WriteHeader(http.StatusInternalServerError)
+		return err.Error()
 	}
-	return render(res, err)
+	return render(res, data)
 }
 
 func getShow(res http.ResponseWriter, params martini.Params) string {
@@ -34,9 +35,13 @@ func getShow(res http.ResponseWriter, params martini.Params) string {
 }
 
 func createShow(res http.ResponseWriter, params martini.Params, show Show) string {
-	newShow := newShow(show.Title, show.Quality, show.Episodal)
-	err := newShow.AddShow()
-	return render(res, err)
+	ns := newShow(show.Title, show.Quality, show.Episodal)
+	err := ns.AddShow()
+  if err != nil {
+    res.WriteHeader(http.StatusInternalServerError)
+    return err.Error()
+  }
+	return render(res, ns)
 }
 
 func updateShow(res http.ResponseWriter, params martini.Params, show Show) string {
@@ -56,7 +61,7 @@ func deleteShow(res http.ResponseWriter, params martini.Params) string {
 		err = show.DeleteShow()
 	}
 	if err != nil {
-		res.WriteHeader(500)
+		res.WriteHeader(http.StatusInternalServerError)
 	}
 	return render(res, err)
 }
@@ -64,13 +69,13 @@ func deleteShow(res http.ResponseWriter, params martini.Params) string {
 func getEpisodes(res http.ResponseWriter, params martini.Params) string {
 	sid, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		res.WriteHeader(500)
-		return render(res, err)
+		res.WriteHeader(http.StatusInternalServerError)
+		return err.Error()
 	}
 	e, err := GetEpisodesByShowID(sid)
 	if err != nil {
-		res.WriteHeader(500)
-		return render(res, err)
+		res.WriteHeader(http.StatusInternalServerError)
+		return err.Error()
 	}
 	return render(res, e)
 }
@@ -79,15 +84,15 @@ func getConfig(res http.ResponseWriter, params martini.Params) string {
 	if s, ok := params["section"]; ok {
 		o, err := tc.GetConfigOption(s)
 		if err != nil {
-			res.WriteHeader(500)
-			err.Error()
+			res.WriteHeader(http.StatusInternalServerError)
+			return err.Error()
 		}
 		return asJson(res, o)
 	}
 	o, err := json.Marshal(tc)
 	if err != nil {
-		res.WriteHeader(500)
-		return "Invalid Config"
+		res.WriteHeader(http.StatusInternalServerError)
+		return err.Error()
 	}
 	return asJson(res, o)
 }
@@ -111,7 +116,7 @@ func deleteQueueItem() string {
 func getStatus(res http.ResponseWriter) string {
 	//_, err := torrentClient.GetTorrents()
 	//if err != nil {
-	//  res.WriteHeader(500)
+	//  res.WriteHeader(http.StatusInternalServerError)
 	//  return err.Error()
 	//}
 	return "OK"
@@ -124,7 +129,7 @@ func getSettings(res http.ResponseWriter, params martini.Params) string {
 func render(res http.ResponseWriter, data interface{}) string {
 	thing, err := json.Marshal(data)
 	if err != nil {
-		res.WriteHeader(500)
+		res.WriteHeader(http.StatusInternalServerError)
 		return err.Error()
 	}
 	return asJson(res, thing)
@@ -140,7 +145,7 @@ func getVarz(res http.ResponseWriter) string {
 			output = append(output, fmt.Sprintf(",\n"))
 			first = false
 		}
-		output = append(output, fmt.Sprintf("%q: %s", kv.Key, kv.Value))
+		output = append(output, fmt.Sprintf("%q: %s\n", kv.Key, kv.Value))
 	})
 	output = append(output, "\n}\n")
 	return strings.Join(output, "")
