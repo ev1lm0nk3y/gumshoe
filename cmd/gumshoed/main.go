@@ -3,28 +3,24 @@ package main
 import (
 	"expvar"
 	"flag"
-	"log"
 	"os"
-	"path/filepath"
 	"runtime/debug"
+  "strconv"
 	"strings"
-	"time"
 
 	"github.com/ev1lm0nk3y/gumshoe/gumshoe"
 )
 
 // HTTP Server Flags
-var port = flag.String("p", "http",
+var port = flag.String("p", "20123",
 	"Which port do we serve requests from. 0 allows the system to decide.")
-var baseDir = flag.String("d",
-	filepath.Join(os.Getenv("HOME"), ".local", "gumshoe"),
-	"Base path for gumshoe.")
+var baseDir = flag.String("d", "/usr/local/gumshoe", "Base path for gumshoe.")
 var quiet = flag.Bool("q", false,
 	"Supress log messages.")
 
 // Base Config Stuff
 var configFile = flag.String("c", "",
-	"Location of the configuration file. Default is $HOME/.local/gumshoe/config.json")
+	"Location of the configuration file. Default is $HOME/.gumshoe/gumshoe.cfg")
 
 // TODO Get this flag set working!
 var (
@@ -50,42 +46,17 @@ func init() {
 
 func main() {
 	flag.Parse()
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	if *configFile == "" {
-		flag.Set("c", filepath.Join(*baseDir, "config.json"))
-	}
-	log.Printf("Reading config %s", *configFile)
-	if err := tc.LoadGumshoeConfig(*configFile); err != nil {
-		log.Fatal(err)
-	}
-	tc.SetGlobalTrackerConfig()
-	if tc.Operations.HttpPort != *port && tc.Operations.HttpPort != "" {
-		if err := flag.Set("p", tc.Operations.HttpPort); err != nil {
-			log.Fatal(err)
-		}
-	}
-	httpPort.Set(tc.Operations.HttpPort)
 
-	log.Println("Starting up gumshoe...")
-	gumshoe.InitDb()
-  gumshoe.StartDownloader()
+  if *configFile != "" {
+    gumshoe.SetUserConfigFile(*configFile)
+  }
+  if *port != "20123" {
+    tp, _ := strconv.Atoi(*port)
+    gumshoe.SetGumshoePort(tp)
+  }
+  //if *baseDir != "/usr/local/gumshoe" {
+  //  gumshoe.SetGumshoeBaseDirectory(*baseDir)
+  //}
 
-	// start enabled watchers
-	for k, v := range tc.Operations.WatchMethods {
-		if v {
-			switch k {
-			case "rss":
-				log.Println("pretending to starting RSS watcher")
-			case "irc":
-				log.Println("starting IRC watcher")
-				gumshoe.StartIRC()
-			case "log":
-				log.Println("pretending to starting log file watcher")
-			}
-			watchLastUpdateTime.Set(time.Now().Unix())
-		}
-	}
-
-	gumshoe.StartHTTPServer(*baseDir, *port)
-	log.Println("Exiting gumshoe...")
+  gumshoe.Start()
 }
