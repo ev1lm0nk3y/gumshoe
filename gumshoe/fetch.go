@@ -5,7 +5,6 @@ import (
 	"expvar"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -13,23 +12,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
-
-	"github.com/yasushi-saito/fifo_queue"
 )
-
-var (
-	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
-	fetchResultMap = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
-	queueDepth     int
-	episodeQueue   *fifo_queue.Queue
-	downloader_on  = make(chan bool)
-	process_queue  = make(chan bool)
-)
-
-func init() {
-	lastFetch.Set(int64(0))
-	episodeQueue = fifo_queue.NewQueue()
-}
 
 type FileFetch struct {
 	HttpClient   *http.Client
@@ -37,7 +20,23 @@ type FileFetch struct {
 	SaveLocation string
 }
 
-func (ff *FileFetch) SetClientCookie() error {
+func NewFileFetch(link string) (ff *FileFetch, err error) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return nil, err
+	}
+	ff.Url = u
+	ff.HttpClient = &http.Client{}
+	err = ff.setClientCookie()
+  if err != nil {
+		return nil, err
+	}
+	_, dlFile := filepath.Split(u.RequestURI())
+	ff.SaveLocation = filepath.Join(tc.Directories["user_dir"], tc.Directories["torrent_dir"], string(dlFile[len(dlFile)-1]))
+  return ff, nil
+}
+
+func (ff *FileFetch) setClientCookie() error {
 	if ff.Url != nil {
 		jar, _ := cookiejar.New(nil)
 		jar.SetCookies(ff.Url, cj)
@@ -80,65 +79,4 @@ func UpdateResultMap(r string) {
 		return
 	}
 	fetchResultMap.Add(r, 1)
-}
-
-func AddEpisodeToQueue(link string) error {
-	ff := &FileFetch{}
-	u, err := url.Parse(link)
-	if err != nil {
-		return err
-	}
-	ff.Url = u
-	ff.HttpClient = &http.Client{}
-	if err = ff.SetClientCookie(); err != nil {
-		return err
-	}
-	_, dlFile := filepath.Split(u.RequestURI())
-	ff.SaveLocation = filepath.Join(tc.Directories["torrent_dir"], string(dlFile[len(dlFile)-1]))
-	episodeQueue.PushBack(ff)
-	return nil
-}
-
-func StartDownloader() {
-	log.Println("Downloader starting.")
-	go func() {
-		for {
-			process_queue <- (episodeQueue.Len() > 0)
-			select {
-			case on := <-downloader_on:
-				if episodeQueue.Len() > 0 && !on {
-					log.Println("Waiting for %d items to finish downloading.", episodeQueue.Len())
-					time.Sleep(time.Second * time.Duration(tc.Download.Rate))
-					continue
-				}
-				return
-			case do := <-process_queue:
-				queueDepth = episodeQueue.Len()
-				if do {
-					f := episodeQueue.PopFront().(*FileFetch)
-					time.Sleep(time.Duration(GetRandom(int64(tc.Download.Rate)).Int63()))
-					err := f.RetrieveEpisode()
-					if err != nil {
-						log.Println("[%s] Download Error: %s", time.Now().Format("2015-05-30 08:23:45"), err)
-						UpdateResultMap("download_errors")
-					}
-					lastFetch.Set(time.Now().Unix())
-				}
-			default:
-				time.Sleep(time.Minute * 5)
-				process_queue <- false
-			}
-		}
-	}()
-	downloader_on <- true
-	process_queue <- false
-}
-
-func StopDownloader() {
-	downloader_on <- false
-}
-
-func RestartDownloader() {
-	downloader_on <- false
-	StartDownloader()
 }

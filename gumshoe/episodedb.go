@@ -9,16 +9,8 @@ package gumshoe
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"strings"
 	"time"
-)
-
-var (
-	// Regexp to determine if the announce regexp matches a known episode structure
-	episodePattern *regexp.Regexp
-	// Quickly determine the quality of the show with this regex
-	episodeQualityRegexp = regexp.MustCompile("720p|1080p")
 )
 
 type Episode struct {
@@ -53,12 +45,17 @@ func newDaily(sid int64, t, d string) *Episode {
 // Start User Functions
 func (e *Episode) AddEpisode() error {
 	e.Added = time.Now().UnixNano()
-	return gDb.Insert(e)
+  checkDBLock<- 1
+  err := gDb.Insert(e)
+  <-checkDBLock
+	return err
 }
 
 func (e *Episode) IsNewEpisode() bool {
+  checkDBLock<- 1
 	err := gDb.SelectOne(&Episode{}, "select ID from episode where ShowID=? and Season=? and Episode=? and AirDate=?",
 		e.ShowID, e.Season, e.Episode, e.AirDate)
+  <-checkDBLock
 	if err == nil {
 		return false
 	}
@@ -77,7 +74,9 @@ func (e *Episode) ValidEpisodeQuality(s string) bool {
 
 func GetEpisodesByShowID(id int64) (*[]Episode, error) {
 	allE := &[]Episode{}
+  checkDBLock<- 1
 	_, err := gDb.Select(allE, "select * from episode where ShowID=?", id)
+  <-checkDBLock
 	return allE, err
 }
 

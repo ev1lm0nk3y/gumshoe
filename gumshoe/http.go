@@ -136,7 +136,7 @@ func render(res http.ResponseWriter, data interface{}) string {
 }
 
 func getVarz(res http.ResponseWriter) string {
-	var output = []string{}
+  output := []string{}
 	res.Header().Set("Content-Type", "application/json; charset=utf-8")
 	output = append(output, fmt.Sprintf("{", "\n"))
 	first := true
@@ -159,8 +159,8 @@ func asJson(res http.ResponseWriter, data []byte) string {
 
 // StartHTTPServer start a HTTP server for configuration and monitoring
 func StartHTTPServer(baseDir string, port string) {
-	var hostString = fmt.Sprintf(":%s", port)
-	var m = martini.Classic()
+  hostString := fmt.Sprintf(":%s", port)
+  m := martini.Classic()
 
 	static := martini.Static(filepath.Join(baseDir, "www"), martini.StaticOptions{Fallback: "/index.html", Exclude: "/api"})
 	m.NotFound(static, http.NotFound)

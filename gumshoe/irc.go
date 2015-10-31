@@ -2,7 +2,6 @@ package gumshoe
 
 import (
 	"errors"
-	"expvar"
 	"fmt"
 	"log"
 	"net/url"
@@ -12,29 +11,6 @@ import (
 	"time"
 
 	"github.com/thoj/go-ircevent"
-)
-
-var (
-	// Regexp for messages from IRC channel announcing something to do something about
-	announceLine *regexp.Regexp
-	// Time, in ms, when the connection to the IRC server was established
-	ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
-	// Time, in ms, when the channel was last updated
-	ircUpdateTimestamp = expvar.NewInt("irc_last_update_timestamp")
-	// String relating to the current state of the IRC watcher
-	ircStatus = expvar.NewString("irc_status")
-	// IRC client object
-	ircClient *irc.Connection
-	// channel that gets timestamp updates for ircUpdateTimestamp in order to ensure we write only the most recent timestamp into that exported variable.
-	metricUpdate = make(chan int64)
-	// channel that locks the DB while we update it to prevent data corruption.
-	checkDBLock = make(chan int)
-	// Channel that is used to turn on and off the IRC watcher.
-	IRCEnabled = make(chan bool)
-	// Channel to signify if the IRC config has changed. Changes will restart the IRC watcher.
-	IRCConfigChanged = make(chan bool)
-	// Channel that collects all IRC errors and will disconnect the IRC watcher if it encounters one.
-	IRCConfigError = make(chan error)
 )
 
 func connectToTracker() {
@@ -111,17 +87,29 @@ func matchAnnounce(e *irc.Event) {
 			PrintDebugf("Error parsing string: %s\n", err)
 			return
 		}
-		// Want to make sure we don't attempt to read/write to the Db at the same
-		// time, so during the next call, we block all other updates.
-		checkDBLock <- 1
-		if ep.IsNewEpisode() && ep.ValidEpisodeQuality(aMatch[1]) {
-			AddEpisodeToQueue(aMatch[2])
-			err := ep.AddEpisode()
-			if err != nil {
-				log.Printf("Episode is downloading, but didn't update the db: %s\n", err)
-			}
+    isNew := ep.IsNewEpisode()
+    if !isNew {
+      PrintDebugln("We already have this episode.")
+      return
+    }
+    if !ep.ValidEpisodeQuality(aMatch[1]) {
+      PrintDebugf("Episode %s isn't the right quality.\n", aMatch[1])
+      return
+    }
+
+    ff, err := NewFileFetch(aMatch[2])
+    if err != nil {
+      log.Println(err)
+    }
+    err = ff.RetrieveEpisode()
+    if err != nil {
+      log.Printf("FAIL: episode not retrieved: %s\n", err)
+    }
+
+	  err = ep.AddEpisode()
+		if err != nil {
+			log.Printf("Episode is downloading, but didn't update the db: %s\n", err)
 		}
-		<-checkDBLock
 	}
 }
 

@@ -11,10 +11,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var gDb *gorp.DbMap
-
 func InitDb() error {
-	dbPath := filepath.Join(tc.Directories["data_dir"], "gumshoe.db")
+	dbPath := filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], "gumshoe.db")
+  PrintDebugln(dbPath)
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		PrintDebugf("sql.Open failed for %s", dbPath)
@@ -35,7 +34,7 @@ func InitDb() error {
 	er, err := url.QueryUnescape(tc.IRC.EpisodeRegexp)
 	if err == nil {
 		episodePattern = regexp.MustCompile(er)
-		PrintDebugf(episodePattern.String())
+		PrintDebugln(episodePattern.String())
 	}
 
 	return err

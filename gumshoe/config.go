@@ -12,12 +12,6 @@ import (
 	"time"
 )
 
-var (
-	tc      *TrackerConfig
-	cj      []*http.Cookie
-	cfgFile string
-)
-
 // The primary structure holding the config data, which is read from the preferrences file.
 // Options can be changed from the web app or directly in the file. A file watcher will update
 // the configuration automatically when the prferrence file is modified.
