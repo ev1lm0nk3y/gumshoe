@@ -9,6 +9,8 @@ package gumshoe
 import (
 	"errors"
 	"fmt"
+  "net/url"
+  "regexp"
 	"strings"
 	"time"
 )
@@ -16,7 +18,6 @@ import (
 type Episode struct {
 	ID      int64  `json:"id"`
 	ShowID  int64  `json:"show_id" binding:"required"`
-	Title   string `json:"title" binding:"required"`
 	Season  int    `json:"season"`
 	Episode int    `json:"episode"`
 	AirDate string `json:"airdate"`
@@ -26,7 +27,6 @@ type Episode struct {
 func newEpisode(sid int64, t string, s, e int) *Episode {
 	return &Episode{
 		ShowID:  sid,
-		Title:   episodeRewriter(t),
 		Season:  s,
 		Episode: e,
 		Added:   time.Now().UnixNano(),
@@ -36,7 +36,6 @@ func newEpisode(sid int64, t string, s, e int) *Episode {
 func newDaily(sid int64, t, d string) *Episode {
 	return &Episode{
 		ShowID:  sid,
-		Title:   episodeRewriter(t),
 		AirDate: d,
 		Added:   time.Now().UnixNano(),
 	}
@@ -72,46 +71,65 @@ func (e *Episode) ValidEpisodeQuality(s string) bool {
 	}
 }
 
-func GetEpisodesByShowID(id int64) (*[]Episode, error) {
-	allE := &[]Episode{}
+func GetEpisodesByShowID(id int64) (allE *[]Episode, err error) {
   checkDBLock<- 1
-	_, err := gDb.Select(allE, "select * from episode where ShowID=?", id)
+	_, err = gDb.Select(allE, "select * from episode where ShowID=?", id)
   <-checkDBLock
-	return allE, err
+	return
 }
 
-func ParseTorrentString(e string) (*Episode, error) {
-	eMatch := episodePattern.FindStringSubmatch(e)
-	if eMatch == nil {
-		return nil, errors.New(fmt.Sprintf("This isn't an episode: %s", e))
-	}
-	st := episodeRewriter(eMatch[1])
-	sid, err := GetShowByTitle(st)
+func GetLastEpisode(sid int64) (le *Episode, err error) {
+  checkDBLock<- 1
+  err = gDb.SelectOne(le, "select * from episode where ShowID=? sort by Season, Episode, AirDate desc limit 1", sid)
+  <-checkDBLock
+  return
+}
+
+func ParseTorrentString(e string) (episode *Episode, err error) {
+	eMatch, err := matchEpisodeToPattern(e)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Show %s is not being tracked.", st))
+		return
 	}
-	episode := &Episode{
-		ShowID: sid.ID,
-		Title:  eMatch[7],
+	sid, err := GetShowByTitle(episodeRewriter(eMatch["show"]))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Show %s is not being tracked.", episodeRewriter(eMatch["show"])))
 	}
-	if eMatch[4] != "" {
-		episode.AirDate = eMatch[4]
-	} else {
-		if eMatch[2] != "" {
-			episode.Season = GetInt(eMatch[2])
-			episode.Episode = GetInt(eMatch[3])
-		} else {
-			episode.Season = GetInt(eMatch[5])
-			episode.Episode = GetInt(eMatch[6])
-		}
-	}
-	return episode, nil
+	episode.ShowID = sid.ID
+
+	episode.Season = GetInt(eMatch["season"])
+	episode.Episode = GetInt(eMatch["episode"])
+  episode.AirDate = eMatch["airdate"]
+  if eMatch["enum"] != "" {
+    episode.Season = GetInt(string(eMatch["enum"][0]))
+    episode.Episode = GetInt(string(eMatch["enum"][1:]))
+  }
+	return
 }
 
 // End User Functions
 
 func episodeRewriter(ep string) string {
-	// strip show title of "." and make it Title cased, easier to do string matching
 	e := strings.Replace(ep, ".", " ", -1)
 	return strings.Title(e)
+}
+
+func updateEpisodeRegex() (err error) {
+	er, err := url.QueryUnescape(tc.IRC.EpisodeRegexp)
+	if err != nil {
+    return err
+  }
+	episodePattern, err = regexp.Compile(er)
+  return err
+}
+
+func matchEpisodeToPattern(e string) (named map[string]string, err error) {
+  match := episodePattern.FindAllStringSubmatch(e, -1)
+  if match == nil {
+    return nil, errors.New("string not matched regexp")
+  }
+
+  for i, n := range match[0] {
+    named[episodePattern.SubexpNames()[i]] = n
+  }
+  return
 }

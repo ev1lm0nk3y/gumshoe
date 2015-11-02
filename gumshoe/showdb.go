@@ -58,6 +58,6 @@ func GetShow(id int64) (Show, error) {
 
 func GetShowByTitle(title string) (Show, error) {
 	show := Show{}
-	err := gDb.SelectOne(&show, "select * from show where Title=?", episodeRewriter(title))
+	err := gDb.SelectOne(&show, "select * from show where Title like '%%?%%'", episodeRewriter(title))
 	return show, err
 }

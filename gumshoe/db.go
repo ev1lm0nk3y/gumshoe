@@ -3,9 +3,7 @@ package gumshoe
 
 import (
 	"database/sql"
-	"net/url"
 	"path/filepath"
-	"regexp"
 
 	"github.com/coopernurse/gorp"
 	_ "github.com/mattn/go-sqlite3"
@@ -13,7 +11,6 @@ import (
 
 func InitDb() error {
 	dbPath := filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], "gumshoe.db")
-  PrintDebugln(dbPath)
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		PrintDebugf("sql.Open failed for %s", dbPath)
@@ -29,12 +26,6 @@ func InitDb() error {
 	err = initTable(gDb, Episode{}, "episode")
 	if err != nil {
 		PrintDebugf("Table episode failed to init: %s\n", err)
-	}
-
-	er, err := url.QueryUnescape(tc.IRC.EpisodeRegexp)
-	if err == nil {
-		episodePattern = regexp.MustCompile(er)
-		PrintDebugln(episodePattern.String())
 	}
 
 	return err

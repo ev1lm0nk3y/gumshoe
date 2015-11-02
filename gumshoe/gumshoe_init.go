@@ -26,6 +26,7 @@ var (
 	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
 
 	tc  *TrackerConfig
+  tc_updated = make(chan bool)  // Those systems that can be dynamically updated, should watch this channel.
 	cj  []*http.Cookie
 	gDb *gorp.DbMap
   cfgFile string
@@ -107,11 +108,27 @@ func setupLogging() (logger *log.Logger, err error) {
   return
 }
 
+func UpdateAllComponents() {
+  for {
+    tcu := <-tc_updated
+    if tcu {
+      PrintDebugln("Updating gumshoe configuration.")
+      // Put update function calls below here
+      updateEpisodeRegex()
+      // Put update function calls above here
+      tc_updated<- false
+    }
+  }
+}
+
 func Start() (err error) {
   err = loadConfig()
   if err != nil {
     log.Fatalf("[FAIL] Unable to load config: %s\n", err)
   }
+
+  go UpdateAllComponents()
+  tc_updated<- true
 
   // Unified logging is nice, but not necessary right now.
   //if tc.Operations.EnableLog {

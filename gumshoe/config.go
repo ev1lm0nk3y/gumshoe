@@ -164,6 +164,7 @@ func (tc *TrackerConfig) UpdateGumshoeConfig(u []byte) *ConfigError {
 	if err != nil {
 		return NewConfigError(err, "Update is not a valid TrackerConfig JSON")
 	}
+  tc_updated<- true
 	return nil
 }
 
