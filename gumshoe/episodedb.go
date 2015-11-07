@@ -24,7 +24,7 @@ type Episode struct {
 	Added   int64  `json:"added"`
 }
 
-func newEpisode(sid int64, t string, s, e int) *Episode {
+func newEpisode(sid int64, s, e int) *Episode {
 	return &Episode{
 		ShowID:  sid,
 		Season:  s,
@@ -42,11 +42,16 @@ func newDaily(sid int64, t, d string) *Episode {
 }
 
 // Start User Functions
-func (e *Episode) AddEpisode() error {
+func (e *Episode) AddEpisode() (err error) {
 	e.Added = time.Now().UnixNano()
   checkDBLock<- 1
-  err := gDb.Insert(e)
+  err = gDb.Insert(e)
   <-checkDBLock
+  show, err := GetShow(e.ShowID)
+  if err == nil {
+    show.LastUpdate = e.Added
+    err = show.UpdateShow()
+  }
 	return err
 }
 
@@ -80,7 +85,7 @@ func GetEpisodesByShowID(id int64) (allE *[]Episode, err error) {
 
 func GetLastEpisode(sid int64) (le *Episode, err error) {
   checkDBLock<- 1
-  err = gDb.SelectOne(le, "select * from episode where ShowID=? sort by Season, Episode, AirDate desc limit 1", sid)
+  err = gDb.SelectOne(le, "select * from episode where ShowID=? sort by AirDate, Season, Episode desc limit 1", sid)
   <-checkDBLock
   return
 }

@@ -40,7 +40,9 @@ func (s *Show) DeleteShow() error {
 }
 
 func (s *Show) UpdateShow() error {
+  checkDBLock<- 1
 	_, err := gDb.Update(s)
+  <-checkDBLock
 	return err
 }
 
