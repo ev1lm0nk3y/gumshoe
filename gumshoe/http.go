@@ -158,7 +158,7 @@ func asJson(res http.ResponseWriter, data []byte) string {
 }
 
 // StartHTTPServer start a HTTP server for configuration and monitoring
-func StartHTTPServer(baseDir string, port string) {
+func StartHTTPServer(baseDir, port string) {
   hostString := fmt.Sprintf(":%s", port)
   m := martini.Classic()
 
