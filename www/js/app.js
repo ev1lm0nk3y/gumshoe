@@ -130,7 +130,11 @@
       };
     };
 
-  } ] );
+  }]);
+
+  app.controller('StatusController', ['$log', '$http', function($log, $http) {
+    var statCtrl = this;
+  }]);
 
   app.directive("gumshoeTabs", function() {
      return {

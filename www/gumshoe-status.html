@@ -1,3 +1,14 @@
-<div ng-show="tab.isSet(1)">
-  status go here
+<div ng-show="tab.isSet(1)" ng-controller="StatusController as statCtrl">
+  <div class="panel-group">
+    <div class="panel panel-info">
+      <div class="panel-heading" ng-show="statCtrl.showWatcher" ng-click="statCtrl.showWatcher = !statCtrl.showWatcher">Watcher</div>
+      <div class="panel-body">
+        <dl class="dl-horizontal">
+          <dt>Type</dt><dd>{{ statCtrl.WatcherType }}</dd>
+          <dt>Active</dt><dd>{{ statCtrl.Active }}</dd>
+          <dt>Last Update</dt><dd>{{ statCtrl.WatcherLastUpdate }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
 </div>
