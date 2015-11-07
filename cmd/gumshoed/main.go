@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-  "log"
   "strconv"
 
 	"github.com/ev1lm0nk3y/gumshoe/gumshoe"
