@@ -1,0 +1,13 @@
+package: github.com/ev1lm0nk3y/gumshoe
+import:
+- package: github.com/coopernurse/gorp
+- package: github.com/go-martini/martini
+- package: github.com/martini-contrib/binding
+- package: github.com/mattn/go-sqlite3
+- package: github.com/thoj/go-ircevent
+- package: github.com/ev1lm0nk3y/gumshoe
+  subpackages:
+    - cfg
+    - cmd
+    - gumshoe
+    - www
