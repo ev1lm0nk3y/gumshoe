@@ -1,37 +1,42 @@
-// Common Database Functions
 package db
 
 import (
 	"database/sql"
-	"path/filepath"
+  "log"
 
-  "github.com/nelsam/gorq"
+  "github.com/go-gorp/gorp"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func InitDb() error {
-	dbPath := filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], "gumshoe.db")
-	db, err := sql.Open("sqlite3", dbPath)
+var (
+	gDb *gorp.DbMap
+  checkDBLock = make(chan int)
+)
+
+func InitDb(db_file string) error {
+	dbPath := db_file
+	dbRoot, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
-		PrintDebugf("sql.Open failed for %s", dbPath)
+		log.Printf("sql.Open failed for %s\n", dbPath)
 		return err
 	}
-	gDb = &gorq.DbMap{Db: db, Dialect: gorq.SqliteDialect{}}
+	gDb = &gorp.DbMap{Db: dbRoot, Dialect: gorp.SqliteDialect{}}
 
 	err = initTable(gDb, Show{}, "show")
 	if err != nil {
-		PrintDebugf("Table show failed to init: %s\n", err)
+		log.Printf("Table Show failed to init: %s\n", err)
+    return err
 	}
 
 	err = initTable(gDb, Episode{}, "episode")
 	if err != nil {
-		PrintDebugf("Table episode failed to init: %s\n", err)
+		log.Printf("Table Episode failed to init: %s\n", err)
+    return err
 	}
-
-	return err
+	return nil
 }
 
-func initTable(dbmap *gorq.DbMap, i interface{}, tableName string) error {
+func initTable(dbmap *gorp.DbMap, i interface{}, tableName string) error {
 	dbmap.AddTableWithName(i, tableName).SetKeys(true, "ID")
 	return dbmap.CreateTablesIfNotExists()
 }

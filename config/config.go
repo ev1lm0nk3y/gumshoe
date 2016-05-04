@@ -69,6 +69,7 @@ type TrackerConfig struct {
 	IRC          IRCChannel        `json:"irc_channel"`
 	LastModified int64             `json:"last_modified"`
 	Operations   Operations        `json:"operations"`
+  CookieJar    []*http.Cookie
 	// RSS          RSSChannel        `json:"rss_channel"`
 }
 
@@ -94,6 +95,23 @@ func NewTrackerConfig() *TrackerConfig {
 
 func (tcfg *TrackerConfig) SetGlobalTrackerConfig(tc *TrackerConfig) {
 	tc = tcfg
+}
+
+func (tc *TrackerConfig) SetGumshoeDirectory(dir, val string) {
+  if tc.Directories[dir] != "" {
+    tc.Directories[dir] = val
+  }
+}
+
+func (tc *TrackerConfig) SetGumshoePort(p string) {
+  tc.Operations.HttpPort = p
+}
+
+func (tc *TrackerConfig) GetDirectory(dir string) string {
+  if tc.Directories[dir] != "" {
+    return tc.Directories[dir]
+  }
+  return ""
 }
 
 func (tc *TrackerConfig) String() string {
@@ -208,9 +226,12 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 		return nil
 	}
 	// decrypt file here
-	cjBuf, err := ioutil.ReadFile(CreateLocalPath(tc, "tracker.cj"))
+	cjBuf, err := ioutil.ReadFile(filepath.Join(tc.Directories["user_dir"], tc.Download.CookieFile))
 	if err != nil {
-		return NewConfigError(err, "Cookie File Not Exist")
+    fmt.Println("Cookie file is not available. Setting the downloader to insecure connections.")
+    tc.Download.Secure = false
+    tc.CookieJar = []*http.Cookie{}
+		return nil
 	}
 
 	cookies := &tempCookies{}
@@ -219,6 +240,7 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 		return NewConfigError(err, "Unmarshal cookie JSON")
 	}
 
+  cj := []*http.Cookie{}
 	for _, cookie := range cookies.Cookies {
 		c := &http.Cookie{
 			Name:   cookie["Name"],
@@ -232,17 +254,16 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 		} else {
 			c.Expires = time.Now().AddDate(10, 0, 0)
 		}
-		//cj = append(cj, c)
+		cj = append(cj, c)
 	}
+  tc.CookieJar = cj
 	return nil
 }
-
-//func GetTrackerCookies() []*http.Cookie {
-//	return cj
-//}
 
 // An easy utility to generate the fully qualified path name of a given filename
 // in the user's data directory.
 func CreateLocalPath(tc *TrackerConfig, fn string) string {
 	return filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], fn)
 }
+
+

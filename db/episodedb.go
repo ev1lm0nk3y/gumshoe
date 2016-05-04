@@ -13,6 +13,13 @@ import (
   "regexp"
 	"strings"
 	"time"
+
+  "github.com/ev1lm0nk3y/gumshoe/misc"
+)
+
+var (
+  episodeQualityRegexp *regexp.Regexp
+  episodePattern *regexp.Regexp
 )
 
 type Episode struct {
@@ -101,12 +108,12 @@ func ParseTorrentString(e string) (episode *Episode, err error) {
 	}
 	episode.ShowID = sid.ID
 
-	episode.Season = GetInt(eMatch["season"])
-	episode.Episode = GetInt(eMatch["episode"])
+	episode.Season = misc.GetInt(eMatch["season"])
+	episode.Episode = misc.GetInt(eMatch["episode"])
   episode.AirDate = eMatch["airdate"]
   if eMatch["enum"] != "" {
-    episode.Season = GetInt(string(eMatch["enum"][0]))
-    episode.Episode = GetInt(string(eMatch["enum"][1:]))
+    episode.Season = misc.GetInt(string(eMatch["enum"][0]))
+    episode.Episode = misc.GetInt(string(eMatch["enum"][1:]))
   }
 	return
 }
@@ -116,15 +123,6 @@ func ParseTorrentString(e string) (episode *Episode, err error) {
 func episodeRewriter(ep string) string {
 	e := strings.Replace(ep, ".", " ", -1)
 	return strings.Title(e)
-}
-
-func updateEpisodeRegex() (err error) {
-	er, err := url.QueryUnescape(tc.IRC.EpisodeRegexp)
-	if err != nil {
-    return err
-  }
-	episodePattern, err = regexp.Compile(er)
-  return err
 }
 
 func matchEpisodeToPattern(e string) (named map[string]string, err error) {
@@ -139,19 +137,31 @@ func matchEpisodeToPattern(e string) (named map[string]string, err error) {
   return
 }
 
-func CheckMatch(m string) error {
+func CheckMatch(m string) (*Episode, error) {
   ep, err := ParseTorrentString(m)
   if err != nil {
-    misc.PrintDebugf("Error parsing string: %s\n", err)
-    return
+    return nil, errors.New("No episode regexp match.")
   }
   isNew := ep.IsNewEpisode()
   if !isNew {
-    return errors.New("Episode exists.")
+    return nil, errors.New("Episode exists.")
   }
   if !ep.ValidEpisodeQuality(m) {
-    return errors.New("Wrong Episode Quality.")
+    return nil, errors.New("Wrong Episode Quality.")
   }
-  return nil
+  return ep, nil
 }
 
+func SetEpisodeQualityRegexp(r string) (err error) {
+  episodeQualityRegexp, err = regexp.Compile(r)
+  return err
+}
+
+func SetEpisodePatternRegexp(r string) (err error) {
+  ue, err := url.QueryUnescape(r)
+  if err != nil {
+    return err
+  }
+  episodePattern, err = regexp.Compile(ue)
+  return err
+}

@@ -10,10 +10,13 @@ import (
 	"strconv"
 	"strings"
 
-  "github.com/ev1m0nk3y/gumshoe/db"
+  "github.com/ev1lm0nk3y/gumshoe/config"
+  "github.com/ev1lm0nk3y/gumshoe/db"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 )
+
+var tc *config.TrackerConfig
 
 func getShows(res http.ResponseWriter) string {
 	data, err := db.ListShows()
@@ -35,7 +38,7 @@ func getShow(res http.ResponseWriter, params martini.Params) string {
 	return render(res, err)
 }
 
-func createShow(res http.ResponseWriter, params martini.Params, show Show) string {
+func createShow(res http.ResponseWriter, params martini.Params, show db.Show) string {
 	ns := db.NewShow(show.Title, show.Quality, show.Episodal)
 	err := ns.AddShow()
   if err != nil {
@@ -45,7 +48,7 @@ func createShow(res http.ResponseWriter, params martini.Params, show Show) strin
 	return render(res, ns)
 }
 
-func updateShow(res http.ResponseWriter, params martini.Params, show Show) string {
+func updateShow(res http.ResponseWriter, params martini.Params, show db.Show) string {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err == nil {
 		temp := db.NewShow(show.Title, show.Quality, show.Episodal)
@@ -159,8 +162,9 @@ func asJson(res http.ResponseWriter, data []byte) string {
 }
 
 // StartHTTPServer start a HTTP server for configuration and monitoring
-func StartHTTPServer(baseDir, port string) {
+func StartHTTPServer(baseDir, port string, gtc *config.TrackerConfig) {
   hostString := fmt.Sprintf(":%s", port)
+  tc = gtc
   m := martini.Classic()
 
 	static := martini.Static(filepath.Join(baseDir, "www"), martini.StaticOptions{Fallback: "/index.html", Exclude: "/api"})
@@ -175,8 +179,8 @@ func StartHTTPServer(baseDir, port string) {
 
 	m.Group("/api/show", func(r martini.Router) {
 		r.Get("/:id", getShow)
-		r.Post("/new", binding.Bind(Show{}), createShow)
-		r.Post("/update/:id", binding.Bind(Show{}), updateShow)
+		r.Post("/new", binding.Bind(db.Show{}), createShow)
+		r.Post("/update/:id", binding.Bind(db.Show{}), updateShow)
 		r.Delete("/delete/:id", deleteShow)
 	})
 

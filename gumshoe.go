@@ -5,11 +5,9 @@ import (
   "expvar"
   "flag"
   "log"
-  "net/http"
   "os"
   "path/filepath"
-  "regexp"
-  "strconv"
+  "time"
 
   "github.com/ev1lm0nk3y/gumshoe/config"
   "github.com/ev1lm0nk3y/gumshoe/db"
@@ -17,76 +15,36 @@ import (
   "github.com/ev1lm0nk3y/gumshoe/http"
   "github.com/ev1lm0nk3y/gumshoe/irc"
   "github.com/ev1lm0nk3y/gumshoe/misc"
-
-	"github.com/nelsam/gorq"
 )
 
 
 var (
   // Program defaults that are only used when no other data is provided.
   DEFAULT_GUMSHOE_BASE = "/usr/local/gumshoe"
-  DEFAULT_CFG = "/usr/local/gumshoe/default.cfg"
+  DEFAULT_CFG = "/usr/local/gumshoe/gumshoe.cfg"
   DEFAULT_PORT = "20123"
 
 	concurrentFetches = make(chan int, 10)
 	tc  *config.TrackerConfig
-  tc_updated = make(chan bool)  // Those systems that can be dynamically updated, should watch this channel.
-	cj  []*http.Cookie
-	gDb *gorq.DbMap
-  cfgFile string
-  httpPort string
+  tc_updated = make(chan bool)
 
-  // HTTP Server Flags
   port = flag.String("p", DEFAULT_PORT, "Which port do we serve requests from. 0 allows the system to decide.")
-  baseDir = flag.String("d", "/usr/local/gumshoe", "Base path for gumshoe.")
+  gumshoeDir = flag.String("d", DEFAULT_GUMSHOE_BASE, "Base path for gumshoe.")
+  configFile = flag.String("c", filepath.Join(os.Getenv("HOME"), ".gumshoe", "gumshoe.cfg"),	"Config file to load")
 
-  // Base Config Stuff
-  configFile = flag.String("c", filepath.Join(os.Getenv("HOME"), ".gumshoe", "data", "gumshoe.cfg"),	"Config file to load")
-
-	// Regexp to determine if the announce regexp matches a known episode structure
-	episodePattern *regexp.Regexp
-	// Quickly determine the quality of the show with this regex
-	episodeQualityRegexp = regexp.MustCompile("720p|1080p")
-	// Regexp for messages from IRC channel announcing something to do something about
-	announceLine *regexp.Regexp
-	// Time, in ms, when the connection to the IRC server was established
-	ircConnectTimestamp = expvar.NewInt("irc_connect_timestamp")
-	// Time, in ms, when the channel was last updated
-	ircUpdateTimestamp = expvar.NewInt("irc_last_update_timestamp")
-	// String relating to the current state of the IRC watcher
-	ircStatus = expvar.NewString("irc_status")
-	// IRC client object
-	ircClient *irc.Connection
-	// channel that gets timestamp updates for ircUpdateTimestamp in order to ensure we write only the most recent timestamp into that exported variable.
-	metricUpdate = make(chan int64)
-	// channel that locks the DB while we update it to prevent data corruption.
-	checkDBLock = make(chan int)
-	// Channel that is used to turn on and off the IRC watcher.
-	IRCEnabled = make(chan bool)
-	// Channel to signify if the IRC config has changed. Changes will restart the IRC watcher.
-	IRCConfigChanged = make(chan bool)
-	// Channel that collects all IRC errors and will disconnect the IRC watcher if it encounters one.
-	IRCConfigError = make(chan error)
+  starttime = expvar.NewInt("started")
 )
 
 func init() {
   flag.Parse()
   tc = config.NewTrackerConfig()
-  lastFetch.Set(int64(0))
-}
-
-func SetGumshoeBaseDirectory(d string) {
-  tc.Directories["gumshoe_dir"] = d
-}
-
-func SetGumshoePort(p int) {
-  tc.Operations.HttpPort = strconv.Itoa(p)
+  starttime.Set(time.Now().Unix())
 }
 
 func LoadUserOrDefaultConfig(c string) error {
   err := tc.LoadGumshoeConfig(c)
   if err == nil {
-    return
+    return nil
   }
   log.Println(err)
   log.Printf("Error loading config %s. Trying the default.\n", c)
@@ -112,22 +70,11 @@ func setupLogging() (logger *log.Logger, err error) {
 }
 
 func UpdateAllComponents() {
-  for {
-    tcu := <-tc_updated
-    if tcu {
-      misc.PrintDebugln("Updating gumshoe configuration.")
-      // Put update function calls below here
-      updateEpisodeRegex()
-      // Put update function calls above here
-      tc_updated<- false
-    }
-  }
+  misc.PrintDebugln("Updating gumshoe configuration.")
+  db.SetEpisodePatternRegexp(tc.IRC.EpisodeRegexp)
 }
 
 func Start() (err error) {
-  go UpdateAllComponents()
-  tc_updated<- true
-
   // Unified logging is nice, but not necessary right now.
   //if tc.Operations.EnableLog {
   //  logger, err := setupLogging()
@@ -136,17 +83,19 @@ func Start() (err error) {
   //  log.Printf("[ERROR] Writing to the log file failed: %s", err)
   //}
 
-  err = db.InitDb()
+  err = db.InitDb(filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], "gumshoe.db"))
   if err != nil {
     log.Fatalf("[FAIL] Database init failed: %s\n", err)
   }
+  db.SetEpisodePatternRegexp(tc.IRC.EpisodeRegexp)
+  db.SetEpisodeQualityRegexp("720|1080")
 
   for k, v := range tc.Operations.WatchMethods {
     if v {
       switch k {
       case "irc":
         log.Println("Starting IRC Watcher.")
-        icc := irc.StartIRC(*tc)  // Add the logger here
+        icc := irc.StartIRC(tc)  // Add the logger here
         go IrcWatcher(icc)
       default:
         misc.PrintDebugf("%s is coming soon.\n", k)
@@ -155,7 +104,7 @@ func Start() (err error) {
   }
 
   log.Printf("Gumshoe http starting on port %s", tc.Operations.HttpPort)
-  StartHTTPServer(tc.Directories["gumshoe_dir"], tc.Operations.HttpPort)  // Add the logger here too
+  http.StartHTTPServer(tc.Directories["gumshoe_dir"], tc.Operations.HttpPort, tc)  // Add the logger here too
   log.Println("Exiting Gumshoe.")
   return err
 }
@@ -167,13 +116,12 @@ func main() {
   }
 
   if *port != tc.Operations.HttpPort {
-    SetGumshoePort(*port)
+    tc.SetGumshoePort(*port)
   }
-  if *baseDir != tc.Directories["gumshoe_dir"] {
-    SetGumshoeBaseDirectory(*baseDir)
+  if *gumshoeDir != tc.GetDirectory("gumshoe_dir") {
+    tc.SetGumshoeDirectory("gumshoe_dir", *gumshoeDir)
   }
-
-  gumshoe.Start()
+  Start()
 }
 
 func IrcWatcher(control *irc.IRCControlChannel) {
@@ -181,12 +129,12 @@ func IrcWatcher(control *irc.IRCControlChannel) {
     select {
     case match := <-control.IRCAnnounceMatch:
       if match != nil {
-        err := db.CheckMatch(match[1])
+        ep, err := db.CheckMatch(match[1])
         if err != nil {
           log.Println(err)
           continue
         }
-        ff, err := fetcher.NewFileFetch(match[2])
+        ff, err := fetcher.NewFileFetch(match[2], filepath.Join(tc.Directories["user_dir"], tc.Directories["torrent_dir"]), tc.CookieJar)
         if err != nil {
           log.Println(err)
           continue
@@ -201,11 +149,13 @@ func IrcWatcher(control *irc.IRCControlChannel) {
           log.Printf("Episode is already downloading: %s\n", err)
         }
       }
-    case <-tc_updated:
-      if tc_updated {
+    case tcu := <-tc_updated:
+      if tcu {
         control.IRCConfigChanged<- true
+        UpdateAllComponents()
+        tc_updated<- false
       }
-    case irc_err := <-IRCConfigError:
+    case irc_err := <-control.IRCConfigError:
       if irc_err != nil {
         log.Println(irc_err)
       }
