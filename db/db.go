@@ -1,11 +1,11 @@
 // Common Database Functions
-package main
+package db
 
 import (
 	"database/sql"
 	"path/filepath"
 
-	"github.com/coopernurse/gorp"
+  "github.com/nelsam/gorq"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -16,7 +16,7 @@ func InitDb() error {
 		PrintDebugf("sql.Open failed for %s", dbPath)
 		return err
 	}
-	gDb = &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
+	gDb = &gorq.DbMap{Db: db, Dialect: gorq.SqliteDialect{}}
 
 	err = initTable(gDb, Show{}, "show")
 	if err != nil {
@@ -31,7 +31,7 @@ func InitDb() error {
 	return err
 }
 
-func initTable(dbmap *gorp.DbMap, i interface{}, tableName string) error {
+func initTable(dbmap *gorq.DbMap, i interface{}, tableName string) error {
 	dbmap.AddTableWithName(i, tableName).SetKeys(true, "ID")
 	return dbmap.CreateTablesIfNotExists()
 }

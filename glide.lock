@@ -1,16 +1,16 @@
-hash: b539515903e5e9f803ebcd09355509907710e2e0dcd3c5d5cc1bd77ddf28b686
-updated: 2016-04-20T08:07:33.888446984-07:00
+hash: 96b6cec49b6e6ea2f72e7e9a8032c99b0ceb037379c271c572c1a6a3d832f0ea
+updated: 2016-05-04T04:02:46.471902567-07:00
 imports:
-- name: github.com/codegangsta/inject
-  version: 33e0aa1cb7c019ccc3fbe049a8262a6403d30504
-- name: github.com/coopernurse/gorp
-  version: 9cd2b5ef5b82fde4e7c51776ac3f94398b8af076
+- name: github.com/go-gorp/gorp
+  version: 6a3c8a87d0457cf700e57046c41e19b7cf3c44fa
 - name: github.com/go-martini/martini
-  version: b174c4f35f9f3805e960be6286d888bc79534755
+  version: 0c6ad5903d2bf9337762caa9c357247279c230c3
 - name: github.com/martini-contrib/binding
   version: 8aaceec3b52c275477f32c95ea5c6e8ccaba04c5
 - name: github.com/mattn/go-sqlite3
-  version: 467f50b0c026317ad28fc2c0a08aab6f755cfc7a
+  version: 7204887cf3a42df1cfaa5505dc3a3427f6dded8b
+- name: github.com/nelsam/gorq
+  version: a09472878ba73238070fda28d6d64ace839ab30d
 - name: github.com/thoj/go-ircevent
   version: da78ed515c0f0833e7a92c7cc52898176198e2c1
 devImports: []

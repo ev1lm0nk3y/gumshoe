@@ -4,7 +4,7 @@
  * Add, delete and list your episodes that you keep track of with this
  * component.
  */
-package main
+package db
 
 import (
 	"errors"
@@ -138,3 +138,20 @@ func matchEpisodeToPattern(e string) (named map[string]string, err error) {
   }
   return
 }
+
+func CheckMatch(m string) error {
+  ep, err := ParseTorrentString(m)
+  if err != nil {
+    misc.PrintDebugf("Error parsing string: %s\n", err)
+    return
+  }
+  isNew := ep.IsNewEpisode()
+  if !isNew {
+    return errors.New("Episode exists.")
+  }
+  if !ep.ValidEpisodeQuality(m) {
+    return errors.New("Wrong Episode Quality.")
+  }
+  return nil
+}
+

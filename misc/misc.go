@@ -1,4 +1,4 @@
-package main
+package misc
 
 import (
 	"fmt"
@@ -6,6 +6,12 @@ import (
 	"math/rand"
 	"strconv"
 )
+
+var debug = false
+
+func SetDebug() {
+  debug = true
+}
 
 func checkErr(err error, msg string) {
 	if err != nil {
@@ -31,7 +37,7 @@ func PrintDebugln(s ...interface{}) {
 }
 
 func PrintDebugf(f string, i ...interface{}) {
-	if tc.Operations.Debug {
+	if debug {
 		log.Printf("[DEBUG] %s", fmt.Sprintf(f, i...))
 	}
 }

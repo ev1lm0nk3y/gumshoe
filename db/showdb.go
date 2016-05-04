@@ -3,7 +3,7 @@
  * Add, delete and list shows that you keep track of with this component.
  * The section labeled "User Functions" lists the actions that you can perform with the data.
  */
-package main
+package db
 
 import (
   "time"
@@ -20,7 +20,7 @@ type Show struct {
 	LastUpdate int64  `json:"last_update"`
 }
 
-func newShow(t, q string, e bool) *Show {
+func NewShow(t, q string, e bool) *Show {
 	return &Show{
 		Title:      episodeRewriter(t),
 		Quality:    q,

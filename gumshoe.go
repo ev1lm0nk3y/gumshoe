@@ -11,10 +11,14 @@ import (
   "regexp"
   "strconv"
 
-  "github.com/ev1lm0nkey/gumshoe/db/db"
-  "github.com/ev1lm0nkey/gumshoe/watchers/irc"
-	"github.com/coopernurse/gorp"
-  "github.com/thoj/go-ircevent"
+  "github.com/ev1lm0nk3y/gumshoe/config"
+  "github.com/ev1lm0nk3y/gumshoe/db"
+  "github.com/ev1lm0nk3y/gumshoe/fetcher"
+  "github.com/ev1lm0nk3y/gumshoe/http"
+  "github.com/ev1lm0nk3y/gumshoe/irc"
+  "github.com/ev1lm0nk3y/gumshoe/misc"
+
+	"github.com/nelsam/gorq"
 )
 
 
@@ -25,13 +29,10 @@ var (
   DEFAULT_PORT = "20123"
 
 	concurrentFetches = make(chan int, 10)
-	fetchResultMap = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
-	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
-
-	tc  *TrackerConfig
+	tc  *config.TrackerConfig
   tc_updated = make(chan bool)  // Those systems that can be dynamically updated, should watch this channel.
 	cj  []*http.Cookie
-	gDb *gorp.DbMap
+	gDb *gorq.DbMap
   cfgFile string
   httpPort string
 
@@ -70,7 +71,7 @@ var (
 
 func init() {
   flag.Parse()
-  tc = NewTrackerConfig()
+  tc = config.NewTrackerConfig()
   lastFetch.Set(int64(0))
 }
 
@@ -87,11 +88,11 @@ func LoadUserOrDefaultConfig(c string) error {
   if err == nil {
     return
   }
-  log.Errorln(err)
-  log.Errorf("Error loading config %s. Trying the default.", c)
+  log.Println(err)
+  log.Printf("Error loading config %s. Trying the default.\n", c)
   err = tc.LoadGumshoeConfig(DEFAULT_CFG)
   if err != nil {
-    log.Errorf("Default config is invalid.")
+    log.Println("Default config is invalid.")
   }
   return err
 }
@@ -99,7 +100,7 @@ func LoadUserOrDefaultConfig(c string) error {
 func setupLogging() (logger *log.Logger, err error) {
   l, err := os.Create(filepath.Join(tc.Directories["user_dir"], tc.Directories["log_dir"], "gumshoe.log"))
   if err != nil {
-    PrintDebugln("Unable to open log file. Will just use stdout")
+    misc.PrintDebugln("Unable to open log file. Will just use stdout")
     return
   }
   defer l.Close()
@@ -114,7 +115,7 @@ func UpdateAllComponents() {
   for {
     tcu := <-tc_updated
     if tcu {
-      PrintDebugln("Updating gumshoe configuration.")
+      misc.PrintDebugln("Updating gumshoe configuration.")
       // Put update function calls below here
       updateEpisodeRegex()
       // Put update function calls above here
@@ -145,9 +146,10 @@ func Start() (err error) {
       switch k {
       case "irc":
         log.Println("Starting IRC Watcher.")
-        irc.Start()  // Add the logger here
+        icc := irc.StartIRC(*tc)  // Add the logger here
+        go IrcWatcher(icc)
       default:
-        PrintDebugf("%s is coming soon.\n", k)
+        misc.PrintDebugf("%s is coming soon.\n", k)
       }
     }
   }
@@ -165,12 +167,48 @@ func main() {
   }
 
   if *port != tc.Operations.HttpPort {
-    tp, _ := strconv.Atoi(*port)
-    gumshoe.SetGumshoePort(tp)
+    SetGumshoePort(*port)
   }
   if *baseDir != tc.Directories["gumshoe_dir"] {
-    gumshoe.SetGumshoeBaseDirectory(*baseDir)
+    SetGumshoeBaseDirectory(*baseDir)
   }
 
   gumshoe.Start()
+}
+
+func IrcWatcher(control *irc.IRCControlChannel) {
+  for {
+    select {
+    case match := <-control.IRCAnnounceMatch:
+      if match != nil {
+        err := db.CheckMatch(match[1])
+        if err != nil {
+          log.Println(err)
+          continue
+        }
+        ff, err := fetcher.NewFileFetch(match[2])
+        if err != nil {
+          log.Println(err)
+          continue
+        }
+        err = ff.RetrieveEpisode()
+        if err != nil {
+          log.Printf("FAIL: episode not retrieved: %s\n", err)
+          continue
+        }
+        err = ep.AddEpisode()
+        if err != nil {
+          log.Printf("Episode is already downloading: %s\n", err)
+        }
+      }
+    case <-tc_updated:
+      if tc_updated {
+        control.IRCConfigChanged<- true
+      }
+    case irc_err := <-IRCConfigError:
+      if irc_err != nil {
+        log.Println(irc_err)
+      }
+    }
+  }
 }

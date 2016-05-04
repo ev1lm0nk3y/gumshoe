@@ -1,7 +1,6 @@
-package main
+package fetcher
 
 import (
-	"errors"
 	"expvar"
 	"fmt"
 	"io/ioutil"
@@ -14,36 +13,32 @@ import (
 	"time"
 )
 
+var (
+	fetchResultMap = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
+	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
+)
+
 type FileFetch struct {
 	HttpClient   *http.Client
 	Url          *url.URL
 	SaveLocation string
 }
 
-func NewFileFetch(link string) (ff *FileFetch, err error) {
+func NewFileFetch(link, dest string, cj []*http.Cookie) (ff *FileFetch, err error) {
 	u, err := url.Parse(link)
 	if err != nil {
 		return nil, err
 	}
 	ff.Url = u
 	ff.HttpClient = &http.Client{}
-	err = ff.setClientCookie()
-  if err != nil {
-		return nil, err
-	}
-	_, dlFile := filepath.Split(u.RequestURI())
-	ff.SaveLocation = filepath.Join(tc.Directories["user_dir"], tc.Directories["torrent_dir"], string(dlFile[len(dlFile)-1]))
-  return ff, nil
-}
-
-func (ff *FileFetch) setClientCookie() error {
 	if ff.Url != nil {
 		jar, _ := cookiejar.New(nil)
 		jar.SetCookies(ff.Url, cj)
 		ff.HttpClient.Jar = jar
-		return nil
 	}
-	return errors.New("Fetch URL not set.")
+	_, dlFile := filepath.Split(u.RequestURI())
+	ff.SaveLocation = filepath.Join(dest, string(dlFile[len(dlFile)-1]))
+  return ff, nil
 }
 
 func (ff *FileFetch) RetrieveEpisode() error {
@@ -61,7 +56,7 @@ func (ff *FileFetch) RetrieveEpisode() error {
 	if err != nil {
 		return err
 	}
-	lastFetch.Set(time.Now().Unix())
+  lastFetch.Set(time.Now().Unix())
 	UpdateResultMap(strconv.Itoa(resp.StatusCode))
 	return nil
 }

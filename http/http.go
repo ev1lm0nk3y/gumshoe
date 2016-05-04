@@ -1,4 +1,4 @@
-package main
+package http
 
 import (
 	"encoding/json"
@@ -10,12 +10,13 @@ import (
 	"strconv"
 	"strings"
 
+  "github.com/ev1m0nk3y/gumshoe/db"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 )
 
 func getShows(res http.ResponseWriter) string {
-	data, err := ListShows()
+	data, err := db.ListShows()
 	if err != nil {
     res.WriteHeader(http.StatusInternalServerError)
 		return err.Error()
@@ -26,7 +27,7 @@ func getShows(res http.ResponseWriter) string {
 func getShow(res http.ResponseWriter, params martini.Params) string {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err == nil {
-		data, err := GetShow(id)
+		data, err := db.GetShow(id)
 		if err == nil {
 			return render(res, data)
 		}
@@ -35,7 +36,7 @@ func getShow(res http.ResponseWriter, params martini.Params) string {
 }
 
 func createShow(res http.ResponseWriter, params martini.Params, show Show) string {
-	ns := newShow(show.Title, show.Quality, show.Episodal)
+	ns := db.NewShow(show.Title, show.Quality, show.Episodal)
 	err := ns.AddShow()
   if err != nil {
     res.WriteHeader(http.StatusInternalServerError)
@@ -47,7 +48,7 @@ func createShow(res http.ResponseWriter, params martini.Params, show Show) strin
 func updateShow(res http.ResponseWriter, params martini.Params, show Show) string {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err == nil {
-		temp := newShow(show.Title, show.Quality, show.Episodal)
+		temp := db.NewShow(show.Title, show.Quality, show.Episodal)
 		temp.ID = id
 		err = temp.UpdateShow()
 	}
@@ -57,7 +58,7 @@ func updateShow(res http.ResponseWriter, params martini.Params, show Show) strin
 func deleteShow(res http.ResponseWriter, params martini.Params) string {
 	id, err := strconv.ParseInt(params["id"], 10, 64)
 	if err == nil {
-		show := &Show{ID: id}
+		show := &db.Show{ID: id}
 		err = show.DeleteShow()
 	}
 	if err != nil {
@@ -72,7 +73,7 @@ func getEpisodes(res http.ResponseWriter, params martini.Params) string {
 		res.WriteHeader(http.StatusInternalServerError)
 		return err.Error()
 	}
-	e, err := GetEpisodesByShowID(sid)
+	e, err := db.GetEpisodesByShowID(sid)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
 		return err.Error()

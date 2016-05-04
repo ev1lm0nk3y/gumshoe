@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -92,7 +92,7 @@ func NewTrackerConfig() *TrackerConfig {
 	return &TrackerConfig{}
 }
 
-func (tcfg *TrackerConfig) SetGlobalTrackerConfig() {
+func (tcfg *TrackerConfig) SetGlobalTrackerConfig(tc *TrackerConfig) {
 	tc = tcfg
 }
 
@@ -125,7 +125,6 @@ func (tc *TrackerConfig) LoadGumshoeConfig(c string) error {
 		tc.CreateDefaultConfig()
 		return fmt.Errorf("Error with config file %s: %s\nUsing empty template", c, err)
 	}
-	cfgFile = c
 	return nil
 }
 
@@ -164,7 +163,6 @@ func (tc *TrackerConfig) UpdateGumshoeConfig(u []byte) *ConfigError {
 	if err != nil {
 		return NewConfigError(err, "Update is not a valid TrackerConfig JSON")
 	}
-  tc_updated<- true
 	return nil
 }
 
@@ -234,14 +232,14 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 		} else {
 			c.Expires = time.Now().AddDate(10, 0, 0)
 		}
-		cj = append(cj, c)
+		//cj = append(cj, c)
 	}
 	return nil
 }
 
-func GetTrackerCookies() []*http.Cookie {
-	return cj
-}
+//func GetTrackerCookies() []*http.Cookie {
+//	return cj
+//}
 
 // An easy utility to generate the fully qualified path name of a given filename
 // in the user's data directory.
