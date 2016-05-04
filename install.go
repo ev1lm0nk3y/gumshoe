@@ -1,4 +1,4 @@
-package main
+package install
 
 /* Install program for Gumshoe.
  * Once you have downloaded the gumshoe package, run install to put the gumshoe files in the
@@ -19,10 +19,45 @@ var (
 	installPath = flag.String("install_dir", "/usr/local/gumshoe", "Location for Gumshoe run files.")
 	userPath    = flag.String("user_dir", filepath.Join(os.Getenv("HOME"), ".gumshoe"), "Location for user configuration and data.")
 	cpuArch     = flag.String("arch", "", "CPU Architecture to compile gumshoe under. If unset, we will determine to the best of our ability.")
+  help        = flag.Boolean("h", false, "Show this help documentation.")
+  installSBin = flag.Boolean("install_sbin", false, "Install the gumshoe binary in /usr/local/sbin?")
 )
 
 type CfgTemplate struct {
 	InstallDir, UserDir, DataDir, DlDir, FetchDir, LogDir string
+}
+
+func SetCPUArch() error {
+	unameCmd := exec.Command("uname", "-m")
+	out, _ := unameCmd.Output()
+  sOut := string(out)
+	switch {
+	case sOut == "x86_64":
+		return os.Setenv("GOARCH", "amd64")
+	case sOut == "ppc64":
+		return os.Setenv("GOARCH", "ppc64")
+	default:
+		return os.Setenv("GOARCH", "x86")
+	}
+}
+
+func CopyConfig(gct string) error {
+	usrCfg, err := os.Create(filepath.Join(*installPath, "gumshoe.cfg"))
+	if err != nil {
+    log.Println("Unable to create a system-wide gunshoe config file. Continuing.")
+		return nil
+	}
+
+	ct := CfgTemplate{
+		*installPath,
+    *userPath,
+    filepath.Join(*userPath, "data"),
+    filepath.Join(*userPath, "completed"),
+		filepath.Join(*userPath, "fetch"),
+    filepath.Join(*userPath, "logs"),
+	}
+	t := template.Must(template.New("config").ParseFiles(filepath.Join(gct, "cfg", "gumshoe.cfg")))
+	return t.Execute(usrCfg, ct)
 }
 
 func main() {
@@ -31,10 +66,10 @@ func main() {
 
 	err := os.Mkdir(*installPath, 0555)
 	if err != nil {
-		log.Fatalf("Unable to create directory %s probably because you don't have permission.\n", *installPath)
+		log.Fatalf("Unable to create directory %s probably because you don't have permissions.\n", *installPath)
 	}
 	log.Println("Copying gumshoe data to the install directory.")
-  cpWWW := exec.Command("cp", "-r", filepath.Join(whereAmI, "www"), *installPath)
+  cpWWW := exec.Command("cp", "-r", filepath.Join(whereAmI, "www"), filepath.Join(*installPath, "www"))
 	err = cpWWW.Run()
 	if err != nil {
 		log.Fatalf("Failure to copy data files: %s\n", err)
@@ -50,51 +85,27 @@ func main() {
 
 	err = CopyConfig(whereAmI)
 	if err != nil {
-		log.Fatalln("Error editing config for the first time.")
+    log.Fatalf("Error creating user config file: %s\n", err)
 	}
-	SetCPUArch()
 
-  // Set the go binary install path via GOBIN, install, then unset the variable.
-	err = os.Setenv("GOBIN", *installPath)
-	if err != nil {
-		log.Fatalf("Can't set environment variables. %s\n", err)
-	}
-	installGumshoe := exec.Command("go", "install", "-i", filepath.Join(whereAmI, "gumshoed.go"))
-	err = installGumshoe.Run()
+	err = SetCPUArch()
+  if err != nil {
+    log.Errorf("E: %s\n", err)
+    log.Errorln("Unable to determine system, going to try and build anyways.")
+  }
+
+  if installSBin {
+    binpath := "/usr/local/sbin"
+  } else {
+    binpath := filepath.Join(*installPath, "bin")
+  }
+	buildGumshoe := exec.Command("go", "build", "-o", filepath.Join(binpath, "gumshoe"), "main.go")
+	err = buildGumshoe.Run()
 	if err != nil {
 		log.Fatalf("Error building gumshoe: %s\n", err)
 	}
-  err = os.Unsetenv("GOBIN")
-  if err != nil {
-    log.Fatalln(err)
-  }
 
-	log.Printf("Gumshoe installed successfully. Set $PATH to include %s\n", *installPath)
+  // Flag to do this automatically
+	log.Printf("Gumshoe installed successfully. Set $PATH to include %s\n", *binpath)
 }
 
-func SetCPUArch() {
-	unameCmd := exec.Command("uname", "-m")
-	out, _ := unameCmd.Output()
-  sOut := string(out)
-	switch {
-	case sOut == "x86_64":
-		os.Setenv("GOARCH", "amd64")
-	case sOut == "ppc64":
-		os.Setenv("GOARCH", "ppc64")
-	default:
-		os.Setenv("GOARCH", "x86")
-	}
-}
-
-func CopyConfig(gct string) error {
-	usrCfg, err := os.Create(filepath.Join(*installPath, "gumshoe.cfg"))
-	if err != nil {
-		return nil
-	}
-	ct := CfgTemplate{
-		*installPath, *userPath, filepath.Join(*userPath, "data"), filepath.Join(*userPath, "completed"),
-		filepath.Join(*userPath, "fetch"), filepath.Join(*userPath, "logs"),
-	}
-	t := template.Must(template.New("config").ParseFiles(filepath.Join(gct, "cfg", "gumshoe.cfg")))
-	return t.Execute(usrCfg, ct)
-}

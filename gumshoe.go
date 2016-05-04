@@ -3,6 +3,7 @@ package main
 import (
   "bufio"
   "expvar"
+  "flag"
   "log"
   "net/http"
   "os"
@@ -10,6 +11,8 @@ import (
   "regexp"
   "strconv"
 
+  "github.com/ev1lm0nkey/gumshoe/db/db"
+  "github.com/ev1lm0nkey/gumshoe/watchers/irc"
 	"github.com/coopernurse/gorp"
   "github.com/thoj/go-ircevent"
 )
@@ -31,6 +34,13 @@ var (
 	gDb *gorp.DbMap
   cfgFile string
   httpPort string
+
+  // HTTP Server Flags
+  port = flag.String("p", DEFAULT_PORT, "Which port do we serve requests from. 0 allows the system to decide.")
+  baseDir = flag.String("d", "/usr/local/gumshoe", "Base path for gumshoe.")
+
+  // Base Config Stuff
+  configFile = flag.String("c", filepath.Join(os.Getenv("HOME"), ".gumshoe", "data", "gumshoe.cfg"),	"Config file to load")
 
 	// Regexp to determine if the announce regexp matches a known episode structure
 	episodePattern *regexp.Regexp
@@ -59,12 +69,9 @@ var (
 )
 
 func init() {
+  flag.Parse()
   tc = NewTrackerConfig()
   lastFetch.Set(int64(0))
-}
-
-func SetUserConfigFile(c string) {
-  cfgFile = c
 }
 
 func SetGumshoeBaseDirectory(d string) {
@@ -72,24 +79,19 @@ func SetGumshoeBaseDirectory(d string) {
 }
 
 func SetGumshoePort(p int) {
-  httpPort = strconv.Itoa(p)
+  tc.Operations.HttpPort = strconv.Itoa(p)
 }
 
-func loadConfig() error {
-  userCfg := filepath.Join(os.Getenv("HOME"), ".gumshoe", "gumshoe.cfg")
-  if cfgFile == "" {
-    // Try to find the user's config first.
-    cfgFile = userCfg
-    _, err := os.Stat(cfgFile)
-    if err != nil {
-      cfgFile = DEFAULT_CFG
-    }
+func LoadUserOrDefaultConfig(c string) error {
+  err := tc.LoadGumshoeConfig(c)
+  if err == nil {
+    return
   }
-  err := tc.LoadGumshoeConfig(cfgFile)
+  log.Errorln(err)
+  log.Errorf("Error loading config %s. Trying the default.", c)
+  err = tc.LoadGumshoeConfig(DEFAULT_CFG)
   if err != nil {
-    tc.Directories["gumshoe_dir"] = DEFAULT_GUMSHOE_BASE
-    tc.Directories["user_dir"] = userCfg
-    tc.Operations.HttpPort = httpPort
+    log.Errorf("Default config is invalid.")
   }
   return err
 }
@@ -122,11 +124,6 @@ func UpdateAllComponents() {
 }
 
 func Start() (err error) {
-  err = loadConfig()
-  if err != nil {
-    log.Fatalf("[FAIL] Unable to load config: %s\n", err)
-  }
-
   go UpdateAllComponents()
   tc_updated<- true
 
@@ -138,7 +135,7 @@ func Start() (err error) {
   //  log.Printf("[ERROR] Writing to the log file failed: %s", err)
   //}
 
-  err = InitDb()
+  err = db.InitDb()
   if err != nil {
     log.Fatalf("[FAIL] Database init failed: %s\n", err)
   }
@@ -148,14 +145,32 @@ func Start() (err error) {
       switch k {
       case "irc":
         log.Println("Starting IRC Watcher.")
-        StartIRC()  // Add the logger here
+        irc.Start()  // Add the logger here
       default:
         PrintDebugf("%s is coming soon.\n", k)
       }
     }
   }
 
+  log.Printf("Gumshoe http starting on port %s", tc.Operations.HttpPort)
   StartHTTPServer(tc.Directories["gumshoe_dir"], tc.Operations.HttpPort)  // Add the logger here too
   log.Println("Exiting Gumshoe.")
   return err
+}
+
+func main() {
+  err := LoadUserOrDefaultConfig(*configFile)
+  if err != nil {
+    log.Fatalln(err)
+  }
+
+  if *port != tc.Operations.HttpPort {
+    tp, _ := strconv.Atoi(*port)
+    gumshoe.SetGumshoePort(tp)
+  }
+  if *baseDir != tc.Directories["gumshoe_dir"] {
+    gumshoe.SetGumshoeBaseDirectory(*baseDir)
+  }
+
+  gumshoe.Start()
 }
