@@ -1,5 +1,5 @@
 // Common Database Functions
-package gumshoe
+package main
 
 import (
 	"database/sql"

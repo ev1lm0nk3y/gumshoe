@@ -3,7 +3,7 @@
  * Add, delete and list shows that you keep track of with this component.
  * The section labeled "User Functions" lists the actions that you can perform with the data.
  */
-package gumshoe
+package main
 
 import (
   "time"

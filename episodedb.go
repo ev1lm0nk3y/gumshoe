@@ -4,7 +4,7 @@
  * Add, delete and list your episodes that you keep track of with this
  * component.
  */
-package gumshoe
+package main
 
 import (
 	"errors"
