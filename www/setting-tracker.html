@@ -1,60 +1,66 @@
-<div ng-show="sTab.isSet(2)">
-  <form ng-controller="ConfigController" class="form-horizontal" name="gumeshoe-tracker-settings" role="form">
-    <span class="col-md-12 opt-title">Setup Tracker<hr></span>
-    <div class="form-group row">
-      <label class="col-sm-2 control-label" for="tracker.tracker" ng-mouseover="ShowHint($event)">Website</label>
-      <div class="col-sm-6">
-        <input class="form-control input-sm" type="text" ng-model="tracker.tracker" required>
-      </div>
+<html>
+  <head>
+    <meta  content="text/html; charset=windows-1252"  http-equiv="content-type">
+    <link  href="file:///home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/www/css/dashboard.css"
+       rel="stylesheet"  type="text/css">
+    <link  href="file:///home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/www/css/bootstrap.min.css"
+       rel="stylesheet"  type="text/css">
+    <link  href="file:///home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/www/css/bootstrap-theme.min.css"
+       rel="stylesheet"  type="text/css">
+  </head>
+  <body>
+    <div  ng-show="sTab.isSet(2)">
+      <form  ng-controller="ConfigController"  class="form-horizontal"  name="gumeshoe-tracker-settings"
+         role="form"> <span  class="col-md-12 opt-title">Setup Tracker
+          <hr></span>
+        <div  class="form-group row"> <label  class="col-sm-2 control-label"  for="tracker.tracker"
+             ng-mouseover="ShowHint($event)">Website</label>
+          <div  class="col-sm-6"> <input  class="form-control input-sm"  ng-model="tracker.tracker"
+               required=""  type="text"> </div>
+        </div>
+        <div  class="form-group row"> <label  class="col-sm-2 control-label"  for="tracker.is_secure"
+             ng-mouseover="ShowHint($event)">Secure Site?</label>
+          <div  class="col-sm-1"> <input  class="form-control btn-xs left"  ng-checked="tracker.is_secure"
+               ng-model="tracker.is_secure"  type="checkbox"> </div>
+          <label  class="col-sm-2 control-label"  for="cookie_file"  mg-mouseover="ShowHint($event)">Cookie
+            File</label>
+          <div  class="col-sm-5"> <input  class="form-control input-sm"  ng-disabled="!tracker.is_secure"
+               ng-model="tracker.cookie_file"  type="file"> </div>
+        </div>
+        <div  class="form-group row"> <label  class="col-sm-2 control-label"  for="tracker.max_retries"
+             mg-mouseover="ShowHint($event)">Max Retries</label>
+          <div  class="col-sm-1"> <input  class="form-control"  ng-model="tracker.max_retries"
+               type="number"> </div>
+        </div>
+        <div  class="form-group row"> <label  class="col-sm-2 control-label"  for="tracker.download_rate"
+             mg-mouseover="ShowHint($event)">Download Rate</label>
+          <div  class="col-sm-1"> <input  class="form-control"  ng-model="tracker.download_rate"
+               type="number"> </div>
+        </div>
+        <div  class="form-group row"> <label  class="col-sm-2 control-label"  for="tracker.queue_size"
+             mg-mouseover="ShowHint($event)">Queue Size</label>
+          <div  class="col-sm-1"> <input  class="form-control"  ng-model="tracker.queue_size"
+               type="number"> </div>
+        </div>
+        <span  class="col-md-12 opt-title">Tracker Tools
+          <hr></span>
+        <div  class="form-group row"> <label  class="col-sm-2 control-label"  for="tracker.torrent_url"
+             mg-mouseover="ShowHint($event)">Search Path</label>
+          <div  class="col-sm-5 input-sm"> <input  class="form-control"  ng-model="tracker.torrent_url"
+               type="text"> </div>
+        </div>
+        <div  class="form-group row"> <label  class="col-sm-2 control-label"  for="tracker.torrent_user"
+             ng-mouseover="ShowHint($event)">User</label>
+          <div  class="col-sm-3"> <input  class="input-sm form-control"  ng-model="tracker.torrent_user"
+               type="text"> </div>
+          <label  class="col-sm-2 control-label"  for="tracker.torrent_pass"  ng-mouseover="ShowHint($event)">Password</label>
+          <div  class="col-sm-3"> <input  class="col-sm-3 input-sm form-control"
+               ng-model="tracker.torrent_pass"  type="password"> </div>
+        </div>
+        <div  class="row"> <span  class="col-md-2">&nbsp;</span> <button  class="btn btn-md btn-danger"
+             ng-click="TestTracker()"  type="button">Test Tracker Setup</button>
+        </div>
+      </form>
     </div>
-    <div class="form-group row">
-      <label class="col-sm-2 control-label" for="tracker.is_secure" ng-mouseover="ShowHint($event)">Secure Site?</label>
-      <div class="col-sm-1">
-        <input class="form-control btn-xs left" type="checkbox" ng-checked="tracker.is_secure" ng-model="tracker.is_secure">
-      </div>
-      <label class="col-sm-2 control-label" for="cookie_file" mg-mouseover="ShowHint($event)">Cookie File</label>
-      <div class="col-sm-5">
-        <input class="form-control input-sm" ng-disabled="!tracker.is_secure" type="file" ng-model="tracker.cookie_file">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-2 control-label" for="tracker.max_retries" mg-mouseover="ShowHint($event)">Max Retries</label>
-      <div class="col-sm-1">
-        <input class="form-control" type="number" ng-model="tracker.max_retries">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-2 control-label" for="tracker.download_rate" mg-mouseover="ShowHint($event)">Download Rate</label>
-      <div class="col-sm-1">
-        <input class="form-control" type="number" ng-model="tracker.download_rate">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-2 control-label" for="tracker.queue_size" mg-mouseover="ShowHint($event)">Queue Size</label>
-      <div class="col-sm-1">
-        <input class="form-control" type="number" ng-model="tracker.queue_size">
-      </div>
-    </div>
-    <span class="col-md-12 opt-title">Tracker Tools<hr></span>
-    <div class="form-group row">
-      <label class="col-sm-2 control-label" for="tracker.torrent_url" mg-mouseover="ShowHint($event)">Search Path</label>
-      <div class="col-sm-5 input-sm">
-        <input class="form-control" type="text" ng-model="tracker.torrent_url">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-2 control-label" for="tracker.torrent_user" ng-mouseover="ShowHint($event)">User</label>
-      <div class="col-sm-3">
-        <input class="input-sm form-control" type="text" ng-model="tracker.torrent_user">
-      </div>
-      <label class="col-sm-2 control-label" for="tracker.torrent_pass" ng-mouseover="ShowHint($event)">Password</label>
-      <div class="col-sm-3">
-        <input class="col-sm-3 input-sm form-control" type="password" ng-model="tracker.torrent_pass">
-      </div>
-    </div>
-    <div class="row">
-      <span class="col-md-2">&nbsp;</span>
-      <button class="btn btn-md btn-danger" ng-click="TestTracker()" type="button">Test Tracker Setup</button>
-    </div>
-  </form>
-</div>
+  </body>
+</html>

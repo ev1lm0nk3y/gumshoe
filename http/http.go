@@ -12,6 +12,7 @@ import (
 
   "github.com/ev1lm0nk3y/gumshoe/config"
   "github.com/ev1lm0nk3y/gumshoe/db"
+  "github.com/ev1lm0nkey/gumshoe/fetcher"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 )
@@ -101,29 +102,37 @@ func getConfig(res http.ResponseWriter, params martini.Params) string {
 	return asJson(res, o)
 }
 
-func updateConfig() string {
-	return "updateConfig"
-}
-
-func getQueueItems() string {
-	return "getQueueItems"
-}
-
-func createQueueItem() string {
-	return "createQueueItem"
-}
-
-func deleteQueueItem() string {
-	return "deleteQueueItem"
+func updateConfig(res http.ResponseWriter, params martini.Params) string {
+  if s, ok := params["config"]; ok {
+    err := tc.UpdateTrackerConfigJSON(s)
+    if err != nil {
+      res.WriteHeader(http.StatusInternalServerError)
+      return err.Error()
+    }
+    return "Configuration Updated Successfully"
+  }
+  res.WriteHeader(http.StatusInternalServerError)
+  return "Invalid. Error Code: 10"
 }
 
 func getStatus(res http.ResponseWriter) string {
-	//_, err := torrentClient.GetTorrents()
-	//if err != nil {
-	//  res.WriteHeader(http.StatusInternalServerError)
-	//  return err.Error()
-	//}
-	return "OK"
+  statusTmpl, err := template.New("Status").ParseFile(filepath.Join(tc.Directories["gumshoe_dir"], "www", "templates", "status.html"))
+  if err != nil {
+    res.WriteHeader(http.StatusInternalServerError)
+    return "Internal Error: Code 11"
+  }
+  s := &Status{
+    IsHealthy: GumshoeHealth(),
+    Uptime: time.Format(time.Since(time.Unix(expvar.Get("started"))), "Jan 01 2016 @ 12:45pm")
+    LastSeenWatcherUpdate: expvar.Get("irc_last_update_timestamp"),
+    WatcherStatus: expvar.Get("irc_status"),
+    LastEpisodeDownloaded: fetcher.GetLastFetchInfo(),
+  }
+  err := statusTmpl.Execute(res, s)
+  if err != nil {
+    res.WriteHeader(http.StatusInternalServerError)
+    return err
+  }
 }
 
 func getSettings(res http.ResponseWriter, params martini.Params) string {
@@ -140,19 +149,17 @@ func render(res http.ResponseWriter, data interface{}) string {
 }
 
 func getVarz(res http.ResponseWriter) string {
-  output := []string{}
-	res.Header().Set("Content-Type", "application/json; charset=utf-8")
-	output = append(output, fmt.Sprintf("{", "\n"))
-	first := true
+  const vars := "<body>{{range .Vars}}<b>{{.Key}}:</b> {{.Value}}<br>{{end}}</body>"
+  vartmpl := template.Must(template.New("varz").Parse(vars))
+	res.Header().Set("Content-Type", "text/html; charset=utf-8")
 	expvar.Do(func(kv expvar.KeyValue) {
-		if !first {
-			output = append(output, fmt.Sprintf(",\n"))
-			first = false
-		}
-		output = append(output, fmt.Sprintf("%q: %s\n", kv.Key, kv.Value))
+    err := vartmpl.Execute(res, kv)
+		if err != nil {
+      res.WriteHeader(http.StatusInternalServerError)
+      return "Failure"
+    }
 	})
-	output = append(output, "\n}\n")
-	return strings.Join(output, "")
+  return ""
 }
 
 func asJson(res http.ResponseWriter, data []byte) string {
@@ -187,12 +194,6 @@ func StartHTTPServer(baseDir, port string, gtc *config.TrackerConfig) {
 	m.Group("/api/config", func(r martini.Router) {
 		r.Get("/:id", getConfig)
 		r.Post("/update", updateConfig)
-	})
-
-	m.Group("/api/queue", func(r martini.Router) {
-		r.Get("/:id", getQueueItems)
-		r.Post("/new", createQueueItem)
-		r.Delete("/delete/:id", deleteQueueItem)
 	})
 
 	log.Println("Starting up webserver...")

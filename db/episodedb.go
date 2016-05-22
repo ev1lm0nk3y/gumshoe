@@ -59,6 +59,7 @@ func (e *Episode) AddEpisode() (err error) {
     show.LastUpdate = e.Added
     err = show.UpdateShow()
   }
+  go AddDBOp("episode")
 	return err
 }
 
@@ -67,6 +68,7 @@ func (e *Episode) IsNewEpisode() bool {
 	err := gDb.SelectOne(&Episode{}, "select ID from episode where ShowID=? and Season=? and Episode=? and AirDate=?",
 		e.ShowID, e.Season, e.Episode, e.AirDate)
   <-checkDBLock
+  go AddDBOp("episode")
 	if err == nil {
 		return false
 	}
@@ -87,6 +89,7 @@ func GetEpisodesByShowID(id int64) (allE *[]Episode, err error) {
   checkDBLock<- 1
 	_, err = gDb.Select(allE, "select * from episode where ShowID=?", id)
   <-checkDBLock
+  go AddDBOp("episode")
 	return
 }
 
@@ -94,6 +97,7 @@ func GetLastEpisode(sid int64) (le *Episode, err error) {
   checkDBLock<- 1
   err = gDb.SelectOne(le, "select * from episode where ShowID=? sort by AirDate, Season, Episode desc limit 1", sid)
   <-checkDBLock
+  go AddDBOp("episode")
   return
 }
 

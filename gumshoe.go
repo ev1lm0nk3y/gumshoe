@@ -2,8 +2,10 @@ package main
 
 import (
   "bufio"
+  "errors"
   "expvar"
   "flag"
+  "fmt"
   "log"
   "os"
   "path/filepath"
@@ -19,10 +21,10 @@ import (
 
 
 var (
-  // Program defaults that are only used when no other data is provided.
-  DEFAULT_GUMSHOE_BASE = "/usr/local/gumshoe"
-  DEFAULT_CFG = "/usr/local/gumshoe/gumshoe.cfg"
-  DEFAULT_PORT = "20123"
+  // Program defaults that are only used when no other data is provided. Based on docker paths.
+  DEFAULT_GUMSHOE_BASE = "/gumshoe"
+  DEFAULT_CFG = "cfg/gumshoe.cfg"
+  DEFAULT_PORT = "9119"
 
 	concurrentFetches = make(chan int, 10)
 	tc  *config.TrackerConfig
@@ -30,7 +32,7 @@ var (
 
   port = flag.String("p", DEFAULT_PORT, "Which port do we serve requests from. 0 allows the system to decide.")
   gumshoeDir = flag.String("d", DEFAULT_GUMSHOE_BASE, "Base path for gumshoe.")
-  configFile = flag.String("c", filepath.Join(os.Getenv("HOME"), ".gumshoe", "gumshoe.cfg"),	"Config file to load")
+  userConfigDir = flag.String("c", filepath.Join(os.Getenv("HOME"), ".gumshoe"),	"User config directory")
 
   starttime = expvar.NewInt("started")
 )
@@ -48,7 +50,7 @@ func LoadUserOrDefaultConfig(c string) error {
   }
   log.Println(err)
   log.Printf("Error loading config %s. Trying the default.\n", c)
-  err = tc.LoadGumshoeConfig(DEFAULT_CFG)
+  err = tc.LoadGumshoeConfig(filepath.Join(DEFAULT_GUMSHOE_BASE, DEFAULT_CFG))
   if err != nil {
     log.Println("Default config is invalid.")
   }
@@ -74,7 +76,7 @@ func UpdateAllComponents() {
   db.SetEpisodePatternRegexp(tc.IRC.EpisodeRegexp)
 }
 
-func Start() (err error) {
+func Start() error {
   // Unified logging is nice, but not necessary right now.
   //if tc.Operations.EnableLog {
   //  logger, err := setupLogging()
@@ -82,10 +84,9 @@ func Start() (err error) {
   //if err != nil {
   //  log.Printf("[ERROR] Writing to the log file failed: %s", err)
   //}
-
-  err = db.InitDb(filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], "gumshoe.db"))
+  err := db.InitDb(filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], "gumshoe.db"))
   if err != nil {
-    log.Fatalf("[FAIL] Database init failed: %s\n", err)
+    return errors.New(fmt.Sprintf("[FAIL] Database init failed: %s\n", err))
   }
   db.SetEpisodePatternRegexp(tc.IRC.EpisodeRegexp)
   db.SetEpisodeQualityRegexp("720|1080")
@@ -110,7 +111,7 @@ func Start() (err error) {
 }
 
 func main() {
-  err := LoadUserOrDefaultConfig(*configFile)
+  err := LoadUserOrDefaultConfig(filepath.Join(*userConfigDir, "gumshoe.cfg"))
   if err != nil {
     log.Fatalln(err)
   }
@@ -121,7 +122,13 @@ func main() {
   if *gumshoeDir != tc.GetDirectory("gumshoe_dir") {
     tc.SetGumshoeDirectory("gumshoe_dir", *gumshoeDir)
   }
-  Start()
+  if *userConfigDir != tc.GetDirectory("user_dir") {
+    tc.SetGumshoeDirectory("user_dir", *userConfigDir)
+  }
+  err = Start()
+  if err != nil {
+    log.Fatal(err)
+  }
 }
 
 func IrcWatcher(control *irc.IRCControlChannel) {

@@ -16,6 +16,7 @@ import (
 var (
 	fetchResultMap = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
 	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
+  lastFetchEpisode = expvar.NewString("last_fetched_episode")
 )
 
 type FileFetch struct {
@@ -58,6 +59,15 @@ func (ff *FileFetch) RetrieveEpisode() error {
 	}
   lastFetch.Set(time.Now().Unix())
 	UpdateResultMap(strconv.Itoa(resp.StatusCode))
+  episode, err := db.ParseTorrentString(ff.URL)
+  if err != nil {
+    return err
+  }
+  show, err := db.GetShow(episode.ShowID)
+  if err != nil {
+    return err
+  }
+  lastFetchEpisode.Set(fmt.Sprintf("%s Season %d Episode %d", show.Title, episode.Season, episode.Episode))
 	return nil
 }
 
