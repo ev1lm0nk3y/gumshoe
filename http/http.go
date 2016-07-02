@@ -9,10 +9,13 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+  "text/template"
+  //"time"
 
   "github.com/ev1lm0nk3y/gumshoe/config"
   "github.com/ev1lm0nk3y/gumshoe/db"
-  "github.com/ev1lm0nkey/gumshoe/fetcher"
+  //"github.com/ev1lm0nk3y/gumshoe/fetcher"
+  "github.com/ev1lm0nk3y/gumshoe/irc"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 )
@@ -104,7 +107,7 @@ func getConfig(res http.ResponseWriter, params martini.Params) string {
 
 func updateConfig(res http.ResponseWriter, params martini.Params) string {
   if s, ok := params["config"]; ok {
-    err := tc.UpdateTrackerConfigJSON(s)
+    err := tc.UpdateGumshoeConfig([]byte(s))
     if err != nil {
       res.WriteHeader(http.StatusInternalServerError)
       return err.Error()
@@ -115,24 +118,40 @@ func updateConfig(res http.ResponseWriter, params martini.Params) string {
   return "Invalid. Error Code: 10"
 }
 
+type Status struct {
+  IsHealthy                   bool
+  Uptime                      string
+  LastSeenWatcherUpdate       string
+  WatcherStatus               string
+  LastEpisodeDownloaded       string
+}
+
 func getStatus(res http.ResponseWriter) string {
-  statusTmpl, err := template.New("Status").ParseFile(filepath.Join(tc.Directories["gumshoe_dir"], "www", "templates", "status.html"))
+/*
+  dateFormat := "Jan 01 2016 @ 12:15pm"
+  statusTmpl, err := template.New("Status").ParseFiles(filepath.Join(tc.Directories["gumshoe_dir"], "www", "templates", "status.html"))
   if err != nil {
     res.WriteHeader(http.StatusInternalServerError)
     return "Internal Error: Code 11"
   }
   s := &Status{
-    IsHealthy: GumshoeHealth(),
-    Uptime: time.Format(time.Since(time.Unix(expvar.Get("started"))), "Jan 01 2016 @ 12:45pm")
-    LastSeenWatcherUpdate: expvar.Get("irc_last_update_timestamp"),
+    IsHealthy: true,  //GumshoeHealth(),
+    Uptime: time.Since(time.Unix(int64(strconv.Atoi(expvar.Get("started").String())))),
+    LastSeenWatcherUpdate: time.Unix(int64(strconv.Atoi(expvar.Get("irc_last_update_timestamp").String()))).Format(dateFormat),
     WatcherStatus: expvar.Get("irc_status"),
-    LastEpisodeDownloaded: fetcher.GetLastFetchInfo(),
+    LastEpisodeDownloaded: time.Unix(int64(strconv.Atoi(expvar.Get("last_fetch_timestamp").String()))).Format(dateFormat),
   }
-  err := statusTmpl.Execute(res, s)
+  err = statusTmpl.Execute(res, s)
   if err != nil {
     res.WriteHeader(http.StatusInternalServerError)
     return err
   }
+*/
+  return "OK"
+}
+
+func getIrcLogs(res http.ResponseWriter, params martini.Params) string {
+  return strings.Join(irc.GetIrcLogs(), "\n")
 }
 
 func getSettings(res http.ResponseWriter, params martini.Params) string {
@@ -149,14 +168,14 @@ func render(res http.ResponseWriter, data interface{}) string {
 }
 
 func getVarz(res http.ResponseWriter) string {
-  const vars := "<body>{{range .Vars}}<b>{{.Key}}:</b> {{.Value}}<br>{{end}}</body>"
+  const vars = "<b>{{.Key}}:</b> {{.Value.String}}<br>"
   vartmpl := template.Must(template.New("varz").Parse(vars))
 	res.Header().Set("Content-Type", "text/html; charset=utf-8")
 	expvar.Do(func(kv expvar.KeyValue) {
     err := vartmpl.Execute(res, kv)
-		if err != nil {
-      res.WriteHeader(http.StatusInternalServerError)
-      return "Failure"
+    if err != nil {
+      log.Println(err)
+      return
     }
 	})
   return ""
@@ -180,6 +199,7 @@ func StartHTTPServer(baseDir, port string, gtc *config.TrackerConfig) {
 	m.Get("/status", getStatus)
 	m.Get("/settings", getSettings)
 	m.Get("/vars", getVarz)
+  m.Get("/irclogs", getIrcLogs)
 
 	m.Get("/api/shows", getShows)
 	m.Get("/api/configs", getSettings)

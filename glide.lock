@@ -1,5 +1,5 @@
 hash: 96b6cec49b6e6ea2f72e7e9a8032c99b0ceb037379c271c572c1a6a3d832f0ea
-updated: 2016-05-19T04:47:32.35012787-07:00
+updated: 2016-07-02T03:40:17.627856723-07:00
 imports:
 - name: github.com/codegangsta/inject
   version: 33e0aa1cb7c019ccc3fbe049a8262a6403d30504

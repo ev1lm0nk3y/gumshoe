@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+
+  "github.com/ev1lm0nk3y/gumshoe/misc"
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
@@ -57,7 +59,7 @@ type Download struct {
 	MaxRetries  int    `json:"max_retries"`
 	QueueSize   int    `json:"queue_size"`
 	Secure      bool   `json:"is_secure"`
-	CookieFile  string `json:"cookie_file"`
+	CookieFile  string `json:"cookies_file"`
 	TorrentURL  string `json:"torrent_url"`
 	TorrentUser string `json:"torrent_user"`
 	TorrentPass string `json:"torrent_pass"`
@@ -226,9 +228,14 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 		return nil
 	}
 	// decrypt file here
-	cjBuf, err := ioutil.ReadFile(filepath.Join(tc.Directories["user_dir"], tc.Download.CookieFile))
+	cjBuf, err := ioutil.ReadFile(filepath.Join(tc.Directories["user_dir"],
+    tc.Directories["data_dir"],
+    tc.Download.CookieFile))
 	if err != nil {
     fmt.Println("Cookie file is not available. Setting the downloader to insecure connections.")
+    misc.PrintDebugf("Cookie file: %s", filepath.Join(tc.Directories["user_dir"],
+      tc.Directories["data_dir"],
+      tc.Download.CookieFile))
     tc.Download.Secure = false
     tc.CookieJar = []*http.Cookie{}
 		return nil

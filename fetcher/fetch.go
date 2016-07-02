@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+
+  "github.com/ev1lm0nk3y/gumshoe/db"
 )
 
 var (
@@ -59,7 +61,7 @@ func (ff *FileFetch) RetrieveEpisode() error {
 	}
   lastFetch.Set(time.Now().Unix())
 	UpdateResultMap(strconv.Itoa(resp.StatusCode))
-  episode, err := db.ParseTorrentString(ff.URL)
+  episode, err := db.ParseTorrentString(ff.Url.String())
   if err != nil {
     return err
   }
