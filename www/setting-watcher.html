@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <meta  content="text/html; charset=windows-1252"  http-equiv="content-type">
+    <link  href="file:///home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/www/css/dashboard.css"
+       rel="stylesheet"  type="text/css">
+    <link  href="file:///home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/www/css/bootstrap.min.css"
+       rel="stylesheet"  type="text/css">
+    <link  href="file:///home/ryan/gocode/src/github.com/ev1lm0nk3y/gumshoe/www/css/bootstrap-theme.min.css"
+       rel="stylesheet"  type="text/css">
+  </head>
+  <body>
+    <div  ng-show="sTab.isSet(3)">
+      <form  ng-controller="ConfigController"  class="form-horizontal"  name="gumeshoe-watcher-settings"
+         role="form"> <span  class="col-md-12 opt-title">Setup Watcher<hr></span>
+      <main>
+      <table style="border-collapse:true">
+        <tr colspan=4>
+          <th>Enable IRC:</th><td><input type="checkbox" {{if .Operations.WatchMethods.IRC}}checked{{end}} name="watcher.irc"></td>
+        </tr>
+        <tr>
+          <th>Hostname</th><td><input type="text" name="irc.server" value="{{.IRC.Server}}"></td>
+          <th>Port:</th><td><input type="number" name="irc.port" value="{{.IRC.Port}}"></td>
+        </tr>
+        <details>
+          <summary>IRC Channel Tuning</summary>
+          <tr>
+            <th>Ping Frequency (s):</th><td><input type="number" name="irc.pingrate" value="{{.IRC.PingFreq}}"></td>
+            <th>Keep Alive (s):</th><td><input type="number" name="irc.keepalive" value="{{.IRC.KeepAlive}}"></td>
+            <th>Timeout (s):</th><td><input type="number" name="irc.timeout" value="{{.IRC.Timeout}}"></td>
+          </tr>
+        </details>
+        <tr>
+          <th>Nickname:</th><td><input type="text" name="irc.nick" value="{{.IRC.Nick}}"></td>
+          <th>IRC Key:</th><td><input type="text" name="irc.key" value="{{.IRC.Key}}"></td>
+        </tr>
+        <tr>
+          <th>Invite Command:</th><td><input type="text" name="irc.invitecmd" value="{{.IRC.InviteCmd}}"></td>
+        </tr>
+        <tr>
+          <th></th>
+        </tr>
+      </table>
+      </main>
+    </form>
+  </div>
+</body>
+</html>
