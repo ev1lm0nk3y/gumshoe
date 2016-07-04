@@ -1,3 +1,5 @@
+// Package fetcher does the heavy lifting of downloading files from the
+// internet to your desired location.
 package fetcher
 
 import (
@@ -11,39 +13,38 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
-
-	"github.com/ev1lm0nk3y/gumshoe/db"
 )
 
 var (
-	fetchResultMap   = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
-	lastFetch        = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
-	lastFetchEpisode = expvar.NewString("last_fetched_episode")
+	fetchResultMap = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
+	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
 )
 
+// FileFetch stores the data about the file to be downloaded.
 type FileFetch struct {
 	HttpClient   *http.Client
 	Url          *url.URL
 	SaveLocation string
 }
 
-func NewFileFetch(link, dest string, cj []*http.Cookie) (ff *FileFetch, err error) {
+// NewFileFetch will return *FileFetch. Errors may occur if the url is malformed.
+func NewFileFetch(link, dest string, cj []*http.Cookie) (*FileFetch, error) {
 	u, err := url.Parse(link)
 	if err != nil {
 		return nil, err
 	}
-	ff.Url = u
-	ff.HttpClient = &http.Client{}
-	if ff.Url != nil {
-		jar, _ := cookiejar.New(nil)
-		jar.SetCookies(ff.Url, cj)
-		ff.HttpClient.Jar = jar
+	ff := &FileFetch{
+		HttpClient:   &http.Client{},
+		Url:          u,
+		SaveLocation: filepath.Join(dest, filepath.FromSlash(u.String())),
 	}
-	_, dlFile := filepath.Split(u.RequestURI())
-	ff.SaveLocation = filepath.Join(dest, string(dlFile[len(dlFile)-1]))
+	ff.HttpClient.Jar, _ = cookiejar.New(nil)
+	ff.HttpClient.Jar.SetCookies(ff.Url, cj)
 	return ff, nil
 }
 
+// RetrieveEpisode actually makes the http GET call and transfer the data onto
+// disk.
 func (ff *FileFetch) RetrieveEpisode() error {
 	resp, err := ff.HttpClient.Get(ff.Url.String())
 	if err != nil {
@@ -60,25 +61,19 @@ func (ff *FileFetch) RetrieveEpisode() error {
 		return err
 	}
 	lastFetch.Set(time.Now().Unix())
-	UpdateResultMap(strconv.Itoa(resp.StatusCode))
-	episode, err := db.ParseTorrentString(ff.Url.String())
-	if err != nil {
-		return err
-	}
-	show, err := db.GetShow(episode.ShowID)
-	if err != nil {
-		return err
-	}
-	lastFetchEpisode.Set(fmt.Sprintf("%s Season %d Episode %d", show.Title, episode.Season, episode.Episode))
+	updateResultMap(strconv.Itoa(resp.StatusCode))
 	return nil
 }
 
-func (ff *FileFetch) Print() string {
-	return fmt.Sprintf("URL:      %s\nLocation: %s\nTime:     %s\n",
+// String prints out the details of the file to be fetched.
+func (ff *FileFetch) String() string {
+	return fmt.Sprintf("URL:\t%s\nDest:\t%s\nTime:\t%s\n",
 		ff.Url.String(), ff.SaveLocation, time.Now().String())
 }
 
-func UpdateResultMap(r string) {
+// updateResultMap takes the http response codes and increments the proper
+// expvar counter.
+func updateResultMap(r string) {
 	if fetchResultMap.Get(r) == nil {
 		fr := expvar.NewInt(r)
 		fr.Set(int64(1))
