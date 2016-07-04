@@ -11,16 +11,15 @@ import (
 )
 
 var (
-	gDb         *gorp.DbMap
-	checkDBLock = make(chan int)
-	dbOps       = expvar.NewMap("num_db_ops")
-	dbOpened    = expvar.NewMap("db_opened_timestamp")
+	gDb      *gorp.DbMap
+	dbOps    = expvar.NewMap("num_db_ops")
+	dbOpened = expvar.NewMap("db_opened_timestamp")
 )
 
-func InitDb(db_file string) error {
-	dbRoot, err := sql.Open("sqlite3", db_file)
+func InitDb(dbf string) error {
+	dbRoot, err := sql.Open("sqlite3", dbf)
 	if err != nil {
-		log.Printf("sql.Open failed for %s\n", db_file)
+		log.Printf("sql.Open failed for %s\n", dbf)
 		return err
 	}
 	gDb = &gorp.DbMap{Db: dbRoot, Dialect: gorp.SqliteDialect{}}

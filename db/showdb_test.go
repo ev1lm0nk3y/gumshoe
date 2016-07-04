@@ -7,18 +7,23 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/ev1lm0nk3y/gumshoe/config"
 	"github.com/stretchr/testify/assert"
+)
+
+const (
+	configFile = "config.json"
 )
 
 var testDataDir string
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	tc = NewTrackerConfig()
+	tc := config.NewTrackerConfig()
 	tc.LoadGumshoeConfig(configFile)
 	tc.Operations.Debug = true
 
-	err := InitDb()
+	err := InitDb("testDb")
 	if err != nil {
 		log.Fatalln("DB Init Failed.")
 	}
@@ -26,17 +31,17 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Println("Clearing DB failed.", err)
 	}
-	s := newShow("walking bread", "720p", true)
+	s := NewShow("walking bread", "720p", true)
 	err = s.AddShow()
 	if err != nil {
 		log.Println("InitDb:AddShow:err", err)
 	}
-	s = newShow("Game of Chowns", "420", true)
+	s = NewShow("Game of Chowns", "420", true)
 	err = s.AddShow()
 	if err != nil {
 		log.Println("InitDb:AddShow:err", err)
 	}
-	s = newShow("Daily Shown", "1080p", false)
+	s = NewShow("Daily Shown", "1080p", false)
 	err = s.AddShow()
 	if err != nil {
 		log.Println("InitDb:AddShow:err", err)
@@ -60,7 +65,7 @@ func TestMain(m *testing.M) {
 func TestListShows(t *testing.T) {
 	allShows, err := ListShows()
 	assert.NoError(t, err)
-	for _, i := range allShows {
+	for _, i := range *allShows {
 		assert.IsType(t, "test", i.Title)
 		assert.NotEmpty(t, i.ID, "IDs were not automatically added to %s.", i.Title)
 		assert.NotEqual(t, i.ID, 0, "ID numbers should never be 0.")
@@ -79,7 +84,7 @@ func TestGetShow(t *testing.T) {
 	// Ensure we don't fail because the time is off
 	s.LastUpdate = int64(0)
 	assert.NoError(t, err)
-	if !assert.ObjectsAreEqual(expected, &s) {
+	if assert.ObjectsAreEqualValues(expected, &s) {
 		t.Errorf("show objects do not match.\nExpected: %s\nActual: %s\n", expected, s)
 	}
 }
@@ -95,7 +100,7 @@ func TestGetShowByTitle(t *testing.T) {
 	// Ensure we don't fail because the time is off
 	s.LastUpdate = int64(0)
 	assert.NoError(t, err)
-	if !assert.ObjectsAreEqual(expected, &s) {
+	if !assert.ObjectsAreEqualValues(expected, &s) {
 		t.Errorf("show objects do not match.\nExpected: %s\nActual: %s\n", expected, s)
 	}
 }
