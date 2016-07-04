@@ -1,18 +1,72 @@
 hash: 96b6cec49b6e6ea2f72e7e9a8032c99b0ceb037379c271c572c1a6a3d832f0ea
-updated: 2016-07-02T03:40:17.627856723-07:00
+updated: 2016-07-04T10:10:53.372637375-07:00
 imports:
+- name: github.com/boj/redistore
+  version: fc113767cd6b051980f260d6dbe84b2740c46ab0
 - name: github.com/codegangsta/inject
   version: 33e0aa1cb7c019ccc3fbe049a8262a6403d30504
+- name: github.com/garyburd/redigo
+  version: b8dc90050f24c1a73a52f107f3f575be67b21b7c
+  subpackages:
+  - redis
+  - internal
 - name: github.com/go-gorp/gorp
   version: 6a3c8a87d0457cf700e57046c41e19b7cf3c44fa
 - name: github.com/go-martini/martini
   version: 0c6ad5903d2bf9337762caa9c357247279c230c3
+- name: github.com/golang/protobuf
+  version: 3852dcfda249c2097355a6aabb199a28d97b30df
+  subpackages:
+  - proto
+- name: github.com/gorilla/context
+  version: aed02d124ae4a0e94fea4541c8effd05bf0c8296
+- name: github.com/gorilla/securecookie
+  version: ff356348f74133a59d3e93aa24b5b4551b6fe90d
+- name: github.com/gorilla/sessions
+  version: 56ba4b0a11da87516629a57408a5f7e4c8ea7b0b
 - name: github.com/martini-contrib/binding
   version: 8aaceec3b52c275477f32c95ea5c6e8ccaba04c5
+- name: github.com/martini-contrib/oauth2
+  version: 383220cdf3349109f5ced723c921d4d76478176c
+- name: github.com/martini-contrib/secure
+  version: de8e19a0490b816696d093388d53f2e1f0c08b7d
+- name: github.com/martini-contrib/sessions
+  version: fa13114fbcf036dff8185d728651d85fcef772db
+- name: github.com/martini-contrib/web
+  version: 4cd66a0bae9de7d9420522af6e02f62bb1d7bdf1
 - name: github.com/mattn/go-sqlite3
   version: 38ee283dabf11c9cbdb968eebd79b1fa7acbabe6
 - name: github.com/nelsam/gorq
   version: a09472878ba73238070fda28d6d64ace839ab30d
 - name: github.com/thoj/go-ircevent
   version: da78ed515c0f0833e7a92c7cc52898176198e2c1
+- name: golang.org/x/net
+  version: b400c2eff1badec7022a8c8f5bea058b6315eed7
+  subpackages:
+  - context
+  - context/ctxhttp
+- name: golang.org/x/oauth2
+  version: df5b72659a3b1789a345ea643bb7c28442681652
+  subpackages:
+  - google
+  - internal
+  - jws
+  - jwt
+- name: google.golang.org/appengine
+  version: 267c27e7492265b84fc6719503b14a1e17975d79
+  subpackages:
+  - urlfetch
+  - internal
+  - internal/urlfetch
+  - internal/app_identity
+  - internal/modules
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+- name: google.golang.org/cloud
+  version: ebfe3819c9ab4acaf086ae57e4cbd7dee683baf0
+  subpackages:
+  - compute/metadata
+  - internal
 devImports: []

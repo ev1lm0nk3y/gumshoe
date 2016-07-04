@@ -70,6 +70,10 @@ type ircClient struct {
 	*IrcControlChannel
 }
 
+// Logger is a reference the the GetIrcLogs function. Can be thrown around to
+// different processes.
+type Logger func() []string
+
 // InitIrc lays the foundation for communication with an IRC server and returns
 // you a client to work with. The next step is to call StartIRC.
 // Errors will be returned if your announce line regexp doesn't parse.

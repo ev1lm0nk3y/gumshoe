@@ -2,12 +2,13 @@ package main
 
 import (
 	"bufio"
-	"errors"
+	_ "errors"
 	"expvar"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"time"
 
@@ -28,6 +29,7 @@ var (
 	concurrentFetches = make(chan int, 10)
 	tc                *config.TrackerConfig
 	tc_updated        = make(chan bool)
+	errChan           = make(chan string, 5)
 
 	port          = flag.String("p", DEFAULT_PORT, "Which port do we serve requests from. 0 allows the system to decide.")
 	gumshoeDir    = flag.String("d", DEFAULT_GUMSHOE_BASE, "Base path for gumshoe.")
@@ -75,7 +77,89 @@ func UpdateAllComponents() {
 	db.SetEpisodePatternRegexp(tc.IRC.EpisodeRegexp)
 }
 
-func Start() error {
+func HttpWatcher(hw *http.HttpControlChannel) {
+	for {
+		select {
+		case update := <-hw.UpdatedCfg:
+			if update {
+				tempTC := *tc
+				err := LoadUserOrDefaultConfig(filepath.Join(tc.Directories["user_dir"], "gumshoe.cfg"))
+				if err != nil {
+					log.Printf("[Error] Unable to successfully load config file. %s\n", err)
+					tc = &tempTC
+					return
+				}
+				tc_updated <- true
+			}
+		case _ = <-hw.NumConnected:
+			// TODO(ev1lm0nk3y): What to do with this number?
+			continue
+		}
+	}
+}
+
+func IrcWatcher(ic *irc.IrcControlChannel) {
+	for {
+		select {
+		case match := <-ic.IRCAnnounceMatch:
+			if match != nil {
+				ep, err := db.CheckMatch(match[1])
+				if err != nil {
+					errChan <- err.Error()
+					continue
+				}
+				ff, err := fetcher.NewFileFetch(match[2], filepath.Join(tc.Directories["user_dir"], tc.Directories["torrent_dir"]), tc.CookieJar)
+				if err != nil {
+					errChan <- err.Error()
+					continue
+				}
+				err = ff.RetrieveEpisode()
+				if err != nil {
+					errChan <- fmt.Sprintf("FAIL: episode not retrieved: %s\n", err.Error())
+					continue
+				}
+				err = ep.AddEpisode()
+				if err != nil {
+					errChan <- fmt.Sprintf("Episode is already downloading: %s\n", err.Error())
+				}
+			}
+		case tcu := <-tc_updated:
+			ic.IRCConfigChanged <- tcu
+		case irc_err := <-ic.IRCError:
+			if irc_err != nil {
+				errChan <- irc_err.Error()
+			}
+		}
+	}
+}
+
+func StartWatcher() (*irc.IrcControlChannel, irc.Logger, error) {
+	for k, v := range tc.Operations.WatchMethods {
+		if v {
+			switch k {
+			case "irc":
+				ic, err := irc.InitIrc(&tc.IRC)
+				if err != nil {
+					return nil, nil, err
+				}
+				if err = ic.StartIRC(); err != nil {
+					return nil, nil, err
+				}
+				go IrcWatcher(ic.IrcControlChannel)
+				return ic.IrcControlChannel, ic.GetIrcLogs, nil
+			}
+		}
+	}
+	return nil, nil, fmt.Errorf("No Watchers configured.")
+}
+
+func StartHttp(ic irc.Logger) *http.HttpControlChannel {
+	httpController := http.StartHTTPServer(tc, ic) // Add the logger here too
+	go HttpWatcher(httpController)
+	return httpController
+}
+
+func Setup() error {
 	// Unified logging is nice, but not necessary right now.
 	//if tc.Operations.EnableLog {
 	//  logger, err := setupLogging()
@@ -85,32 +169,21 @@ func Start() error {
 	//}
 	err := db.InitDb(filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], "gumshoe.db"))
 	if err != nil {
-		return errors.New(fmt.Sprintf("[FAIL] Database init failed: %s\n", err))
+		return fmt.Errorf("[FAIL] Database init failed: %s\n", err)
 	}
 	db.SetEpisodePatternRegexp(tc.IRC.EpisodeRegexp)
 	db.SetEpisodeQualityRegexp("720|1080")
+	return nil
+}
 
-	for k, v := range tc.Operations.WatchMethods {
-		if v {
-			switch k {
-			case "irc":
-				ic, err := irc.InitIrc(&tc.IRC)
-				if err != nil {
-					return err
-				}
-				if err = ic.StartIRC(); err != nil {
-					return err
-				}
-				go IrcWatcher(ic.IrcControlChannel)
-			default:
-				misc.PrintDebugf("%s is coming soon.\n", k)
-			}
-		}
-	}
+func KillSignalWatcher(i *irc.IrcControlChannel, h *http.HttpControlChannel) {
+	c := make(chan os.Signal, 2)
+	signal.Notify(c, os.Interrupt, os.Kill)
 
-	log.Printf("Gumshoe http starting on port %s", tc.Operations.HttpPort)
-	http.StartHTTPServer(tc.Directories["gumshoe_dir"], tc.Operations.HttpPort, tc) // Add the logger here too
-	return err
+	sig := <-c
+	log.Printf("Signal Received %s. Shutting down gumshoe.\n", sig)
+	i.IRCEnabled <- false
+	h.HttpRunning <- false
 }
 
 func main() {
@@ -133,43 +206,15 @@ func main() {
 	if *userConfigDir != tc.GetDirectory("user_dir") {
 		tc.SetGumshoeDirectory("user_dir", *userConfigDir)
 	}
-	err = Start()
+	err = Setup()
+	if err != nil {
+		log.Fatalf("Issues setting up: %s\n", err)
+	}
+	iW, iLog, err := StartWatcher()
 	if err != nil {
 		log.Fatal(err)
 	}
-}
 
-func IrcWatcher(control *irc.IrcControlChannel) {
-	for {
-		select {
-		case match := <-control.IRCAnnounceMatch:
-			if match != nil {
-				ep, err := db.CheckMatch(match[1])
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-				ff, err := fetcher.NewFileFetch(match[2], filepath.Join(tc.Directories["user_dir"], tc.Directories["torrent_dir"]), tc.CookieJar)
-				if err != nil {
-					log.Println(err)
-					continue
-				}
-				err = ff.RetrieveEpisode()
-				if err != nil {
-					log.Printf("FAIL: episode not retrieved: %s\n", err)
-					continue
-				}
-				err = ep.AddEpisode()
-				if err != nil {
-					log.Printf("Episode is already downloading: %s\n", err)
-				}
-			}
-		case tcu := <-tc_updated:
-			control.IRCConfigChanged <- tcu
-		case irc_err := <-control.IRCError:
-			if irc_err != nil {
-				log.Println(irc_err)
-			}
-		}
-	}
+	hW := StartHttp(iLog)
+	KillSignalWatcher(iW, hW)
 }
