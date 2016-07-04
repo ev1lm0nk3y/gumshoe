@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"time"
 
-  "github.com/ev1lm0nk3y/gumshoe/misc"
+	"github.com/ev1lm0nk3y/gumshoe/misc"
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
@@ -71,7 +71,7 @@ type TrackerConfig struct {
 	IRC          IRCChannel        `json:"irc_channel"`
 	LastModified int64             `json:"last_modified"`
 	Operations   Operations        `json:"operations"`
-  CookieJar    []*http.Cookie
+	CookieJar    []*http.Cookie
 	// RSS          RSSChannel        `json:"rss_channel"`
 }
 
@@ -100,20 +100,20 @@ func (tcfg *TrackerConfig) SetGlobalTrackerConfig(tc *TrackerConfig) {
 }
 
 func (tc *TrackerConfig) SetGumshoeDirectory(dir, val string) {
-  if tc.Directories[dir] != "" {
-    tc.Directories[dir] = val
-  }
+	if tc.Directories[dir] != "" {
+		tc.Directories[dir] = val
+	}
 }
 
 func (tc *TrackerConfig) SetGumshoePort(p string) {
-  tc.Operations.HttpPort = p
+	tc.Operations.HttpPort = p
 }
 
 func (tc *TrackerConfig) GetDirectory(dir string) string {
-  if tc.Directories[dir] != "" {
-    return tc.Directories[dir]
-  }
-  return ""
+	if tc.Directories[dir] != "" {
+		return tc.Directories[dir]
+	}
+	return ""
 }
 
 func (tc *TrackerConfig) String() string {
@@ -229,15 +229,15 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 	}
 	// decrypt file here
 	cjBuf, err := ioutil.ReadFile(filepath.Join(tc.Directories["user_dir"],
-    tc.Directories["data_dir"],
-    tc.Download.CookieFile))
+		tc.Directories["data_dir"],
+		tc.Download.CookieFile))
 	if err != nil {
-    fmt.Println("Cookie file is not available. Setting the downloader to insecure connections.")
-    misc.PrintDebugf("Cookie file: %s", filepath.Join(tc.Directories["user_dir"],
-      tc.Directories["data_dir"],
-      tc.Download.CookieFile))
-    tc.Download.Secure = false
-    tc.CookieJar = []*http.Cookie{}
+		fmt.Println("Cookie file is not available. Setting the downloader to insecure connections.")
+		misc.PrintDebugf("Cookie file: %s", filepath.Join(tc.Directories["user_dir"],
+			tc.Directories["data_dir"],
+			tc.Download.CookieFile))
+		tc.Download.Secure = false
+		tc.CookieJar = []*http.Cookie{}
 		return nil
 	}
 
@@ -247,7 +247,7 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 		return NewConfigError(err, "Unmarshal cookie JSON")
 	}
 
-  cj := []*http.Cookie{}
+	cj := []*http.Cookie{}
 	for _, cookie := range cookies.Cookies {
 		c := &http.Cookie{
 			Name:   cookie["Name"],
@@ -263,7 +263,7 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 		}
 		cj = append(cj, c)
 	}
-  tc.CookieJar = cj
+	tc.CookieJar = cj
 	return nil
 }
 
@@ -272,5 +272,3 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 func CreateLocalPath(tc *TrackerConfig, fn string) string {
 	return filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], fn)
 }
-
-

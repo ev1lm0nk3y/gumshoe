@@ -1,8 +1,8 @@
 package test
 
 import (
-  "io"
-  "reflect"
+	"io"
+	"reflect"
 )
 
 // Restorer holds a function that can be used
@@ -35,7 +35,7 @@ func Patch(dest, value interface{}) Restorer {
 
 // io.ReaderCloser analogs to be used with various http Response Bodies.
 type nopCloser struct {
-  io.Reader
+	io.Reader
 }
 
 func (nopCloser) Close() error { return nil }

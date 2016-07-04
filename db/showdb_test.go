@@ -45,10 +45,10 @@ func TestMain(m *testing.M) {
 
 	gDb.DropTablesIfExists()
 
-  if testDataDir == "" {
-    wd, _ := os.Getwd()
-    testDataDir = filepath.Join(wd, "test_data")
-  }
+	if testDataDir == "" {
+		wd, _ := os.Getwd()
+		testDataDir = filepath.Join(wd, "test_data")
+	}
 	os.Remove(filepath.Join(testDataDir, "gumshoe.db"))
 	os.Remove(filepath.Join(testDataDir, "conan.2015.03.26.will.ferrell.hdtv.x264-daview.mp4.torrent"))
 	os.Remove(filepath.Join(testDataDir, "the.thundermans.s02e22.one.hit.thunder.hdtv.x264-w4f.mp4.torrent"))
@@ -63,7 +63,7 @@ func TestListShows(t *testing.T) {
 	for _, i := range allShows {
 		assert.IsType(t, "test", i.Title)
 		assert.NotEmpty(t, i.ID, "IDs were not automatically added to %s.", i.Title)
-    assert.NotEqual(t, i.ID, 0, "ID numbers should never be 0.")
+		assert.NotEqual(t, i.ID, 0, "ID numbers should never be 0.")
 	}
 }
 

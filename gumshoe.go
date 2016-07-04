@@ -32,7 +32,7 @@ var (
 	port          = flag.String("p", DEFAULT_PORT, "Which port do we serve requests from. 0 allows the system to decide.")
 	gumshoeDir    = flag.String("d", DEFAULT_GUMSHOE_BASE, "Base path for gumshoe.")
 	userConfigDir = flag.String("c", filepath.Join(os.Getenv("HOME"), ".gumshoe"), "User config directory")
-  debug         = flag.Bool("debug", false, "Show more logging messages.")
+	debug         = flag.Bool("debug", false, "Show more logging messages.")
 
 	starttime = expvar.NewInt("started")
 )
@@ -94,7 +94,14 @@ func Start() error {
 		if v {
 			switch k {
 			case "irc":
-				go IrcWatcher(irc.StartIRC(tc))
+				ic, err := irc.InitIrc(&tc.IRC)
+				if err != nil {
+					return err
+				}
+				if err = ic.StartIRC(); err != nil {
+					return err
+				}
+				go IrcWatcher(ic.IrcControlChannel)
 			default:
 				misc.PrintDebugf("%s is coming soon.\n", k)
 			}
@@ -103,16 +110,15 @@ func Start() error {
 
 	log.Printf("Gumshoe http starting on port %s", tc.Operations.HttpPort)
 	http.StartHTTPServer(tc.Directories["gumshoe_dir"], tc.Operations.HttpPort, tc) // Add the logger here too
-	log.Println("Exiting Gumshoe.")
 	return err
 }
 
 func main() {
 	flag.Parse()
 
-  if *debug {
-    misc.SetDebug()
-  }
+	if *debug {
+		misc.SetDebug()
+	}
 	err := LoadUserOrDefaultConfig(filepath.Join(*userConfigDir, "gumshoe.cfg"))
 	if err != nil {
 		log.Fatalln(err)
@@ -133,7 +139,7 @@ func main() {
 	}
 }
 
-func IrcWatcher(control *irc.IRCControlChannel) {
+func IrcWatcher(control *irc.IrcControlChannel) {
 	for {
 		select {
 		case match := <-control.IRCAnnounceMatch:
@@ -159,12 +165,8 @@ func IrcWatcher(control *irc.IRCControlChannel) {
 				}
 			}
 		case tcu := <-tc_updated:
-			if tcu {
-				control.IRCConfigChanged <- true
-				UpdateAllComponents()
-				tc_updated <- false
-			}
-		case irc_err := <-control.IRCConfigError:
+			control.IRCConfigChanged <- tcu
+		case irc_err := <-control.IRCError:
 			if irc_err != nil {
 				log.Println(irc_err)
 			}

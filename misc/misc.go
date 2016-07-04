@@ -10,7 +10,7 @@ import (
 var debug = false
 
 func SetDebug() {
-  debug = true
+	debug = true
 }
 
 func checkErr(err error, msg string) {

@@ -12,13 +12,13 @@ import (
 	"strconv"
 	"time"
 
-  "github.com/ev1lm0nk3y/gumshoe/db"
+	"github.com/ev1lm0nk3y/gumshoe/db"
 )
 
 var (
-	fetchResultMap = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
-	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
-  lastFetchEpisode = expvar.NewString("last_fetched_episode")
+	fetchResultMap   = expvar.NewMap("fetch_results").Init() // map of fetch return code counters
+	lastFetch        = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
+	lastFetchEpisode = expvar.NewString("last_fetched_episode")
 )
 
 type FileFetch struct {
@@ -41,7 +41,7 @@ func NewFileFetch(link, dest string, cj []*http.Cookie) (ff *FileFetch, err erro
 	}
 	_, dlFile := filepath.Split(u.RequestURI())
 	ff.SaveLocation = filepath.Join(dest, string(dlFile[len(dlFile)-1]))
-  return ff, nil
+	return ff, nil
 }
 
 func (ff *FileFetch) RetrieveEpisode() error {
@@ -59,17 +59,17 @@ func (ff *FileFetch) RetrieveEpisode() error {
 	if err != nil {
 		return err
 	}
-  lastFetch.Set(time.Now().Unix())
+	lastFetch.Set(time.Now().Unix())
 	UpdateResultMap(strconv.Itoa(resp.StatusCode))
-  episode, err := db.ParseTorrentString(ff.Url.String())
-  if err != nil {
-    return err
-  }
-  show, err := db.GetShow(episode.ShowID)
-  if err != nil {
-    return err
-  }
-  lastFetchEpisode.Set(fmt.Sprintf("%s Season %d Episode %d", show.Title, episode.Season, episode.Episode))
+	episode, err := db.ParseTorrentString(ff.Url.String())
+	if err != nil {
+		return err
+	}
+	show, err := db.GetShow(episode.ShowID)
+	if err != nil {
+		return err
+	}
+	lastFetchEpisode.Set(fmt.Sprintf("%s Season %d Episode %d", show.Title, episode.Season, episode.Episode))
 	return nil
 }
 
