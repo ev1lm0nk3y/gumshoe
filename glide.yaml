@@ -6,3 +6,4 @@ import:
 - package: github.com/thoj/go-ircevent
 - package: github.com/nelsam/gorq
 - package: github.com/go-gorp/gorp
+- package: github.com/uber-go/zap

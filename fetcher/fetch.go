@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -25,6 +26,7 @@ type FileFetch struct {
 	HttpClient   *http.Client
 	Url          *url.URL
 	SaveLocation string
+	announceLine *regexp.Regexp
 }
 
 // NewFileFetch will return *FileFetch. Errors may occur if the url is malformed.

@@ -13,7 +13,7 @@ import (
 
 	"github.com/ev1lm0nk3y/gumshoe/config"
 	"github.com/ev1lm0nk3y/gumshoe/db"
-	"github.com/ev1lm0nk3y/gumshoe/irc"
+	_ "github.com/ev1lm0nk3y/gumshoe/irc"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
@@ -214,7 +214,7 @@ func Verify() {
 }
 
 // StartHTTPServer start a HTTP server for configuration and monitoring
-func StartHTTPServer(gtc *config.TrackerConfig, l irc.Logger) *HttpControlChannel {
+func StartHTTPServer(gtc *config.TrackerConfig, l *log.Logger) *HttpControlChannel {
 	baseDir := gtc.Directories["gumshoe_dir"]
 	tc = gtc
 	hs = &HttpControlChannel{}
@@ -237,13 +237,13 @@ func StartHTTPServer(gtc *config.TrackerConfig, l irc.Logger) *HttpControlChanne
 	m.Get("/status", getStatus)
 	m.Get("/settings", oauth2.LoginRequired, getSettings)
 	m.Get("/vars", getVarz)
-	m.Get("/logs", func(res http.ResponseWriter, l irc.Logger) {
-		res.WriteHeader(http.StatusOK)
-		for _, log := range l() {
-			res.Write([]byte(log))
-			res.Write([]byte("\n"))
-		}
-	})
+	//	m.Get("/logs", func(res http.ResponseWriter, l *log.Logger) {
+	//		res.WriteHeader(http.StatusOK)
+	//		for _, log := range l() {
+	//			res.Write([]byte(log))
+	//			res.Write([]byte("\n"))
+	//		}
+	//	})
 
 	m.Get("/api/shows", getShows)
 

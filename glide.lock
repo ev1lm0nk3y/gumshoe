@@ -1,5 +1,5 @@
-hash: 96b6cec49b6e6ea2f72e7e9a8032c99b0ceb037379c271c572c1a6a3d832f0ea
-updated: 2016-07-04T10:10:53.372637375-07:00
+hash: 64f0b850b5ab482d558a8db1c6c565b511979d48e88746a6d22802e166355918
+updated: 2016-08-21T05:37:44.980765332-07:00
 imports:
 - name: github.com/boj/redistore
   version: fc113767cd6b051980f260d6dbe84b2740c46ab0
@@ -40,6 +40,10 @@ imports:
   version: a09472878ba73238070fda28d6d64ace839ab30d
 - name: github.com/thoj/go-ircevent
   version: da78ed515c0f0833e7a92c7cc52898176198e2c1
+- name: github.com/uber-go/atomic
+  version: 0c9e689d64f004564b79d9a663634756df322902
+- name: github.com/uber-go/zap
+  version: d11d2851fcabcf03421c4dbdbc3146fc74eb1035
 - name: golang.org/x/net
   version: b400c2eff1badec7022a8c8f5bea058b6315eed7
   subpackages:
@@ -65,7 +69,7 @@ imports:
   - internal/log
   - internal/remote_api
 - name: google.golang.org/cloud
-  version: ebfe3819c9ab4acaf086ae57e4cbd7dee683baf0
+  version: ""
   subpackages:
   - compute/metadata
   - internal

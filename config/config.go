@@ -1,254 +1,250 @@
+// Package config
 package config
 
 import (
+	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"time"
-
-	"github.com/ev1lm0nk3y/gumshoe/misc"
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
 // Options can be changed from the web app or directly in the file. A file watcher will update
 // the configuration automatically when the prferrence file is modified.
+
+// IRCChannel contains all the information to connect and log irc chat rooms.
 type IRCChannel struct {
-	ChannelOwner   string `json:"owner"`
-	Nick           string `json:"nick"`
-	Registered     bool   `json:"registered"`
-	Key            string `json:"key"`
-	Server         string `json:"server"`
-	InviteCmd      string `json:"invite_cmd"`
-	WatchChannel   string `json:"watch_channel"`
-	KeepAlive      int    `json:"keep_alive"`
-	PingFreq       int    `json:"ping_frequency"`
-	Port           int    `json:"port"`
-	Timeout        int    `json:"timeout"`
-	EnableLog      bool   `json:"log_irc"`
-	AnnounceRegexp string `json:"announce_regex"`
-	EpisodeRegexp  string `json:"episode_regex"`
+	ChannelOwner   string `json:"owner,omitempty"`
+	Nick           string `json:"nick,omitempty"`
+	Registered     bool   `json:"registered,omitempty"`
+	Key            string `json:"key,omitempty"`
+	Server         string `json:"server,omitempty"`
+	InviteCmd      string `json:"invite_cmd,omitempty"`
+	WatchChannel   string `json:"watch_channel,omitempty"`
+	KeepAlive      int    `json:"keep_alive,omitempty"`
+	PingFreq       int    `json:"ping_frequency,omitempty"`
+	Port           int    `json:"port,omitempty"`
+	Timeout        int    `json:"timeout,omitempty"`
+	EnableLog      bool   `json:"log_irc,omitempty"`
+	AnnounceRegexp string `json:"announce_regex,omitempty"`
+	EpisodeRegexp  string `json:"episode_regex,omitempty"`
 }
 
-type RSSFeed struct {
-	URL           string `json:"url"`
-	HttpMethod    string `json:http_method"`
-	Passkey       string `json:"passkey"`
-	Uid           string `json:"uid"`
-	RssTtl        int    `json:"ttl"`
-	UseServerTtl  bool   `json:"use_server_ttl"`
-	EpisodeRegexp string `json:"episode_regex"`
-}
-
+// Operations is the base information needed to run gumshoe.
 type Operations struct {
-	Email        string          `json:"email"`
-	EnableLog    bool            `json:"enable_logging"`
-	Debug        bool            `json:"log_debug"`
-	EnableWeb    bool            `json:"enable_web"`
-	HttpPort     string          `json:"http_port"`
-	WatchMethods map[string]bool `json:"watch_methods"`
+	Email        string          `json:"email,omitempty"`
+	EnableLog    bool            `json:"enable_logging,omitempty"`
+	Debug        bool            `json:"log_debug,omitempty"`
+	EnableWeb    bool            `json:"enable_web,omitempty"`
+	HttpPort     string          `json:"http_port,omitempty"`
+	WatchMethods map[string]bool `json:"watch_methods,omitempty"`
 }
 
+// Download controls how gumshoe downloads from a tracker and interfaces with
+// your downloader.
 type Download struct {
-	Tracker     string `json:"tracker"`
-	Rate        int    `json:"download_rate"`
-	MaxRetries  int    `json:"max_retries"`
-	QueueSize   int    `json:"queue_size"`
-	Secure      bool   `json:"is_secure"`
-	CookieFile  string `json:"cookies_file"`
-	TorrentURL  string `json:"torrent_url"`
-	TorrentUser string `json:"torrent_user"`
-	TorrentPass string `json:"torrent_pass"`
+	Tracker     string `json:"tracker,omitempty"`
+	Rate        int    `json:"download_rate,omitempty"`
+	MaxRetries  int    `json:"max_retries,omitempty"`
+	QueueSize   int    `json:"queue_size,omitempty"`
+	Secure      bool   `json:"is_secure,omitempty"`
+	CookieFile  string `json:"cookies_file,omitempty"`
+	TorrentURL  string `json:"torrent_url,omitempty"`
+	TorrentUser string `json:"torrent_user,omitempty"`
+	TorrentPass string `json:"torrent_pass,omitempty"`
 }
 
+// Directories lay out the structure of a user's setup.
+type Directories struct {
+	Main     string `json:"gumshoe_dir,omitempty"`
+	User     string `json:"user_dir,omitempty"`
+	Data     string `json:"data_dir,omitempty"`
+	Download string `json:"download_dir,omitempty"`
+	Fetch    string `json:"fetch_dir,omitempty"`
+	Log      string `json:"log_dir,omitempty"`
+}
+
+// TrackerConfig holds all the configurations for gumshoe.
 type TrackerConfig struct {
-	Directories  map[string]string `json:"dir_options"`
-	Download     Download          `json:"download_params"`
-	IRC          IRCChannel        `json:"irc_channel"`
-	LastModified int64             `json:"last_modified"`
-	Operations   Operations        `json:"operations"`
-	CookieJar    []*http.Cookie
-	// RSS          RSSChannel        `json:"rss_channel"`
+	cookieJar    []*http.Cookie
+	Directories  Directories `json:"dir_options,omitempty"`
+	Download     Download    `json:"download_params,omitempty"`
+	IRC          IRCChannel  `json:"irc_channel,omitempty"`
+	LastModified int64       `json:"last_modified"`
+	Operations   Operations  `json:"operations,omitempty"`
 }
 
-type ConfigError struct {
-	E      error
-	prefix string
-}
-
-func NewConfigError(e error, p string) *ConfigError {
-	return &ConfigError{
-		E:      e,
-		prefix: p,
+var (
+	defaultConfigPath = filepath.Join(os.Getenv("HOME"), ".gumshoe")
+	defaultConfig     = TrackerConfig{
+		Directories: Directories{
+			Main:     "/usr/local/gumshoe",
+			User:     defaultConfigPath,
+			Data:     filepath.Join(defaultConfigPath, "data"),
+			Download: filepath.Join(defaultConfigPath, "download"),
+			Fetch:    filepath.Join(defaultConfigPath, "fetch"),
+			Log:      filepath.Join(defaultConfigPath, "logs"),
+		},
+		Operations: Operations{
+			EnableLog: false,
+			EnableWeb: false,
+			HttpPort:  "8080",
+			WatchMethods: map[string]bool{
+				"irc": false,
+				"rss": false,
+			},
+		},
+		LastModified: time.Now().Unix(),
 	}
-}
+)
 
-func (e *ConfigError) Error() string {
-	return fmt.Sprintf("%s: %s", e.prefix, e.E)
-}
-
-func NewTrackerConfig() *TrackerConfig {
-	return &TrackerConfig{}
-}
-
-func (tcfg *TrackerConfig) SetGlobalTrackerConfig(tc *TrackerConfig) {
-	tc = tcfg
-}
-
-func (tc *TrackerConfig) SetGumshoeDirectory(dir, val string) {
-	if tc.Directories[dir] != "" {
-		tc.Directories[dir] = val
+// New will read in the cfg, and parse the json to return a TrackerConfig. Upon
+// errors, a default TrackerConfig will be returned, along with the error, so
+// that startup has something to work with.
+func New(cfg io.Reader) (*TrackerConfig, error) {
+	var tc TrackerConfig
+	var err error
+	b := new(bytes.Buffer)
+	if _, err = b.ReadFrom(cfg); err != nil {
+		return &defaultConfig, fmt.Errorf("Config Read Error: %v", err)
 	}
-}
-
-func (tc *TrackerConfig) SetGumshoePort(p string) {
-	tc.Operations.HttpPort = p
-}
-
-func (tc *TrackerConfig) GetDirectory(dir string) string {
-	if tc.Directories[dir] != "" {
-		return tc.Directories[dir]
+	if err = json.Unmarshal(b.Bytes(), &tc); err != nil {
+		return &defaultConfig, fmt.Errorf("JSON Unmarshall Failed: %v", err)
 	}
-	return ""
+	return &tc, tc.postProcess()
 }
 
+// Write is an extension of the Writer interface and will dump the TrackConfig
+// to the given Writer.
+func (tc *TrackerConfig) Write(cfg io.Writer) error {
+	b, _ := json.MarshalIndent(&tc, "", "\t")
+	_, err := cfg.Write(b)
+	return err
+}
+
+// Update takes a json byte slice and unmarshalls it onto TrackerConfig.
+func (tc *TrackerConfig) Update(update []byte) error {
+	var newTC *TrackerConfig
+	if err := json.Unmarshal(update, &newTC); err != nil {
+		return fmt.Errorf("Update Config Failed: %v", err)
+	}
+	newTC.LastModified = time.Now().Unix()
+	return tc.merge(newTC)
+}
+
+// String implements the Stringer interface and will pretty print TrackerConfig,
+// with indents and everything.
 func (tc *TrackerConfig) String() string {
 	output, _ := json.MarshalIndent(&tc, "", "\t")
 	return string(output)
 }
 
-func (tc *TrackerConfig) CreateDefaultConfig() {
-	tc.Directories = map[string]string{
-		"base_dir":    os.Getenv("HOME"),
-		"data_dir":    "data",
-		"log_dir":     "log",
-		"torrent_dir": "files",
-	}
-	tc.Operations = Operations{
-		EnableLog: false,
-		EnableWeb: true,
-		HttpPort:  "8080",
-		WatchMethods: map[string]bool{
-			"irc": false,
-			"rss": false,
-		},
-	}
-	tc.LastModified = time.Now().Unix()
+// Json will return a string of TrackerConfig that has been HTML escaped and
+// compacted.
+func (tc *TrackerConfig) Json() string {
+	output, _ := json.Marshal(&tc)
+	b := new(bytes.Buffer)
+	json.HTMLEscape(b, output)
+	json.Compact(b, b.Bytes())
+	return b.String()
 }
 
-func (tc *TrackerConfig) LoadGumshoeConfig(c string) error {
-	if err := tc.ProcessGumshoeCfgFile(c); err != nil {
-		tc.CreateDefaultConfig()
-		return fmt.Errorf("Error with config file %s: %s\nUsing empty template", c, err)
-	}
-	return nil
+// Cookies will return the http cookies for your tracker.
+func (tc *TrackerConfig) Cookies() []*http.Cookie {
+	return tc.cookieJar
 }
 
-func (tc *TrackerConfig) ProcessGumshoeCfgFile(c string) error {
-	if cfgBuf, err := ioutil.ReadFile(c); err != nil {
-		return fmt.Errorf("Error reading file: %s", err)
-	} else {
-		if err = json.Unmarshal(cfgBuf, &tc); err != nil {
-			return fmt.Errorf("Error unmarshaling configs: %s", err)
+// SetCookies will update the TrackerConfig cookie jar, and write them to disk.
+func (tc *TrackerConfig) SetCookies(cookies io.Reader) error {
+	var err error
+	var cj *os.File
+	if tc.cookieJar, err = readCookieJar(cookies); err != nil {
+		return fmt.Errorf("[ConfigError] Updating Cookies: %v", err)
+	}
+	if cj, err = os.OpenFile(
+		filepath.Join(tc.Directories.Data, tc.Download.CookieFile),
+		os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0600); err != nil {
+		return fmt.Errorf("[ConfigError] Cookiejar file error: %v", err)
+	}
+	cj.Truncate(0)
+	cj.Seek(0, 0)
+	return writeCookieJar(cj, tc.cookieJar)
+}
+
+func (tc *TrackerConfig) merge(newTC *TrackerConfig) *TrackerConfig {
+	var final *TrackerConfig
+	newElem := reflect.TypeOf(newTC).Elem()
+	oldElem := reflect.TypeOf(tc).Elem()
+	finalElem := reflect.TypeOf(final).Elem()
+	for i := 0; i < oldElem.NumField(); i++ {
+		if oldElem.Field(i).Type == reflect.TypeOf(int64(0)) || oldElem.Field(i).Type == reflect.TypeOf([]*http.Cookie{}) {
+			finalElem.Field(i).Set(oldElem.Field(i))
+			continue
+		}
+		newfElem := reflect.TypeOf(newElem.Field(i)).Elem()
+		oldfElem := reflect.TypeOf(oldElem.Field(i)).Elem()
+		finalfElem := reflect.TypeOf(finalElem.Field(i)).Elem()
+		for y = 0; y < oldfElem.NumField(); i++ {
+			if newfElem.Field(y).IsNil() {
+				finalfElem.Field(y).Set(oldfElem.Field(y))
+				continue
+			}
+			oldfElem.Field(y).Set(newfElem.Field(y))
 		}
 	}
-	if tc.Download.Secure {
-		if err := tc.SetTrackerCookies(); err != nil {
-			return fmt.Errorf("Error setting cookiejar (CfgFile): %s", err.Error())
-		}
-	}
-	return nil
+	return final
 }
 
-func (tc *TrackerConfig) ProcessGumshoeCfgJson(j []byte) error {
-	err := json.Unmarshal(j, &tc)
-	if err != nil {
-		return errors.New(fmt.Sprintf("Invalid JSON: %s", err))
-	}
+func (tc *TrackerConfig) postProcess() error {
 	if tc.Download.Secure {
-		err = tc.SetTrackerCookies()
+		cj, err := os.OpenFile(
+			filepath.Join(tc.Directories.Data, tc.Download.CookieFile),
+			os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0600)
 		if err != nil {
-			return errors.New(fmt.Sprintf("Error setting cookiejar: %s", err))
+			return fmt.Errorf("[cookieJarError] Unable to open cookiejar: %v", err)
+		}
+		var jar []*http.Cookie
+		if jar, err = readCookieJar(cj); err != nil {
+			return err
+		}
+		if !reflect.DeepEqual(jar, tc.cookieJar) {
+			cj.Truncate(0)
+			cj.Seek(0, 0)
+			writeCookieJar(cj, jar)
+			tc.cookieJar = jar
 		}
 	}
-	return nil
-}
-
-func (tc *TrackerConfig) UpdateGumshoeConfig(u []byte) *ConfigError {
-	err := json.Unmarshal(u, &tc)
-	if err != nil {
-		return NewConfigError(err, "Update is not a valid TrackerConfig JSON")
+	if tc.LastModified == 0 {
+		tc.LastModified = time.Now().Unix()
 	}
 	return nil
 }
 
-func (tc *TrackerConfig) WriteGumshoeConfig(f string) *ConfigError {
-	// This is for tests. The normal config file name is as follows.
-	cFile := "config.json"
-	if f != "" {
-		cFile = f
-	}
-	b, err := json.Marshal(tc)
-	if err != nil {
-		return NewConfigError(err, "Encoding TrackerConfig to JSON")
-	}
-	ioutil.WriteFile(CreateLocalPath(tc, cFile), b, 0655)
-	return nil
-}
-
-func (tc *TrackerConfig) GetConfigOption(o string) ([]byte, error) {
-	switch {
-	case o == "dir_options":
-		return json.Marshal(tc.Directories)
-	case o == "operations":
-		return json.Marshal(tc.Operations)
-	case o == "download_params":
-		return json.Marshal(tc.Download)
-	case o == "irc_channel":
-		return json.Marshal(tc.IRC)
-	//case o == "rss_feed":
-	//  return json.Marshal(tc.RSSFeed)
-	default:
-		return nil, errors.New("Unknown Option")
-	}
-}
-
-type tempCookies struct {
+type cookiejar struct {
 	Cookies []map[string]string `json:"cookies"`
 }
 
-// TODO(ryan): Learn a bit more about encryption, these files shouldn't just
-// be lying around.
-func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
-	if !tc.Download.Secure {
-		return nil
-	}
-	// decrypt file here
-	cjBuf, err := ioutil.ReadFile(filepath.Join(tc.Directories["user_dir"],
-		tc.Directories["data_dir"],
-		tc.Download.CookieFile))
-	if err != nil {
-		fmt.Println("Cookie file is not available. Setting the downloader to insecure connections.")
-		misc.PrintDebugf("Cookie file: %s", filepath.Join(tc.Directories["user_dir"],
-			tc.Directories["data_dir"],
-			tc.Download.CookieFile))
-		tc.Download.Secure = false
-		tc.CookieJar = []*http.Cookie{}
-		return nil
+// ReadcookieJar will attempt to read from io.Reader containing netscape-style
+// cookies in json form and returns []*http.Cookie.
+func readCookieJar(cj io.Reader) ([]*http.Cookie, error) {
+	b := new(bytes.Buffer)
+	if _, err := b.ReadFrom(cj); err != nil {
+		return nil, fmt.Errorf("[ConfigError] Unable to read cookie input: %v", err)
 	}
 
-	cookies := &tempCookies{}
-	err = json.Unmarshal(cjBuf, &cookies)
-	if err != nil {
-		return NewConfigError(err, "Unmarshal cookie JSON")
+	var cjar cookiejar
+	if err := json.Unmarshal(b.Bytes(), &cjar); err != nil {
+		return nil, fmt.Errorf("[ConfigError] Unmarshall cookie error: %v", err)
 	}
 
-	cj := []*http.Cookie{}
-	for _, cookie := range cookies.Cookies {
+	var jar []*http.Cookie
+	for _, cookie := range cjar.Cookies {
 		c := &http.Cookie{
 			Name:   cookie["Name"],
 			Value:  cookie["Value"],
@@ -256,19 +252,22 @@ func (tc *TrackerConfig) SetTrackerCookies() *ConfigError {
 			Domain: cookie["Domain"],
 		}
 		exp, err := strconv.Atoi(cookie["Expires"])
-		if err == nil {
-			c.Expires = time.Unix(int64(exp), 0)
-		} else {
+		switch err {
+		case nil:
 			c.Expires = time.Now().AddDate(10, 0, 0)
+		default:
+			c.Expires = time.Unix(int64(exp), 0)
 		}
-		cj = append(cj, c)
+		jar = append(jar, c)
 	}
-	tc.CookieJar = cj
-	return nil
+	return jar, nil
 }
 
-// An easy utility to generate the fully qualified path name of a given filename
-// in the user's data directory.
-func CreateLocalPath(tc *TrackerConfig, fn string) string {
-	return filepath.Join(tc.Directories["user_dir"], tc.Directories["data_dir"], fn)
+func writeCookieJar(cjFile io.Writer, cookies []*http.Cookie) error {
+	b, err := json.Marshal(cookies)
+	if err != nil {
+		return err
+	}
+	_, err = cjFile.Write(b)
+	return err
 }

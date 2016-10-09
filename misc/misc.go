@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"strconv"
+	"strings"
 )
 
 var debug = false
@@ -40,4 +41,9 @@ func PrintDebugf(f string, i ...interface{}) {
 	if debug {
 		log.Printf("[DEBUG] %s", fmt.Sprintf(f, i...))
 	}
+}
+
+func EpisodeRewriter(ep string) string {
+	e := strings.Replace(ep, ".", " ", -1)
+	return strings.Title(e)
 }

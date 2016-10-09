@@ -7,15 +7,9 @@
 package db
 
 import (
-	"errors"
-	"fmt"
-	"net/url"
 	"regexp"
-	"strings"
 	"sync"
 	"time"
-
-	"github.com/ev1lm0nk3y/gumshoe/misc"
 )
 
 var (
@@ -87,19 +81,6 @@ func (e *Episode) IsNewEpisode() bool {
 	return true
 }
 
-// ValidEpisodeQuality takes a string and compares it with the Show DB's quality.
-func (e *Episode) ValidEpisodeQuality(s string) bool {
-	q := episodeQualityRegexp.FindString(s)
-	show, _ := GetShow(e.ShowID)
-	if show.Quality != q {
-		if (show.Quality == "420" || show.Quality == "") && (q == "420" || q == "") {
-			return true
-		}
-		return false
-	}
-	return true
-}
-
 // GetEpisodesByShowID will return all the episodes within the DB that match the Show ID.
 func GetEpisodesByShowID(id int64) (*[]Episode, error) {
 	allE := &[]Episode{}
@@ -118,80 +99,4 @@ func GetLastEpisode(sid int64) (*Episode, error) {
 	err := gDb.SelectOne(le, "select * from episode where ShowID=? sort by AirDate, Season, Episode desc limit 1", sid)
 	go AddDBOp("episode")
 	return le, err
-}
-
-// ParseTorrentString will either create a new Episode object or return an error.
-//
-// Errors can be returned because the string you passed didn't match the
-// episode regexp or the show doesn't exist in the Show DB.
-func ParseTorrentString(e string) (*Episode, error) {
-	eMatch, err := matchEpisodeToPattern(e)
-	if err != nil {
-		return nil, err
-	}
-	sid, err := GetShowByTitle(episodeRewriter(eMatch["show"]))
-	if err != nil {
-		return nil, fmt.Errorf("Show %s is not being tracked.", episodeRewriter(eMatch["show"]))
-	}
-	episode := &Episode{}
-	episode.ShowID = sid.ID
-
-	episode.Season = misc.GetInt(eMatch["season"])
-	episode.Episode = misc.GetInt(eMatch["episode"])
-	episode.AirDate = eMatch["airdate"]
-	if eMatch["enum"] != "" {
-		episode.Season = misc.GetInt(string(eMatch["enum"][0]))
-		episode.Episode = misc.GetInt(string(eMatch["enum"][1:]))
-	}
-	return episode, nil
-}
-
-// End User Functions
-
-func episodeRewriter(ep string) string {
-	e := strings.Replace(ep, ".", " ", -1)
-	return strings.Title(e)
-}
-
-func matchEpisodeToPattern(e string) (map[string]string, error) {
-	named := map[string]string{}
-	match := episodePattern.FindAllStringSubmatch(e, -1)
-	if match == nil {
-		return named, fmt.Errorf("string %s not matched episode regexp.", e)
-	}
-
-	for i, n := range match[0] {
-		named[episodePattern.SubexpNames()[i]] = n
-	}
-	return named, nil
-}
-
-func CheckMatch(m string) (*Episode, error) {
-	ep, err := ParseTorrentString(m)
-	if err != nil {
-		return nil, fmt.Errorf("No episode regexp match: %s", err)
-	}
-	isNew := ep.IsNewEpisode()
-	if !isNew {
-		return nil, errors.New("Episode exists.")
-	}
-	if !ep.ValidEpisodeQuality(m) {
-		return nil, errors.New("Wrong Episode Quality.")
-	}
-	return ep, nil
-}
-
-func SetEpisodeQualityRegexp(r string) error {
-	var err error
-	episodeQualityRegexp, err = regexp.Compile(r)
-	return err
-}
-
-func SetEpisodePatternRegexp(r string) error {
-	ue, err := url.QueryUnescape(r)
-	if err != nil {
-		return err
-	}
-	episodePattern, err = regexp.Compile(ue)
-	return err
 }

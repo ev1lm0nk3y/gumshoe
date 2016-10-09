@@ -8,6 +8,8 @@ package db
 import (
 	"sync"
 	"time"
+
+	"github.com/ev1lm0nk3y/gumshoe/misc"
 )
 
 var sdbl sync.RWMutex
@@ -23,7 +25,7 @@ type Show struct {
 
 func NewShow(t, q string, e bool) *Show {
 	return &Show{
-		Title:      episodeRewriter(t),
+		Title:      misc.EpisodeRewriter(t),
 		Quality:    q,
 		Episodal:   e,
 		LastUpdate: time.Now().UnixNano(),
@@ -76,7 +78,7 @@ func GetShowByTitle(title string) (*Show, error) {
 	show := &Show{}
 	sdbl.RLock()
 	defer sdbl.RUnlock()
-	err := gDb.SelectOne(show, "select * from show where Title like '%%?%%'", episodeRewriter(title))
+	err := gDb.SelectOne(show, "select * from show where Title like '%%?%%'", misc.EpisodeRewriter(title))
 	go AddDBOp("show")
 	return show, err
 }
