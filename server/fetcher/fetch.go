@@ -6,6 +6,7 @@ import (
 	"expvar"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -21,9 +22,50 @@ var (
 	lastFetch      = expvar.NewInt("last_fetch_timestamp") // timestamp of last successful fetch
 )
 
+// Fetch defines a function that can be used to retrieve URLs
+type Fetch func(*url.URL) error
+
+// Client holds common file gathering parameters
+type Client struct {
+	cj []*http.Cookie
+	l  *log.Logger
+	hc *http.Client
+}
+
+// New returns a *Client
+func New(tc *config.TrackerConfig, l *log.Logger, cj []*http.Cookie) *Client {
+	hc := &http.Client{}
+	hc.Jar, _ = cookiejar.New(nil)
+	return &Client{
+		l:  l,
+		cj: cj,
+		hc: hc,
+	}
+}
+
+func (fc *Client) RetrieveEpisode(u *url.URL) error {
+	fc.hc.Jar.SetCookies(u, fc.cj)
+	resp, err := fc.hc.Get(u.String())
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	dest := filepath.Join(fc.tc.Directories["download_dir"], filepath.FromSlash(u.String()))
+	err = ioutil.WriteFile(dest, body, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	lastFetch.Set(time.Now().Unix())
+	updateResultMap(strconv.Itoa(resp.StatusCode))
+	return nil
+}
+
 // FileFetch stores the data about the file to be downloaded.
 type FileFetch struct {
-	HttpClient   *http.Client
 	Url          *url.URL
 	SaveLocation string
 	announceLine *regexp.Regexp
@@ -36,7 +78,6 @@ func NewFileFetch(link, dest string, cj []*http.Cookie) (*FileFetch, error) {
 		return nil, err
 	}
 	ff := &FileFetch{
-		HttpClient:   &http.Client{},
 		Url:          u,
 		SaveLocation: filepath.Join(dest, filepath.FromSlash(u.String())),
 	}

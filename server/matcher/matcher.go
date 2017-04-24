@@ -1,4 +1,4 @@
-// Project matcher is your onestop shop for all log message processing and validation.
+//Package matcher is your onestop shop for all log message processing and validation.
 package matcher
 
 import (
@@ -7,114 +7,127 @@ import (
 	"net/url"
 	"regexp"
 	"strconv"
+	"sync"
 
-	"github.com/ev1lm0nk3y/gumshoe/db"
+	"github.com/ev1lm0nk3y/gumshoe/config"
 	"github.com/ev1lm0nk3y/gumshoe/misc"
+	"github.com/ev1lm0nk3y/gumshoe/server/db"
+	"github.com/ev1lm0nk3y/gumshoe/server/fetcher"
 )
 
-type matcherOps int
+// MatchState controls the channel on sent messages
+type MatchState int
 
 const (
-	matcherOpsList matcherOps = iota
-	Accept
-	Ignore
-	Error
+	matchStateList MatchState = iota
+	// MessageNotEpisode did not parse as an episode
+	MessageNotEpisode
+	// MessageNotTracked did not contain a tracked episode
+	MessageNotTracked
+	// MessageIncorrectQuality had the wrong video quality
+	MessageIncorrectQuality
+	// MessageNotNewEpisode did not contain a new episode
+	MessageNotNewEpisode
+	// MessageNoURL had no parsable URL
+	MessageNoURL
+	// MessageFetchURL passed all tests and should be fetched
+	MessageFetchURL
 )
 
-// Matcher is a grouping of regexp for the cloudley project.
+// Matcher is a grouping of regexps used in validating strings that are passed here.
 type Matcher struct {
-	AnnounceRegexp *regexp.Regexp
-	EpisodeRegexp  *regexp.Regexp
-	QualityRegexp  *regexp.Regexp
+	State config.ProcessState
 
-	AnnChan chan string
-	OutChan chan matcherOps
-	ErrChan chan error
+	announceRegexp *regexp.Regexp
+	episodeRegexp  *regexp.Regexp
+	qualityRegexp  *regexp.Regexp
 
-	Link chan *url.URL
+	f  fetcher.Fetch
+	l  *log.Logger
+	tc *config.TrackerConfig
 
-	logger *log.Logger
+	mutex sync.RWMutex
 }
 
-// New creates a *matcher.Matcher pointer to annalyze the data returned from the watchers.
-func New(announce, episode, quality string, logger *log.Logger) *Matcher {
+// New creates a *matcher.Matcher pointer to annalyze the data delivered by watchers.
+func New(tc *config.TrackerConfig, l *log.Logger, g fetcher.Fetch) *Matcher {
 	return &Matcher{
-		AnnounceRegexp: regexp.MustCompile(announce),
-		EpisodeRegexp:  regexp.MustCompile(episode),
-		QualityRegexp:  regexp.MustCompile(quality),
-
-		AnnChan: make(chan string, 10),
-		OutChan: make(chan matcherOps),
-		ErrChan: make(chan error),
-
-		logger: logger,
+		f:  g,
+		l:  l,
+		tc: tc,
 	}
 }
 
-// Run takes inputs from a channel and tests the input to see if it can proceed
-// to fetching.
-func (m *Matcher) Run() error {
-	m.logger.Println("Running matcher service")
-	for {
-		a := <-m.aChan
-		go m.generateResponse(a)
+// CheckMessage is pretty explanitory
+func (m *Matcher) CheckMessage(message string) MatchState {
+	var l *url.URL
+	var err error
+
+	mapPattern := m.matchEpisodeToPattern(message)
+	if mapPattern == nil {
+		return l, MessageNotEpisode
 	}
+	sid := m.isTorrentAndTracked(mapPattern["show"])
+	if sid == nil {
+		return l, MessageNotTracked
+	}
+	if mapPattern["quality"] != sid.Quality {
+		return l, MessageIncorrectQuality
+	}
+
+	if !m.isNewEpisode(sid.ID, mapPattern) {
+		return l, MessageNotNewEpisode
+	}
+	if l, err = url.Parse(mapPattern["url"]); err != nil {
+		return l, MessageNoURL
+	}
+	return l, MessageFetchURL
 }
 
-func (m *Matcher) generateResponse(message string) {
-	mapPattern, err := m.matchEpisodeToPattern(message)
-	if err != nil {
-		m.ErrChan <- err
-		m.OutChan <- Error
+// Update is blah blah blah
+func (m *Matcher) Update(tc *config.TrackerConfig) error {
+	m.l.Println("Updating matcher configs")
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	var err error
+	if m.announceRegexp, err = regexp.Compile(tc.IRC.AnnounceRegexp); err != nil {
+		return err
 	}
-	sid, err := m.isTorrentAndTracked(message)
-	if err != nil {
-		m.ErrChan <- err
-		m.OutChan <- Error
+	if m.episodeRegexp, err = regexp.Compile(tc.IRC.EpisodeRegexp); err != nil {
+		return err
 	}
-	if err := m.isQuality(mapPattern["quality"], sid.Quality); err != nil {
-		m.ErrChan <- err
-		m.OutChan <- Ignore
+	if m.qualityRegexp, err = regexp.Compile(tc.IRC.QualityRegexp); err != nil {
+		return err
 	}
-	season, _ := strconv.Atoi(mapPattern["season"])
-	episode, _ := strconv.Atoi(mapPattern["episode"])
-	if m.isNewEpisode(sid.ID, season, episode) {
-		l, err := url.Parse(mapPattern["url"])
-		if err != nil {
-			m.ErrChan <- fmt.Errorf("[ERROR] %v", err)
-			continue
-		}
-		m.OutChan <- Accept
-		m.Link <- l
-	}
-	m.OutChan <- Ignore
-	m.ErrChan <- nil
+	return nil
 }
 
-func (m *Matcher) matchEpisodeToPattern(e string) (map[string]string, error) {
-	var named map[string]string
-	match := m.EpisodeRegexp.FindAllStringSubmatch(e, -1)
+func (m *Matcher) matchEpisodeToPattern(e string) map[string]string {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	match := m.episodeRegexp.FindAllStringSubmatch(e, -1)
 	if match == nil {
-		return nil, fmt.Errorf("string %s not matched episode regexp", e)
+		m.l.Println("Not episode announcement")
+		return nil
 	}
 
+	var named map[string]string
 	for i, n := range match[0] {
-		named[m.EpisodeRegexp.SubexpNames()[i]] = n
+		named[m.episodeRegexp.SubexpNames()[i]] = n
 	}
-	return named, nil
+	m.l.Println("Episode announcement found")
+	return named
 }
 
-func (m *Matcher) isTorrentAndTracked(e string) (*db.Show, error) {
-	eMatch, err := m.matchEpisodeToPattern(e)
-	if err != nil {
-		return nil, err
-	}
-	rewritenShow := misc.EpisodeRewriter(eMatch["show"])
+func (m *Matcher) isTorrentAndTracked(show string) *db.Show {
+	rewritenShow := misc.EpisodeRewriter(show)
 	sid, err := db.GetShowByTitle(rewritenShow)
 	if err != nil {
-		return nil, fmt.Errorf("Show %s is not being tracked", rewritenShow)
+		m.l.Println("Untracked show found: ", rewritenShow)
+		return nil
 	}
-	return sid, nil
+	return sid
 }
 
 func (m *Matcher) isQuality(newQ, expQ string) error {
@@ -124,6 +137,8 @@ func (m *Matcher) isQuality(newQ, expQ string) error {
 	return nil
 }
 
-func (m *Matcher) isNewEpisode(sid int64, s, e int) bool {
+func (m *Matcher) isNewEpisode(sid int64, mp map[string]string) bool {
+	s, _ := strconv.Atoi(mp["season"])
+	e, _ := strconv.Atoi(mp["episode"])
 	return db.NewEpisode(sid, s, e).IsNewEpisode()
 }

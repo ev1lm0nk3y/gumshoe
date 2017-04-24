@@ -11,7 +11,20 @@ import (
 	"path/filepath"
 	"reflect"
 	"strconv"
+	"sync"
 	"time"
+)
+
+type ProcessState int
+
+const (
+	// ProcessState is a uniform message to tell gumshoe how the routines are behaving.
+	processState ProcessState = iota
+	Starting
+	Updating
+	Running
+	Down
+	Offline
 )
 
 // The primary structure holding the config data, which is read from the preferrences file.
@@ -34,6 +47,7 @@ type IRCChannel struct {
 	EnableLog      bool   `json:"log_irc,omitempty"`
 	AnnounceRegexp string `json:"announce_regex,omitempty"`
 	EpisodeRegexp  string `json:"episode_regex,omitempty"`
+	QualityRegexp  string `json:"quality_regex,omitempty"`
 }
 
 // Operations is the base information needed to run gumshoe.
@@ -80,6 +94,11 @@ type TrackerConfig struct {
 	Operations   Operations  `json:"operations,omitempty"`
 }
 
+// UpdateCfg
+type UpdateCfg interface {
+	Update(tc *TrackerConfig) error
+}
+
 var (
 	defaultConfigPath = filepath.Join(os.Getenv("HOME"), ".gumshoe")
 	defaultConfig     = TrackerConfig{
@@ -102,6 +121,8 @@ var (
 		},
 		LastModified: time.Now().Unix(),
 	}
+
+	configLock sync.RWMutex
 )
 
 // New will read in the cfg, and parse the json to return a TrackerConfig. Upon
@@ -123,6 +144,8 @@ func New(cfg io.Reader) (*TrackerConfig, error) {
 // Write is an extension of the Writer interface and will dump the TrackConfig
 // to the given Writer.
 func (tc *TrackerConfig) Write(cfg io.Writer) error {
+	configLock.RLock()
+	defer configLock.RUnlock()
 	b, _ := json.MarshalIndent(&tc, "", "\t")
 	_, err := cfg.Write(b)
 	return err
@@ -135,12 +158,17 @@ func (tc *TrackerConfig) Update(update []byte) error {
 		return fmt.Errorf("Update Config Failed: %v", err)
 	}
 	newTC.LastModified = time.Now().Unix()
-	return tc.merge(newTC)
+	configLock.Lock()
+	defer configLock.Unlock()
+	tc = tc.merge(newTC)
+	return nil
 }
 
 // String implements the Stringer interface and will pretty print TrackerConfig,
 // with indents and everything.
 func (tc *TrackerConfig) String() string {
+	configLock.RLock()
+	defer configLock.RUnlock()
 	output, _ := json.MarshalIndent(&tc, "", "\t")
 	return string(output)
 }
@@ -148,6 +176,8 @@ func (tc *TrackerConfig) String() string {
 // Json will return a string of TrackerConfig that has been HTML escaped and
 // compacted.
 func (tc *TrackerConfig) Json() string {
+	configLock.RLock()
+	defer configLock.RUnlock()
 	output, _ := json.Marshal(&tc)
 	b := new(bytes.Buffer)
 	json.HTMLEscape(b, output)
@@ -157,6 +187,8 @@ func (tc *TrackerConfig) Json() string {
 
 // Cookies will return the http cookies for your tracker.
 func (tc *TrackerConfig) Cookies() []*http.Cookie {
+	configLock.RLock()
+	defer configLock.RUnlock()
 	return tc.cookieJar
 }
 
@@ -164,6 +196,8 @@ func (tc *TrackerConfig) Cookies() []*http.Cookie {
 func (tc *TrackerConfig) SetCookies(cookies io.Reader) error {
 	var err error
 	var cj *os.File
+	configLock.Lock()
+	defer configLock.Unlock()
 	if tc.cookieJar, err = readCookieJar(cookies); err != nil {
 		return fmt.Errorf("[ConfigError] Updating Cookies: %v", err)
 	}
@@ -178,30 +212,40 @@ func (tc *TrackerConfig) SetCookies(cookies io.Reader) error {
 }
 
 func (tc *TrackerConfig) merge(newTC *TrackerConfig) *TrackerConfig {
+	return newTC
+}
+
+/* Need to figure out a clean way to merge the TCs. This way a user only needs
+ * to send the things that change and not the whole config.
+	configLock.RLock()
+	defer configLock.RUnlock()
 	var final *TrackerConfig
 	newElem := reflect.TypeOf(newTC).Elem()
 	oldElem := reflect.TypeOf(tc).Elem()
 	finalElem := reflect.TypeOf(final).Elem()
 	for i := 0; i < oldElem.NumField(); i++ {
 		if oldElem.Field(i).Type == reflect.TypeOf(int64(0)) || oldElem.Field(i).Type == reflect.TypeOf([]*http.Cookie{}) {
-			finalElem.Field(i).Set(oldElem.Field(i))
+			finalElem.Field(i) = oldElem.Field(i)
 			continue
 		}
 		newfElem := reflect.TypeOf(newElem.Field(i)).Elem()
 		oldfElem := reflect.TypeOf(oldElem.Field(i)).Elem()
 		finalfElem := reflect.TypeOf(finalElem.Field(i)).Elem()
-		for y = 0; y < oldfElem.NumField(); i++ {
+		for y := 0; y < oldfElem.NumField(); i++ {
 			if newfElem.Field(y).IsNil() {
-				finalfElem.Field(y).Set(oldfElem.Field(y))
+				finalfElem.Field(y) = oldfElem.Field(y)
 				continue
 			}
-			oldfElem.Field(y).Set(newfElem.Field(y))
+			oldfElem.Field(y) = newfElem.Field(y)
 		}
 	}
 	return final
 }
+*/
 
 func (tc *TrackerConfig) postProcess() error {
+	configLock.RLock()
+	defer configLock.RUnlock()
 	if tc.Download.Secure {
 		cj, err := os.OpenFile(
 			filepath.Join(tc.Directories.Data, tc.Download.CookieFile),
@@ -217,11 +261,19 @@ func (tc *TrackerConfig) postProcess() error {
 			cj.Truncate(0)
 			cj.Seek(0, 0)
 			writeCookieJar(cj, jar)
+			configLock.RUnlock()
+			configLock.Lock()
 			tc.cookieJar = jar
+			configLock.Unlock()
+			configLock.RLock()
 		}
 	}
 	if tc.LastModified == 0 {
+		configLock.RUnlock()
+		configLock.Lock()
 		tc.LastModified = time.Now().Unix()
+		configLock.Unlock()
+		configLock.RLock()
 	}
 	return nil
 }

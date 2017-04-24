@@ -17,11 +17,11 @@ import (
 	"bytes"
 	"expvar"
 	"fmt"
-	"log"
 	"net"
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"text/template"
 	"time"
 
@@ -61,207 +61,206 @@ var (
 
 // IrcControlChannel is made up of channels that help pass messages between
 // here and your main program.
-type IrcControlChannel struct {
-	Enabled       chan bool   // Boolean to turn on or off the IRC client
-	ConfigChanged chan bool   // Pass new IRC configuration here to update your client
-	IRCError      chan error  // Errors and warnings will be posted here for you to deal with
-	Message       chan string // When the regex matches, this channel will be updated
+type Client struct {
+	Enabled  chan bool              // Boolean to turn on or off the IRC client
+	Config   chan config.IRCChannel // Pass new IRC configuration here to update the irc connection
+	IRCError chan error             // Errors and warnings will be posted here for you to deal with
+	Log      chan string            // Log will be the IRCs logging channel
+	Message  chan string            // When the regex matches, this channel will be updated
+
+	config       config.IRCChannel
+	conn         *irc.Connection
+	announceLine *regexp.Regexp
+	state        chan ircState
+
+	mutex sync.RWMutex
 }
 
-// IrcClient is a collection of configs, loggers and other structs defined here.
-type IrcClient struct {
-	logger         *log.Logger
-	config         *config.IRCChannel
-	conn           *irc.Connection
-	controlChannel *IrcControlChannel
-	announceLine   *regexp.Regexp
-	state          chan ircState
-}
+// Init returns a Client object.
+func Init() *Client {
+	c := &Client{}
 
-// Init returns an IrcClient
-func Init(c *config.IRCChannel, logger *log.Logger) *IrcClient {
-	ircConn := irc.IRC(c.Nick, c.Key)
-	icc := &IrcControlChannel{}
-	icc.IRCError = ircConn.ErrorChan()
-
-	ic := &IrcClient{
-		logger:         logger,
-		config:         c,
-		conn:           ircConn,
-		controlChannel: icc,
-	}
-
-	// Callbacks for various IRC events.
-	ic.conn.AddCallback("001", ic.handleWelcome)
-	ic.conn.AddCallback("invite", ic.handleInvite)
-	ic.conn.AddCallback("message", ic.handleMsg)
-	ic.conn.AddCallback("msg", ic.handleMsg)
-	ic.conn.AddCallback("privmsg", ic.handleMsg)
-	ic.conn.AddCallback("notice", ic.handleMsg)
-
-	ic.state <- stopped
-	return ic
-}
-
-// EnableFullIrcLogs will turn on logging events from the IRC channel.
-func (ic *IrcClient) EnableFullIrcLogs() {
-	ic.conn.AddCallback("*", func(e *irc.Event) {
-		ic.logger.Println(e.Message())
-	})
-}
-
-// DisableFullIRCLogs will turn off logging events from the IRC channel.
-func (ic *IrcClient) DisableFullIRCLogs() {
-	ic.conn.ClearCallback("*")
-}
-
-// Start will do just that. Will connect to the IRC server, register and
-// authenticate you nickname and join the channel you want to watch. Errors on
-// connection will be returned.
-func (ic *IrcClient) Start() error {
-	go ic.nickRegistration()
-	go ic.trackIRCStatus()
+	c.state <- stopped
 	metricUpdate <- 0
-	return ic.connectTracker()
+
+	go c.controller()
+	return c
 }
 
-func (ic *IrcClient) connectTracker() error {
-	s := net.JoinHostPort(ic.config.Server, strconv.Itoa(ic.config.Port))
-	ic.logger.Printf("Connection to %s commencing.\n", s)
-	if err := ic.conn.Connect(s); err != nil {
-		return err
-	}
-	ic.state <- connected
-	ircConnectTimestamp.Set(time.Now().Unix())
-	return nil
-}
-
-func (ic *IrcClient) disconnectTracker() {
-	ic.conn.Disconnect()
-	ic.state <- disconnected
-	metricUpdate <- time.Now().Unix()
-}
-
-func (ic *IrcClient) reconnectTracker() error {
-	ic.disconnectTracker()
-	ic.nickRegistration()
-	return ic.connectTracker()
-}
-
-func (ic *IrcClient) nickRegistration() {
-	for {
-		rs := <-ic.state
-		switch {
-		case rs == nickReg:
-			ic.conn.Privmsgf("NickServ", "identify %s", ic.config.Key)
-		case rs == nickAuth:
-			go ic.watchChannel()
-			return
-		}
-	}
-}
-
-func (ic *IrcClient) sendInvite() error {
-	if ic.config.InviteCmd == "" {
-		return fmt.Errorf("No invite command.")
-	}
-	invite, err := ic.generateInvite()
-	if err != nil {
-		return err
-	}
-	ic.state <- pendingInvite
-	ic.conn.Privmsg(ic.config.ChannelOwner, invite)
-	return nil
-}
-
-func (ic *IrcClient) generateInvite() (string, error) {
-	t, err := template.New("invitecmd").Parse(ic.config.InviteCmd)
-	if err != nil {
-		return "", err
-	}
-	ib := bytes.NewBuffer([]byte{})
-	if err = t.Execute(ib, ic.config); err != nil {
-		return "", err
-	}
-	return ib.String(), nil
-}
-
-func (ic *IrcClient) watchChannel() error {
-	if ic.config.WatchChannel == "" {
-		return fmt.Errorf("No channel to watch given.")
-	}
-	ic.conn.Join(ic.config.WatchChannel)
-	return nil
-}
-
-func (ic *IrcClient) handleInvite(e *irc.Event) {
-	if ic.config.WatchChannel == "" {
-		ic.controlChannel.IRCError <- fmt.Errorf("Ignoring invite event because no channels are tracked.")
-		return
-	}
-	if strings.HasSuffix(e.Message(), ic.config.WatchChannel) {
-		ic.conn.Join(ic.config.WatchChannel)
-		ic.state <- watching
-		if ic.logger != nil {
-			ic.logger.SetPrefix(fmt.Sprintf("%s:", ic.config.WatchChannel))
-		}
-	}
-}
-
-func (ic *IrcClient) handleWelcome(e *irc.Event) {
-	n := ic.conn.GetNick()
-	if n == ic.config.Nick {
-		ic.state <- nickReg
-		return
-	}
-	go ic.conn.Nick(ic.config.Nick)
-}
-
-func (ic *IrcClient) handleMsg(e *irc.Event) {
-	metricUpdate <- time.Now().Unix()
-	ic.controlChannel.Message <- e.Message()
-	if ircStateMap[watching] == ircStatus.String() {
-		go ic.checkForNickAuth(e.Message())
-	}
-}
-
-func (ic *IrcClient) checkForNickAuth(m string) {
-	switch {
-	case strings.Contains(m, "is registered"):
-		ic.state <- nickReg
-	case strings.Contains(m, "Password accepted"):
-		ic.state <- nickAuth
-	}
-}
-
-func (ic *IrcClient) trackIRCStatus() {
+func (c *Client) controller() {
 	for {
 		select {
 		// Turn on and off the IRC service.
-		case e := <-ic.controlChannel.Enabled:
-			if e && !ic.conn.Connected() {
-				ic.controlChannel.IRCError <- ic.Start()
+		case e := <-c.Enabled:
+			if e && !c.conn.Connected() {
+				c.IRCError <- c.connectTracker()
 			} else {
-				ic.disconnectTracker()
+				c.disconnectTracker()
 			}
 		// Update the IRC configuration.
-		case c := <-ic.controlChannel.ConfigChanged:
-			if c {
-				ic.logger.Println("IRC channel resetting.")
-				ic.controlChannel.IRCError <- ic.reconnectTracker()
-			}
+		case cfg := <-c.Config:
+			c.mutex.Lock()
+			c.config = cfg
+			c.mutex.Unlock()
+			c.Log <- fmt.Sprintf("IRC channel resetting")
+			c.IRCError <- c.reconnectTracker()
 		// Updates the lastest timestamp metric.
 		case ts := <-metricUpdate:
 			last, _ := strconv.Atoi(ircUpdateTimestamp.String())
 			if ts > int64(last) {
 				ircUpdateTimestamp.Set(ts)
 			}
-		case <-ic.state:
-			ic.updateState()
+		// Just makes sure that the IRC status stay up to date
+		case <-c.state:
+			c.updateState()
 		}
 	}
 }
 
-func (ic *IrcClient) updateState() {
-	ircStatus.Set(ircStateMap[<-ic.state])
+func (c *Client) createConn(s string) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.conn = irc.IRC(c.config.Nick, c.config.Key)
+	c.IRCError = c.conn.ErrorChan()
+
+	// Callbacks for various IRC events.
+	c.conn.AddCallback("001", c.handleWelcome)
+	c.conn.AddCallback("invite", c.handleInvite)
+	c.conn.AddCallback("message", c.handleMsg)
+	c.conn.AddCallback("msg", c.handleMsg)
+	c.conn.AddCallback("privmsg", c.handleMsg)
+	c.conn.AddCallback("notice", c.handleMsg)
+
+	if err := c.conn.Connect(s); err != nil {
+		c.IRCError <- fmt.Errorf("IRC connect error: %v", err)
+		c.state <- disconnected
+	}
+	ircConnectTimestamp.Set(time.Now().Unix())
+	c.state <- connected
+}
+
+func (c *Client) connectTracker() error {
+	c.mutex.RLock()
+	if c.config.Server == "" {
+		return fmt.Errorf("IRC Connect Error: No configuration found")
+	}
+	s := net.JoinHostPort(c.config.Server, strconv.Itoa(c.config.Port))
+	c.Log <- fmt.Sprintf("Connection to %s commencing.\n", s)
+	c.mutex.RUnlock()
+
+	// Have to unlock after the initial read to ensure createConn can acquire the
+	// write lock.
+	go c.createConn(s)
+	go c.nickRegistration()
+	return nil
+}
+
+func (c *Client) disconnectTracker() {
+	c.conn.Disconnect()
+	c.state <- disconnected
+	metricUpdate <- time.Now().Unix()
+}
+
+func (c *Client) reconnectTracker() error {
+	c.disconnectTracker()
+	return c.connectTracker()
+}
+
+func (c *Client) nickRegistration() {
+	for {
+		rs := <-c.state
+		switch {
+		case rs == nickReg:
+			c.mutex.RLock()
+			defer c.mutex.RUnlock()
+			c.conn.Privmsgf("NickServ", "identify %s", c.config.Key)
+		case rs == nickAuth:
+			go c.watchChannel()
+			return
+		}
+	}
+}
+
+func (c *Client) sendInvite() error {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	if c.config.InviteCmd == "" {
+		return fmt.Errorf("IRC Invite Error: No invite command.")
+	}
+	invite, err := c.generateInvite()
+	if err != nil {
+		return fmt.Errorf("IRC Invite Error: %v", err)
+	}
+	c.state <- pendingInvite
+	c.conn.Privmsg(c.config.ChannelOwner, invite)
+	return nil
+}
+
+func (c *Client) generateInvite() (string, error) {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	t, err := template.New("invitecmd").Parse(c.config.InviteCmd)
+	if err != nil {
+		return "", fmt.Errorf("IRC Invite Error: %v", err)
+	}
+	ib := bytes.NewBuffer([]byte{})
+	if err = t.Execute(ib, c.config); err != nil {
+		return "", fmt.Errorf("IRC Invite Error: %v", err)
+	}
+	return ib.String(), nil
+}
+
+func (c *Client) handleInvite(e *irc.Event) {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	if c.config.WatchChannel == "" {
+		c.IRCError <- fmt.Errorf("Ignoring invite event because no channels are tracked")
+		return
+	}
+	if strings.HasSuffix(e.Message(), c.config.WatchChannel) {
+		c.conn.Join(c.config.WatchChannel)
+		c.state <- watching
+	}
+}
+
+func (c *Client) handleWelcome(e *irc.Event) {
+	n := c.conn.GetNick()
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	if n == c.config.Nick {
+		c.state <- nickReg
+		return
+	}
+	go c.conn.Nick(c.config.Nick)
+}
+
+func (c *Client) watchChannel() error {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	if c.config.WatchChannel == "" {
+		return fmt.Errorf("IRC Watch Error: No channel to watch")
+	}
+	c.conn.Join(c.config.WatchChannel)
+	return nil
+}
+
+func (c *Client) handleMsg(e *irc.Event) {
+	metricUpdate <- time.Now().Unix()
+	c.Message <- e.Message()
+	if ircStateMap[watching] == ircStatus.String() {
+		go c.checkForNickAuth(e.Message())
+	}
+}
+
+func (c *Client) checkForNickAuth(m string) {
+	switch {
+	case strings.Contains(m, "is registered"):
+		c.state <- nickReg
+	case strings.Contains(m, "Password accepted"):
+		c.state <- nickAuth
+	}
+}
+
+func (c *Client) updateState() {
+	ircStatus.Set(ircStateMap[<-c.state])
 }
